@@ -1,0 +1,2 @@
+
+leaderboardID = "YYLeaderboard1"
