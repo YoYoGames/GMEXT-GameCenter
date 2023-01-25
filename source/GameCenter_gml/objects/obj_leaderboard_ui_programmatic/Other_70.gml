@@ -1,8 +1,6 @@
 
 var s = "Game Center Leaderboard Data:\n";
 
-show_debug_message(json_encode(async_load))
-
 if (async_load[? "type"] != "GameCenter_Leaderboard_Load")
 	exit
 

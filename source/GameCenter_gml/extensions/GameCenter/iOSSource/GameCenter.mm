@@ -41,12 +41,23 @@ GameCenter* g_GameCenterSingleton = nil;
 
 ////////////////GameMaker interface: macOS implementation is in GameCenterMacOS.cpp
 const int EVENT_OTHER_SOCIAL = 70;
-// those are not extern C
 extern int CreateDsMap( int _num, ... );
 extern void CreateAsynEventWithDSMap(int dsmapindex, int event_index);
-// but these are... wtf yoyo???
 extern "C" void dsMapAddDouble(int _dsMap, const char* _key, double _value);
 extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value);
+
+extern "C" void dsMapClear(int _dsMap );
+extern "C" int dsMapCreate();
+extern "C" void dsMapAddInt(int _dsMap, char* _key, int _value);
+//extern "C" void dsMapAddDouble(int _dsMap, char* _key, double _value);
+//extern "C" void dsMapAddString(int _dsMap, char* _key, char* _value);
+
+extern "C" int dsListCreate();
+extern "C" void dsListAddInt(int _dsList, int _value);
+extern "C" void dsListAddString(int _dsList, char* _value);
+extern "C" const char* dsListGetValueString(int _dsList, int _listIdx);
+extern "C" double dsListGetValueDouble(int _dsList, int _listIdx);
+extern "C" int dsListGetSize(int _dsList);
 
 @implementation GameCenter
 
@@ -887,6 +898,54 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
     }];
     
     return 1;
+}
+
+//GKAchievement
+//https://developer.apple.com/documentation/gamekit/gkachievement?language=objc
+
++(NSString*) AchievementJSON: (GKAchievement*) mGKAchievement
+{
+    
+    NSDictionary *mNSDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   [mGKAchievement identifier], @"identifier",
+                                   [[NSNumber alloc] initWithDouble:[mGKAchievement percentComplete]],@"percentComplete",
+                                   [[NSNumber alloc] initWithDouble:[mGKAchievement isCompleted]], @"isCompleted",
+                                   //[mGKAchievement lastReportedDate], @"lastReportedDate",
+                                   [[NSNumber alloc] initWithDouble:[mGKAchievement showsCompletionBanner]], @"showsCompletionBanner",
+								   [GameCenter GKPlayerJSON:[mGKAchievement player]], @"GKPlayer",
+                                   nil];
+    
+    return [GameCenter toJSON:mNSDictionary];
+    
+}
+
+-(void) GameCenter_Achievement_Load
+{
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) 
+	{
+        if (error == nil)
+        {
+			int dsMapIndex = CreateDsMap(2,
+										 "type", 0.0, "GameCenter_Achievement_Load",
+										 "success", 1.0, (void*)NULL);
+			
+			for(GKAchievement *mGKAchievement in achievements)
+                dsMapAddString(dsMapIndex,(char*)[[mGKAchievement identifier]UTF8String],(char*)[[GameCenter AchievementJSON:mGKAchievement]UTF8String]);
+			
+			CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
+        }
+        else
+        {
+			int dsMapIndex = CreateDsMap(2,
+										 "type", 0.0, "GameCenter_Achievement_Load",
+										 "success", 0.0, (void*)NULL);
+										 
+            dsMapAddDouble(dsMapIndex, "error_code", [error code]);
+            dsMapAddString(dsMapIndex, "error_message", (char*)[[error localizedDescription] UTF8String]);
+			
+			CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
+        }
+    }];
 }
 
 ////////////////// GKPlayer
