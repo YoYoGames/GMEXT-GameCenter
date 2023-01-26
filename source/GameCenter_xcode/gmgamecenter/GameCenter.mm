@@ -169,22 +169,31 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
 -(double) GameCenter_PresentView_Leaderboards
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
+        NSLog(@"Here");
+        
         GKGameCenterViewController *gameCenterController = [[GKGameCenterViewController alloc] initWithState: GKGameCenterViewControllerStateLeaderboards];
         if(gameCenterController == nil)
             return 0;
         
+        NSLog(@"Here1");
+        
         gameCenterController.gameCenterDelegate = self;
 #ifndef GMGC_MACOS
         [g_controller presentViewController: gameCenterController animated: YES completion:nil];
+        NSLog(@"Here2");
+        
 #else
         [[GKDialogController sharedDialogController] presentViewController: gameCenterController];
+        NSLog(@"Here3");
 #endif
     } else {
         GKGameCenterViewController *gameCenterController = [[GKGameCenterViewController alloc] init];
         gameCenterController.gameCenterDelegate = self;
         gameCenterController.viewState = GKGameCenterViewControllerStateLeaderboards;
+        NSLog(@"Here4");
 #ifndef GMGC_MACOS
         [g_controller presentViewController: gameCenterController animated: YES completion:nil];
+        NSLog(@"Here5");
 #else
         [[GKDialogController sharedDialogController] presentViewController: gameCenterController];
 #endif

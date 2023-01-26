@@ -7,14 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A4E2BA329829E8300562E82 /* libGameCenter.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 7E7E4AEB28639E590019D517 /* libGameCenter.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		7E7E4AFB28639EA60019D517 /* GameCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E7E4AF828639EA60019D517 /* GameCenter.h */; };
 		7E7E4AFC28639EA60019D517 /* GameCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E7E4AF928639EA60019D517 /* GameCenter.mm */; };
 		7E7E4AFF2863A41B0019D517 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E7E4AFE2863A41B0019D517 /* GameKit.framework */; };
 		7E7E4B012863A4280019D517 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E7E4B002863A4280019D517 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		6A4E2BA229829E5C00562E82 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "${PROJECT_DIR}/../GameCenter_gml/extensions/GameCenter";
+			dstSubfolderSpec = 0;
+			files = (
+				6A4E2BA329829E8300562E82 /* libGameCenter.dylib in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		7E7E4AEB28639E590019D517 /* libgmgamecenter.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libgmgamecenter.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E7E4AEB28639E590019D517 /* libGameCenter.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libGameCenter.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E7E4AF828639EA60019D517 /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
 		7E7E4AF928639EA60019D517 /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameCenter.mm; sourceTree = "<group>"; };
 		7E7E4AFE2863A41B0019D517 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -46,7 +61,7 @@
 		7E7E4AEC28639E590019D517 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7E7E4AEB28639E590019D517 /* libgmgamecenter.dylib */,
+				7E7E4AEB28639E590019D517 /* libGameCenter.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,21 +98,22 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		7E7E4AEA28639E590019D517 /* gmgamecenter */ = {
+		7E7E4AEA28639E590019D517 /* GameCenter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E7E4AF428639E590019D517 /* Build configuration list for PBXNativeTarget "gmgamecenter" */;
+			buildConfigurationList = 7E7E4AF428639E590019D517 /* Build configuration list for PBXNativeTarget "GameCenter" */;
 			buildPhases = (
 				7E7E4AE728639E590019D517 /* Headers */,
 				7E7E4AE828639E590019D517 /* Sources */,
 				7E7E4AE928639E590019D517 /* Frameworks */,
+				6A4E2BA229829E5C00562E82 /* Copy Files */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = gmgamecenter;
+			name = GameCenter;
 			productName = gmgamecenter;
-			productReference = 7E7E4AEB28639E590019D517 /* libgmgamecenter.dylib */;
+			productReference = 7E7E4AEB28639E590019D517 /* libGameCenter.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -127,7 +143,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7E7E4AEA28639E590019D517 /* gmgamecenter */,
+				7E7E4AEA28639E590019D517 /* GameCenter */,
 			);
 		};
 /* End PBXProject section */
@@ -259,7 +275,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SY43U6Q82Q;
+				DEVELOPMENT_TEAM = C9E7J7HL3D;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -273,7 +289,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SY43U6Q82Q;
+				DEVELOPMENT_TEAM = C9E7J7HL3D;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -295,7 +311,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7E7E4AF428639E590019D517 /* Build configuration list for PBXNativeTarget "gmgamecenter" */ = {
+		7E7E4AF428639E590019D517 /* Build configuration list for PBXNativeTarget "GameCenter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E7E4AF528639E590019D517 /* Debug */,
