@@ -1,1 +1,2 @@
-source/GameCenter_gml/options/extensions/*
+source/GameCenter_gml/options/extensions/
+*.DS_Store
