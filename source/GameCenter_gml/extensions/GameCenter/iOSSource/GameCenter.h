@@ -32,6 +32,7 @@
 -(double) GameCenter_Leaderboard_LoadGlobal: (NSString*) leaderboardID timeScope:(double) timeScope rangeStart:(double) rangeStart rangeEnd:(double) rangeEnd;
 -(double) GameCenter_Leaderboard_LoadFriendsOnly: (NSString*) leaderboardID timeScope:(double) timeScope rangeStart:(double) rangeStart rangeEnd:(double) rangeEnd;
 
+-(double) GameCenter_Achievement_Load;
 -(double) GameCenter_Achievement_Report: (NSString*) identifier percentComplete: (double) percent showCompletionBanner:(double) showCompletionBanner;
 -(double) GameCenter_Achievement_ResetAll;
 

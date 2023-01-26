@@ -919,7 +919,7 @@ extern "C" int dsListGetSize(int _dsList);
     
 }
 
--(void) GameCenter_Achievement_Load
+-(double) GameCenter_Achievement_Load
 {
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) 
 	{
@@ -946,6 +946,8 @@ extern "C" int dsListGetSize(int _dsList);
 			CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
         }
     }];
+
+    return 1;
 }
 
 ////////////////// GKPlayer

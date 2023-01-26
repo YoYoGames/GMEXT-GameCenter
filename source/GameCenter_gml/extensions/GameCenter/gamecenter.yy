@@ -106,7 +106,7 @@
             2,
             2,
           ],"documentation":"",},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_Achievement_Load","externalName":"GameCenter_Achievement_Load","kind":4,"help":"GameCenter_Achievement_Load()","hidden":false,"returnType":1,"argCount":0,"args":[],"documentation":"",},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_Achievement_Load","externalName":"GameCenter_Achievement_Load","kind":4,"help":"GameCenter_Achievement_Load()","hidden":false,"returnType":2,"argCount":0,"args":[],"documentation":"",},
       ],"constants":[
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Leaderboard_PlayerScope_Global","value":"0","hidden":false,},
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Leaderboard_PlayerScope_FriendsOnly","value":"1","hidden":false,},
