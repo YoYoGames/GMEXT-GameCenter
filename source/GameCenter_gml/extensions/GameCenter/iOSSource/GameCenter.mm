@@ -921,30 +921,22 @@ extern "C" int dsListGetSize(int _dsList);
 
 -(double) GameCenter_Achievement_Load
 {
-    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) 
-	{
-        if (error == nil)
+   [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error)
+    {
+        int dsMapIndex = CreateDsMap(0);
+        dsMapAddString(dsMapIndex, "type", "GameCenter_Achievement_Load");
+        if (error != nil)
         {
-			int dsMapIndex = CreateDsMap(2,
-										 "type", 0.0, "GameCenter_Achievement_Load",
-										 "success", 1.0, (void*)NULL);
-			
-			for(GKAchievement *mGKAchievement in achievements)
-                dsMapAddString(dsMapIndex,(char*)[[mGKAchievement identifier]UTF8String],(char*)[[GameCenter AchievementJSON:mGKAchievement]UTF8String]);
-			
-			CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
+            dsMapAddDouble(dsMapIndex, "success", 0);
+            dsMapAddDouble(dsMapIndex, "error_code", [error code]);
+            dsMapAddString(dsMapIndex, "error_message", (char*)[[error localizedDescription] UTF8String]);
         }
         else
         {
-			int dsMapIndex = CreateDsMap(2,
-										 "type", 0.0, "GameCenter_Achievement_Load",
-										 "success", 0.0, (void*)NULL);
-										 
-            dsMapAddDouble(dsMapIndex, "error_code", [error code]);
-            dsMapAddString(dsMapIndex, "error_message", (char*)[[error localizedDescription] UTF8String]);
-			
-			CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
+            dsMapAddDouble(dsMapIndex, "success", 1);
+            dsMapAddString(dsMapIndex,(char*)[[mGKAchievement identifier]UTF8String],(char*)[[GameCenter AchievementJSON:mGKAchievement]UTF8String]);
         }
+        CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
     }];
 
     return 1;
@@ -1337,6 +1329,10 @@ GMExport extern "C" double GameCenter_Leaderboard_LoadGlobal(const char* leaderb
 
 GMExport extern "C" double GameCenter_Leaderboard_LoadFriendsOnly(const char* leaderboardID, double timeScope, double rangeStart, double rangeEnd) {
     return [g_GameCenterSingleton GameCenter_Leaderboard_LoadFriendsOnly: [NSString stringWithUTF8String:(leaderboardID?leaderboardID:"")] timeScope:timeScope rangeStart:rangeStart rangeEnd:rangeEnd];
+}
+
+GMExport extern "C" double GameCenter_Achievement_Load() {
+    return [g_GameCenterSingleton GameCenter_Achievement_Load];
 }
 
 GMExport extern "C" double GameCenter_Achievement_Report(const char* identifier, double percent, double showBanner) {

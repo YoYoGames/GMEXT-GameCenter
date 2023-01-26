@@ -17,8 +17,7 @@ else
 	if(ds_map_exists(async_load,"YYAchievement1"))
 	{
 		 var struct = json_parse(async_load[?"YYAchievement1"])
-		 show_debug_message(struct)
-		 s += struct.identifier + ": " + string(struct.percentComplete) + "\n"
+		 s += struct.identifier + ": " + string(struct.percentComplete) + "%\n"
 	}
 	else
 		s += "YYAchievement1: 0% \n";
@@ -26,7 +25,7 @@ else
 	if(ds_map_exists(async_load,"YYAchievement2"))
 	{
 		 var struct = json_parse(async_load[?"YYAchievement2"])
-		 s += struct.identifier + ": " + string(struct.percentComplete) + "\n"
+		 s += struct.identifier + ": " + string(struct.percentComplete) + "%\n"
 	}
 	else
 		s += "YYAchievement2: 0% \n";

@@ -17,7 +17,6 @@
   "iosProps": true,
   "tvosProps": false,
   "androidProps": false,
-  "html5Props": false,
   "installdir": "",
   "files": [
     {"resourceType":"GMExtensionFile","resourceVersion":"1.0","name":"","filename":"GameCenter.ext","origname":"","init":"","final":"","kind":4,"uncompress":false,"functions":[
@@ -170,7 +169,6 @@
         {"name":"GameCenter_Leaderboard_LoadFriendsOnly","path":"extensions/GameCenter/GameCenter.yy",},
       ],},
   ],
-  "HTML5CodeInjection": "",
   "classname": "GameCenter",
   "tvosclassname": "",
   "tvosdelegatename": "",
