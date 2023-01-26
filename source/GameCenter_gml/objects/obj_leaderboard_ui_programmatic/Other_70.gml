@@ -4,6 +4,8 @@ var s = "Game Center Leaderboard Data:\n";
 if (async_load[? "type"] != "GameCenter_Leaderboard_Load")
 	exit
 
+asyncBusy = false;
+
 if (!async_load[? "success"]) 
 {
 	s += "Error:\n";

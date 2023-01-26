@@ -2,7 +2,7 @@
 
 event_inherited()
 
-textNormal = "Fetch as Dialog"
+textNormal = "Fetch Data"
 textBusy = "Busy..."
 text = textNormal
 leaderboardID = ""
