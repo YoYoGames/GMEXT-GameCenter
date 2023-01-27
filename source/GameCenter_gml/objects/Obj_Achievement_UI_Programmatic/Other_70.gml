@@ -14,21 +14,14 @@ if (!async_load[? "success"])
 }
 else 
 {
-	if(ds_map_exists(async_load,"YYAchievement1"))
-	{
-		 var struct = json_parse(async_load[?"YYAchievement1"])
-		 s += struct.identifier + ": " + string(struct.percentComplete) + "%\n"
-	}
-	else
-		s += "YYAchievement1: 0% \n";
+	if(ds_map_exists(async_load,"data")) {
 		
-	if(ds_map_exists(async_load,"YYAchievement2"))
-	{
-		 var struct = json_parse(async_load[?"YYAchievement2"])
-		 s += struct.identifier + ": " + string(struct.percentComplete) + "%\n"
+		var data = json_parse(async_load[?"data"]);
+		for (var i = 0; i < array_length(data); i++) {
+			var struct = data[i];
+			s += struct.identifier + ": " + string(struct.percentComplete) + "%\n"
+		}
 	}
-	else
-		s += "YYAchievement2: 0% \n";
 }
 
 s += "\nData End.\n";

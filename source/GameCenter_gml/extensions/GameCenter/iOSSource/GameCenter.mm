@@ -903,25 +903,33 @@ extern "C" int dsListGetSize(int _dsList);
 //GKAchievement
 //https://developer.apple.com/documentation/gamekit/gkachievement?language=objc
 
-+(NSString*) AchievementJSON: (GKAchievement*) mGKAchievement
++(NSString *)GKAchievementArrayJSON:(NSArray *)array
 {
+    NSMutableArray *achievementsArray = [NSMutableArray array];
+    for (GKAchievement *mGKAchievement in array) {
+        NSDictionary *achievementDict = @{@"identifier": mGKAchievement.identifier,
+                                          @"percentComplete": @(mGKAchievement.percentComplete),
+                                          @"isCompleted": @(mGKAchievement.isCompleted),
+                                          @"showsCompletionBanner": @(mGKAchievement.showsCompletionBanner),
+                                          @"player": [GameCenter GKPlayerJSON:[mGKAchievement player]],
+                                          @"lastReportedDate": @([GameCenter NSDateToGMDate:[mGKAchievement lastReportedDate]])
+        };
+        [achievementsArray addObject:achievementDict];
+    };
     
-    NSDictionary *mNSDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [mGKAchievement identifier], @"identifier",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement percentComplete]],@"percentComplete",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement isCompleted]], @"isCompleted",
-                                   //[mGKAchievement lastReportedDate], @"lastReportedDate",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement showsCompletionBanner]], @"showsCompletionBanner",
-								   [GameCenter GKPlayerJSON:[mGKAchievement player]], @"GKPlayer",
-                                   nil];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:achievementsArray options:0 error:&error];
+    if (!jsonData) {
+        return @"[]";
+    }
     
-    return [GameCenter toJSON:mNSDictionary];
-    
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
 }
 
 -(double) GameCenter_Achievement_Load
 {
-   [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error)
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error)
     {
         int dsMapIndex = CreateDsMap(0);
         dsMapAddString(dsMapIndex, "type", "GameCenter_Achievement_Load");
@@ -929,17 +937,17 @@ extern "C" int dsListGetSize(int _dsList);
         {
             dsMapAddDouble(dsMapIndex, "success", 0);
             dsMapAddDouble(dsMapIndex, "error_code", [error code]);
-            dsMapAddString(dsMapIndex, "error_message", (char*)[[error localizedDescription] UTF8String]);
+            dsMapAddString(dsMapIndex, "error_message", [[error localizedDescription] UTF8String]);
         }
         else
         {
             dsMapAddDouble(dsMapIndex, "success", 1);
-            dsMapAddString(dsMapIndex,(char*)[[mGKAchievement identifier]UTF8String],(char*)[[GameCenter AchievementJSON:mGKAchievement]UTF8String]);
-        }
+            dsMapAddString(dsMapIndex, "data", [[GameCenter GKAchievementArrayJSON: achievements] UTF8String]);
+		}
         CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
     }];
-
-    return 1;
+    
+    return 0;
 }
 
 ////////////////// GKPlayer

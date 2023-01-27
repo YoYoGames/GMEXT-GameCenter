@@ -602,7 +602,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
     return 1;
 }
 
-+(double) Util_NSDateToGMDate:(NSDate*)date {
++(double) NSDateToGMDate:(NSDate*)date {
     // converts NSDate into a number for GameMaker date functions.
     return ( ( ( ( (double) [date timeIntervalSince1970] ) + 0.5 ) / 86400.0 ) + 25569.0 );
 }
@@ -684,8 +684,8 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                     case GKLeaderboardTypeRecurring: lbtype = 1; break;
                 }
                 dsMapAddDouble(dsMapIndex, "leaderboard_type", lbtype);
-                dsMapAddDouble(dsMapIndex, "leaderboard_start_date", [GameCenter Util_NSDateToGMDate:[lb startDate]]);
-                dsMapAddDouble(dsMapIndex, "leaderboard_next_start_date", [GameCenter Util_NSDateToGMDate:[lb nextStartDate]]);
+                dsMapAddDouble(dsMapIndex, "leaderboard_start_date", [GameCenter NSDateToGMDate:[lb startDate]]);
+                dsMapAddDouble(dsMapIndex, "leaderboard_next_start_date", [GameCenter NSDateToGMDate:[lb nextStartDate]]);
                 dsMapAddDouble(dsMapIndex, "leaderboard_duration", [lb duration]);
                 
                 if (error != nil) {
@@ -699,7 +699,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                 
                 if (localPlayerEntry == nil) {
                     dsMapAddDouble(dsMapIndex, "local_context", [localPlayerEntry context]);
-                    dsMapAddDouble(dsMapIndex, "local_date", [GameCenter Util_NSDateToGMDate:[localPlayerEntry date]]);
+                    dsMapAddDouble(dsMapIndex, "local_date", [GameCenter NSDateToGMDate:[localPlayerEntry date]]);
                     dsMapAddDouble(dsMapIndex, "local_rank", [localPlayerEntry rank]);
                     dsMapAddDouble(dsMapIndex, "local_score", [localPlayerEntry score]);
                     dsMapAddString(dsMapIndex, "local_formatted_score", (char*)[[localPlayerEntry formattedScore] UTF8String]);
@@ -725,7 +725,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                         GKLeaderboardEntry* e = [entries objectAtIndex:i];
                         
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_context_%lu", i] UTF8String], e?[e context]:-1);
-                        dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_date_%lu", i] UTF8String], e?[GameCenter Util_NSDateToGMDate:[e date]]:-1);
+                        dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_date_%lu", i] UTF8String], e?[GameCenter NSDateToGMDate:[e date]]:-1);
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_rank_%lu", i] UTF8String], e?[e rank]:-1);
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_score_%lu", i] UTF8String], e?[e score]:-1);
                         dsMapAddString(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_formatted_score_%lu", i] UTF8String], e?(char*)[[e formattedScore] UTF8String]:"");
@@ -804,7 +804,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                 else {
                     GKScore* e = [req localPlayerScore];
                     dsMapAddDouble(dsMapIndex, "local_context", [e context]);
-                    dsMapAddDouble(dsMapIndex, "local_date", [GameCenter Util_NSDateToGMDate:[e date]]);
+                    dsMapAddDouble(dsMapIndex, "local_date", [GameCenter NSDateToGMDate:[e date]]);
                     dsMapAddDouble(dsMapIndex, "local_rank", [e rank]);
                     dsMapAddDouble(dsMapIndex, "local_score", [e value]);
                     dsMapAddString(dsMapIndex, "local_formatted_score", (char*)[[e formattedValue] UTF8String]);
@@ -820,7 +820,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                         GKScore* e = [scores objectAtIndex:i];
                         
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_context_%lu", i] UTF8String], e?[e context]:-1);
-                        dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_date_%lu", i] UTF8String], e?[GameCenter Util_NSDateToGMDate:[e date]]:-1);
+                        dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_date_%lu", i] UTF8String], e?[GameCenter NSDateToGMDate:[e date]]:-1);
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_rank_%lu", i] UTF8String], e?[e rank]:-1);
                         dsMapAddDouble(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_score_%lu", i] UTF8String], e?[e value]:-1);
                         dsMapAddString(dsMapIndex, (char*)[[NSString stringWithFormat:@"entry_formatted_score_%lu", i] UTF8String], e?(char*)[[e formattedValue] UTF8String]:"");
@@ -893,20 +893,28 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
 //GKAchievement
 //https://developer.apple.com/documentation/gamekit/gkachievement?language=objc
 
-+(NSString*) AchievementJSON: (GKAchievement*) mGKAchievement
++(NSString *)GKAchievementArrayJSON:(NSArray *)array
 {
+    NSMutableArray *achievementsArray = [NSMutableArray array];
+    for (GKAchievement *mGKAchievement in array) {
+        NSDictionary *achievementDict = @{@"identifier": mGKAchievement.identifier,
+                                          @"percentComplete": @(mGKAchievement.percentComplete),
+                                          @"isCompleted": @(mGKAchievement.isCompleted),
+                                          @"showsCompletionBanner": @(mGKAchievement.showsCompletionBanner),
+                                          @"player": [GameCenter GKPlayerJSON:[mGKAchievement player]],
+                                          @"lastReportedDate": @([GameCenter NSDateToGMDate:[mGKAchievement lastReportedDate]])
+        };
+        [achievementsArray addObject:achievementDict];
+    };
     
-    NSDictionary *mNSDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [mGKAchievement identifier], @"identifier",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement percentComplete]],@"percentComplete",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement isCompleted]], @"isCompleted",
-                                   //[mGKAchievement lastReportedDate], @"lastReportedDate",
-                                   [[NSNumber alloc] initWithDouble:[mGKAchievement showsCompletionBanner]], @"showsCompletionBanner",
-                                   [GameCenter GKPlayerJSON:[mGKAchievement player]], @"GKPlayer",
-                                   nil];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:achievementsArray options:0 error:&error];
+    if (!jsonData) {
+        return @"[]";
+    }
     
-    return [GameCenter toJSON:mNSDictionary];
-    
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
 }
 
 -(double) GameCenter_Achievement_Load
@@ -919,13 +927,12 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
         {
             dsMapAddDouble(dsMapIndex, "success", 0);
             dsMapAddDouble(dsMapIndex, "error_code", [error code]);
-            dsMapAddString(dsMapIndex, "error_message", (char*)[[error localizedDescription] UTF8String]);
+            dsMapAddString(dsMapIndex, "error_message", [[error localizedDescription] UTF8String]);
         }
         else
         {
             dsMapAddDouble(dsMapIndex, "success", 1);
-			for(GKAchievement *mGKAchievement in achievements)
-                dsMapAddString(dsMapIndex,(char*)[[mGKAchievement identifier]UTF8String],(char*)[[GameCenter AchievementJSON:mGKAchievement]UTF8String]);
+            dsMapAddString(dsMapIndex, "data", [[GameCenter GKAchievementArrayJSON: achievements] UTF8String]);
 		}
         CreateAsynEventWithDSMap(dsMapIndex,EVENT_OTHER_SOCIAL);
     }];
