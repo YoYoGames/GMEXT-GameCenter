@@ -15,3 +15,12 @@ MACOS SOURCE: `source/GameCenter_xcode/`
 ## Important
 
 Do not download from the **main branch** this branch is a work in place branch and probably has features that might be broken or not working properly, please download from the releases panel (right side instead).
+
+
+---
+
+## Documentation
+
+The partial documentation of the API is included in the extension asset (included files).
+The demo project has a set of new functions that are not yet fully documented.
+We are in the process of moving the documentation to GitHub wiki.
