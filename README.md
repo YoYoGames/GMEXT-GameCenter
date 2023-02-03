@@ -10,14 +10,10 @@ IOS SOURCE: `source/GameCenter_gml/extensions/gamecenter/iOSSource/`
 MACOS SOURCE: `source/GameCenter_xcode/`
 
 
----
-
 ## Important
 
 Do not download from the **main branch** this branch is a work in place branch and probably has features that might be broken or not working properly, please download from the releases panel (right side instead).
 
-
----
 
 ## Documentation
 
