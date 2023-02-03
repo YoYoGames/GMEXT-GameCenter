@@ -1,0 +1,6 @@
+v1.1.0
+- Added release notes file (please update this file with new notes)
+- Added function to the query achievements: GameCenter_Achievement_Load
+- Updated documentation
+- Fixed some documentation typos
+- Fixed extension running on macOS

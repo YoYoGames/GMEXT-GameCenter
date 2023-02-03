@@ -54,6 +54,7 @@
     {"id":{"name":"Spr_YoYo_Background","path":"sprites/Spr_YoYo_Background/Spr_YoYo_Background.yy",},"order":0,},
     {"id":{"name":"Obj_Leaderboard_Submit","path":"objects/Obj_Leaderboard_Submit/Obj_Leaderboard_Submit.yy",},"order":0,},
     {"id":{"name":"Spr_YoYo_button","path":"sprites/Spr_YoYo_button/Spr_YoYo_button.yy",},"order":1,},
+    {"id":{"name":"changelog","path":"notes/changelog/changelog.yy",},"order":0,},
     {"id":{"name":"Room_GameCenter","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},"order":0,},
     {"id":{"name":"Font_YoYo_20","path":"fonts/Font_YoYo_20/Font_YoYo_20.yy",},"order":0,},
     {"id":{"name":"Room_GameCenter_SavedGames","path":"rooms/Room_GameCenter_SavedGames/Room_GameCenter_SavedGames.yy",},"order":1,},

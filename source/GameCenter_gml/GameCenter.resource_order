@@ -26,6 +26,7 @@
     {"name":"Obj_Achievement_Reset","order":1,"path":"objects/Obj_Achievement_Reset/Obj_Achievement_Reset.yy",},
     {"name":"Obj_YoYo_textbox","order":2,"path":"objects/Obj_YoYo_textbox/Obj_YoYo_textbox.yy",},
     {"name":"Spr_YoYo_button","order":1,"path":"sprites/Spr_YoYo_button/Spr_YoYo_button.yy",},
+    {"name":"changelog","order":3,"path":"notes/changelog/changelog.yy",},
     {"name":"Room_GameCenter_SavedGames","order":1,"path":"rooms/Room_GameCenter_SavedGames/Room_GameCenter_SavedGames.yy",},
     {"name":"Obj_GameCenter_SavedGames_Point","order":4,"path":"objects/Obj_GameCenter_SavedGames_Point/Obj_GameCenter_SavedGames_Point.yy",},
     {"name":"Obj_GameCenter_SavedGames_Close","order":1,"path":"objects/Obj_GameCenter_SavedGames_Close/Obj_GameCenter_SavedGames_Close.yy",},
