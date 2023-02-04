@@ -697,7 +697,7 @@ extern "C" void dsMapAddString(int _dsMap, const char* _key, const char* _value)
                 
                 dsMapAddDouble(dsMapIndex, "total_players_count", totalPlayerCount);
                 
-                if (localPlayerEntry == nil) {
+                if (localPlayerEntry != nil) {
                     dsMapAddDouble(dsMapIndex, "local_context", [localPlayerEntry context]);
                     dsMapAddDouble(dsMapIndex, "local_date", [GameCenter NSDateToGMDate:[localPlayerEntry date]]);
                     dsMapAddDouble(dsMapIndex, "local_rank", [localPlayerEntry rank]);
