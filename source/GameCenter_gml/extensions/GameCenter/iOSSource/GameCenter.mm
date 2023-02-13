@@ -912,7 +912,7 @@ extern "C" int dsListGetSize(int _dsList);
                                           @"isCompleted": @(mGKAchievement.isCompleted),
                                           @"showsCompletionBanner": @(mGKAchievement.showsCompletionBanner),
                                           @"player": [GameCenter GKPlayerJSON:[mGKAchievement player]],
-                                          @"lastReportedDate": @([GameCenter NSDateToGMDate:[mGKAchievement lastReportedDate]])
+                                          @"lastReportedDate": [GameCenter Util_NSDateToGMDate:[mGKAchievement lastReportedDate]])
         };
         [achievementsArray addObject:achievementDict];
     };
