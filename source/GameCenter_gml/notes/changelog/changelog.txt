@@ -1,3 +1,6 @@
+v1.1.2 (Hotfix)
+- Fixed compilation bug on iOS
+
 v1.1.1 (Hotfix)
 - Fixed bug with Achievement_Load on iOS
 - Fixed bug with Leaderboard_LoadGeneric on macOS/iOS

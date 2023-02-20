@@ -16,7 +16,7 @@
   "date": "2019-03-28T05:11:31",
   "description": "",
   "exportToGame": true,
-  "extensionVersion": "1.1.1",
+  "extensionVersion": "1.1.2",
   "files": [
     {"resourceType":"GMExtensionFile","resourceVersion":"1.0","name":"","constants":[
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Leaderboard_PlayerScope_Global","hidden":false,"value":"0",},
