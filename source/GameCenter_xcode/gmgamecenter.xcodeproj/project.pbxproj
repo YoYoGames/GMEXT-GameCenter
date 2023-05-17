@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B38F3412A14635F008741DB /* GameCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B38F33F2A14635F008741DB /* GameCenter.h */; };
+		2B38F3422A14635F008741DB /* GameCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B38F3402A14635F008741DB /* GameCenter.mm */; };
+		2B38F3462A14637A008741DB /* YYRValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B38F3432A14637A008741DB /* YYRValue.h */; };
+		2B38F3472A14637A008741DB /* Ref.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B38F3442A14637A008741DB /* Ref.h */; };
+		2B38F3482A14637A008741DB /* Extension_Interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B38F3452A14637A008741DB /* Extension_Interface.h */; };
 		6A4E2BA329829E8300562E82 /* libGameCenter.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 7E7E4AEB28639E590019D517 /* libGameCenter.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		7E7E4AFB28639EA60019D517 /* GameCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E7E4AF828639EA60019D517 /* GameCenter.h */; };
-		7E7E4AFC28639EA60019D517 /* GameCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E7E4AF928639EA60019D517 /* GameCenter.mm */; };
 		7E7E4AFF2863A41B0019D517 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E7E4AFE2863A41B0019D517 /* GameKit.framework */; };
 		7E7E4B012863A4280019D517 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E7E4B002863A4280019D517 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -29,9 +32,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2B38F33F2A14635F008741DB /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = ../../GameCenter_gml/extensions/GameCenter/iOSSource/GameCenter.h; sourceTree = "<group>"; };
+		2B38F3402A14635F008741DB /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GameCenter.mm; path = ../../GameCenter_gml/extensions/GameCenter/iOSSource/GameCenter.mm; sourceTree = "<group>"; };
+		2B38F3432A14637A008741DB /* YYRValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYRValue.h; sourceTree = "<group>"; };
+		2B38F3442A14637A008741DB /* Ref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ref.h; sourceTree = "<group>"; };
+		2B38F3452A14637A008741DB /* Extension_Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extension_Interface.h; sourceTree = "<group>"; };
 		7E7E4AEB28639E590019D517 /* libGameCenter.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libGameCenter.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		7E7E4AF828639EA60019D517 /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
-		7E7E4AF928639EA60019D517 /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameCenter.mm; sourceTree = "<group>"; };
 		7E7E4AFE2863A41B0019D517 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		7E7E4B002863A4280019D517 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -69,8 +75,11 @@
 		7E7E4AED28639E590019D517 /* gmgamecenter */ = {
 			isa = PBXGroup;
 			children = (
-				7E7E4AF828639EA60019D517 /* GameCenter.h */,
-				7E7E4AF928639EA60019D517 /* GameCenter.mm */,
+				2B38F3452A14637A008741DB /* Extension_Interface.h */,
+				2B38F3442A14637A008741DB /* Ref.h */,
+				2B38F3432A14637A008741DB /* YYRValue.h */,
+				2B38F33F2A14635F008741DB /* GameCenter.h */,
+				2B38F3402A14635F008741DB /* GameCenter.mm */,
 			);
 			path = gmgamecenter;
 			sourceTree = "<group>";
@@ -91,7 +100,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E7E4AFB28639EA60019D517 /* GameCenter.h in Headers */,
+				2B38F3482A14637A008741DB /* Extension_Interface.h in Headers */,
+				2B38F3472A14637A008741DB /* Ref.h in Headers */,
+				2B38F3412A14635F008741DB /* GameCenter.h in Headers */,
+				2B38F3462A14637A008741DB /* YYRValue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E7E4AFC28639EA60019D517 /* GameCenter.mm in Sources */,
+				2B38F3422A14635F008741DB /* GameCenter.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

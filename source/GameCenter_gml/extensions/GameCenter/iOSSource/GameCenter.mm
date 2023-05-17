@@ -40,7 +40,7 @@ extern "C" int dsListCreate();
 extern "C" void dsListAddInt(int _dsList, int _value);
 extern "C" void dsListAddString(int _dsList, char* _value);
 extern "C" const char* dsListGetValueString(int _dsList, int _listIdx);
-extern "C" double dsListGetValueDouble(int _dsList, int _listIdx);
+void /*double*/ dsListGetValueDouble(int _dsList, int _listIdx);
 extern "C" int dsListGetSize(int _dsList);
 
 extern int CreateDsMap( int _num, ... );
@@ -104,7 +104,7 @@ void DsMapAddDouble_comaptibility(int dsMapIndex, const char* _key, double _valu
 void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 {
     #if TARGET_OS_OSX
-    CreateAsyncEventWithDSMap(dsMapIndex);
+    CreateAsyncEventWithDSMap(dsMapIndex, EVENT_OTHER_SOCIAL);
     #else
     CreateAsynEventWithDSMap(dsMapIndex, EVENT_OTHER_SOCIAL);
     #endif
@@ -1204,240 +1204,252 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 
 @end
 
-#if !TARGET_OS_OSX
-/* do nothing! */
-#else
+#if TARGET_OS_OSX
 
-/* GameCenterMacOS.cpp */
-#include <cstddef>
-#include <cstdint>
-#define  GMExport __attribute__((visibility("default")))
+YYEXPORT void /*double*/ GameCenter_MacOS_SetWindowHandle(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(void* ptrwindow)
+{
+    void* ptrwindow = YYGetPtr(arg, 0);
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_MacOS_SetWindowHandle: (__bridge NSWindow*)(ptrwindow)];
+}
 
-typedef void(*GMCreateAsyncEventWithDSMap_t)(
-    int         iDSMapIndex,
-    int         iEventSubtype
-);
+YYEXPORT void /*double*/ GameCenter_PresentView_Default(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_PresentView_Default];
+}
 
-typedef int (*GMCreateDSMap_t)(
-    int         iNumElements /* = 0 */,
-    ... /*
-    const char* pcszNameStringN,
-    double      dValueN,
-    const char* pcszValueStringN */
-);
+YYEXPORT void /*double*/ GameCenter_PresentView_Achievements(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_PresentView_Achievements];
+}
 
-typedef bool(*GMDsMapAddDouble_comaptibility_t)(
-    int         iDSMapIndex,
-    const char* pcszKeyString,
-    double      dValue
-);
-
-typedef bool(*GMDsMapAddString_comaptibility_t)(
-    int         iDSMapIndex,
-    const char* pcszKeyString,
-    const char* pcszValueString
-);
-
-const char* ReturnGMString(char** storage, NSString* _Nullable input) {
-    if (*storage) {
-        free(*storage);
-        *storage = NULL;
-    }
+YYEXPORT void /*double*/ GameCenter_PresentView_Achievement(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* achid)
+{
+    const char* achid = YYGetString(arg, 0);
     
-    if (input != nil) {
-        const char* inputAsUtf8 = [input UTF8String];
-        if (inputAsUtf8) {
-            *storage = strdup(inputAsUtf8);
-        }
-    }
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_PresentView_Achievement:@(achid)];
+}
+
+YYEXPORT void /*double*/ GameCenter_PresentView_Leaderboards(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_PresentView_Leaderboards];
+}
+
+YYEXPORT void /*double*/ GameCenter_PresentView_Leaderboard(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardId, double leaderboardTimeScope, double playerScope)
+{
+    const char* leaderboardId = YYGetString(arg, 0);
+    double leaderboardTimeScope = YYGetReal(arg, 1);
+    double playerScope = YYGetReal(arg, 2);
     
-    return *storage;
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_PresentView_Leaderboard:@(leaderboardId) leaderboardTimeScope:leaderboardTimeScope playerScope:playerScope];
 }
 
-GMExport GMCreateAsyncEventWithDSMap_t GMCreateAsyncEventWithDSMap = NULL;
-GMExport GMCreateDSMap_t               GMCreateDSMap               = NULL;
-GMExport GMDsMapAddDouble_comaptibility_t            GMDsMapAddDouble_comaptibility            = NULL;
-GMExport GMDsMapAddString_comaptibility_t            GMDsMapAddString_comaptibility            = NULL;
-
-GMExport extern "C" void RegisterCallbacks(
-    GMCreateAsyncEventWithDSMap_t pGMF1,
-    GMCreateDSMap_t               pGMF2,
-    GMDsMapAddDouble_comaptibility_t            pGMF3,
-    GMDsMapAddString_comaptibility_t            pGMF4) {
-    /* just assign the function pointers to static variables. */
-    /* the actual exported implementation is below */
-    GMCreateAsyncEventWithDSMap = pGMF1;
-    GMCreateDSMap               = pGMF2;
-    GMDsMapAddDouble_comaptibility            = pGMF3;
-    GMDsMapAddString_comaptibility            = pGMF4;
-    if (g_GameCenterSingleton == nil) {
-        g_GameCenterSingleton = [[GameCenter alloc] init];
-    }
+YYEXPORT void /*double*/ GameCenter_LocalPlayer_Authenticate(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_Authenticate];
 }
 
-GMExport int CreateDsMap(
-    int _num,
-    ... /* :) */) {
-    /* let's hope this will work correctly... */
-    return GMCreateDSMap(_num /* :) */);
+YYEXPORT void /*double*/ GameCenter_LocalPlayer_IsAuthenticated(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_IsAuthenticated];
 }
 
-GMExport void CreateAsyncEventWithDSMap_comaptibility(
-    int dsmapindex,
-    int event_index) {
-    GMCreateAsyncEventWithDSMap(dsmapindex, event_index);
+YYEXPORT void /*double*/ GameCenter_LocalPlayer_IsUnderage(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_IsUnderage];
 }
 
-GMExport extern "C" void DsMapAddDouble_comaptibility(
-    int _dsMap,
-    const char* _key,
-    double _value) {
-    GMDsMapAddDouble_comaptibility(_dsMap, _key, _value);
+YYEXPORT void /*double*/ GameCenter_LocalPlayer_IsMultiplayerGamingRestricted(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_IsMultiplayerGamingRestricted];
 }
 
-GMExport extern "C" void DsMapAddString_comaptibility(
-    int _dsMap,
-    const char* _key,
-    const char* _value
-) {
-    GMDsMapAddString_comaptibility(_dsMap, _key, _value);
+YYEXPORT void /*double*/ GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted];
 }
 
-GMExport extern "C" double GameCenter_MacOS_SetWindowHandle(void* ptrwindow) {
-    return [g_GameCenterSingleton GameCenter_MacOS_SetWindowHandle: (__bridge NSWindow*)(ptrwindow)];
+YYEXPORT void /*const char**/ GameCenter_LocalPlayer_GetInfo(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    YYCreateString(&Result,  [[g_GameCenterSingleton GameCenter_LocalPlayer_GetInfo] UTF8String]);
 }
 
-GMExport extern "C" double GameCenter_PresentView_Default() {
-    return [g_GameCenterSingleton GameCenter_PresentView_Default];
+YYEXPORT void /*double*/ GameCenter_SavedGames_Fetch(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_Fetch];
 }
 
-GMExport extern "C" double GameCenter_PresentView_Achievements() {
-    return [g_GameCenterSingleton GameCenter_PresentView_Achievements];
+YYEXPORT void /*double*/ GameCenter_SavedGames_Save(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* name, const char* data)
+{
+    const char* name = YYGetString(arg, 0);
+    const char* data = YYGetString(arg, 1);
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_Save:@(name) data:@(data)];
 }
 
-GMExport extern "C" double GameCenter_PresentView_Achievement(const char* achid) {
-    return [g_GameCenterSingleton GameCenter_PresentView_Achievement: [NSString stringWithUTF8String:(achid?achid:"")]];
+YYEXPORT void /*double*/ GameCenter_SavedGames_Delete(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* name)
+{
+    const char* name = YYGetString(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_Delete:@(name)];
 }
 
-GMExport extern "C" double GameCenter_PresentView_Leaderboards() {
-    return [g_GameCenterSingleton GameCenter_PresentView_Leaderboards];
+YYEXPORT void /*double*/ GameCenter_SavedGames_GetData(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* name)
+{
+    const char* name = YYGetString(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_GetData:@(name)];
 }
 
-GMExport extern "C" double GameCenter_PresentView_Leaderboard(const char* leaderboardId, double leaderboardTimeScope, double playerScope) {
-    return [g_GameCenterSingleton GameCenter_PresentView_Leaderboard:[NSString stringWithUTF8String:(leaderboardId?leaderboardId:"")] leaderboardTimeScope:leaderboardTimeScope playerScope:playerScope];
+YYEXPORT void /*double*/ GameCenter_SavedGames_ResolveConflict(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double conflict_ind, const char* data)
+{
+    double conflict_ind = YYGetReal(arg, 0);
+    const char* data = YYGetString(arg, 1);
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_ind data:@(data)];
 }
 
-GMExport extern "C" double GameCenter_LocalPlayer_Authenticate() {
-    return [g_GameCenterSingleton GameCenter_LocalPlayer_Authenticate];
+YYEXPORT void /*double*/ GameCenter_Leaderboard_Submit(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardID, double score, double dcontext)
+{
+    const char* leaderboardID = YYGetString(arg, 0);
+    double score = YYGetReal(arg, 1);
+    double dcontext = YYGetReal(arg, 2);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Leaderboard_Submit:@(leaderboardID) score:score dcontext:dcontext];
 }
 
-GMExport extern "C" double GameCenter_LocalPlayer_IsAuthenticated() {
-    return [g_GameCenterSingleton GameCenter_LocalPlayer_IsAuthenticated];
+YYEXPORT void /*double*/ GameCenter_Leaderboard_LoadGlobal(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardID, double timeScope, double rangeStart, double rangeEnd)
+{
+    const char* leaderboardID = YYGetString(arg, 0);
+    double timeScope = YYGetReal(arg, 1);
+    double rangeStart = YYGetReal(arg, 2);
+    double rangeEnd = YYGetReal(arg, 3);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Leaderboard_LoadGlobal: @(leaderboardID) timeScope:timeScope rangeStart:rangeStart rangeEnd:rangeEnd];
 }
 
-GMExport extern "C" double GameCenter_LocalPlayer_IsUnderage() {
-    return [g_GameCenterSingleton GameCenter_LocalPlayer_IsUnderage];
+YYEXPORT void /*double*/ GameCenter_Leaderboard_LoadFriendsOnly(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardID, double timeScope, double rangeStart, double rangeEnd)
+{
+    const char* leaderboardID = YYGetString(arg, 0);
+    double timeScope = YYGetReal(arg, 1);
+    double rangeStart = YYGetReal(arg, 2);
+    double rangeEnd = YYGetReal(arg, 3);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Leaderboard_LoadFriendsOnly: @(leaderboardID) timeScope:timeScope rangeStart:rangeStart rangeEnd:rangeEnd];
 }
 
-GMExport extern "C" double GameCenter_LocalPlayer_IsMultiplayerGamingRestricted() {
-    return [g_GameCenterSingleton GameCenter_LocalPlayer_IsMultiplayerGamingRestricted];
+YYEXPORT void /*double*/ GameCenter_Achievement_Load(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Achievement_Load];
 }
 
-GMExport extern "C" double GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted() {
-    return [g_GameCenterSingleton GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted];
+YYEXPORT void /*double*/ GameCenter_Achievement_Report(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* identifier, double percent, double showBanner)
+{
+    const char* identifier = YYGetString(arg, 0);
+    double percent = YYGetReal(arg, 1);
+    double showBanner = YYGetReal(arg, 2);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Achievement_Report:@(identifier) percentComplete:percent showCompletionBanner:showBanner];
 }
 
-GMExport extern "C" const char* GameCenter_LocalPlayer_GetInfo() {
-    static char* _Storage = NULL;
-    return ReturnGMString(&_Storage, [g_GameCenterSingleton GameCenter_LocalPlayer_GetInfo]);
+YYEXPORT void /*double*/ GameCenter_Achievement_ResetAll(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_Achievement_ResetAll];
 }
 
-GMExport extern "C" double GameCenter_SavedGames_Fetch() {
-    return [g_GameCenterSingleton GameCenter_SavedGames_Fetch];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_SetActive(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double dactive)
+{
+    double dactive = YYGetReal(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_SetActive:dactive];
 }
 
-GMExport extern "C" double GameCenter_SavedGames_Save(const char* name, const char* data) {
-    return [g_GameCenterSingleton GameCenter_SavedGames_Save:[NSString stringWithUTF8String:(name?name:"")] data:[NSString stringWithUTF8String:(data?data:"")]];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_GetActive(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_GetActive];
 }
 
-GMExport extern "C" double GameCenter_SavedGames_Delete(const char* name) {
-    return [g_GameCenterSingleton GameCenter_SavedGames_Delete:[NSString stringWithUTF8String:(name?name:"")]];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_SetLocation(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double dlocation)
+{
+    double dlocation = YYGetReal(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_SetLocation:dlocation];
 }
 
-GMExport extern "C" double GameCenter_SavedGames_GetData(const char* name) {
-    return [g_GameCenterSingleton GameCenter_SavedGames_GetData:[NSString stringWithUTF8String:(name?name:"")]];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_GetLocation(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_GetLocation];
 }
 
-GMExport extern "C" double GameCenter_SavedGames_ResolveConflict(double conflict_ind, const char* data) {
-    return [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_ind data:[NSString stringWithUTF8String:(data?data:"")]];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_IsPresentingGameCenter(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_IsPresentingGameCenter];
 }
 
-GMExport extern "C" double GameCenter_Leaderboard_Submit(const char* leaderboardID, double score, double dcontext) {
-    return [g_GameCenterSingleton GameCenter_Leaderboard_Submit:[NSString stringWithUTF8String:(leaderboardID?leaderboardID:"")] score:score dcontext:dcontext];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_IsVisible(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_IsVisible];
 }
 
-GMExport extern "C" double GameCenter_Leaderboard_LoadGlobal(const char* leaderboardID, double timeScope, double rangeStart, double rangeEnd) {
-    return [g_GameCenterSingleton GameCenter_Leaderboard_LoadGlobal: [NSString stringWithUTF8String:(leaderboardID?leaderboardID:"")] timeScope:timeScope rangeStart:rangeStart rangeEnd:rangeEnd];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_SetShowHighlights(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double dshow)
+{
+    double dshow = YYGetReal(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_SetShowHighlights:dshow];
 }
 
-GMExport extern "C" double GameCenter_Leaderboard_LoadFriendsOnly(const char* leaderboardID, double timeScope, double rangeStart, double rangeEnd) {
-    return [g_GameCenterSingleton GameCenter_Leaderboard_LoadFriendsOnly: [NSString stringWithUTF8String:(leaderboardID?leaderboardID:"")] timeScope:timeScope rangeStart:rangeStart rangeEnd:rangeEnd];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_GetShowHighlights(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_GetShowHighlights];
 }
 
-GMExport extern "C" double GameCenter_Achievement_Load() {
-    return [g_GameCenterSingleton GameCenter_Achievement_Load];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_GetCoordinate(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double dcoordid)
+{
+    double dcoordid = YYGetReal(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_GetCoordinate:dcoordid];
 }
 
-GMExport extern "C" double GameCenter_Achievement_Report(const char* identifier, double percent, double showBanner) {
-    return [g_GameCenterSingleton GameCenter_Achievement_Report:[NSString stringWithUTF8String:(identifier?identifier:"")] percentComplete:percent showCompletionBanner:showBanner];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_PresentWithState(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double dstate)
+{
+    double dstate = YYGetReal(arg, 0);
+    
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_PresentWithState:dstate];
 }
 
-GMExport extern "C" double GameCenter_Achievement_ResetAll() {
-    return [g_GameCenterSingleton GameCenter_Achievement_ResetAll];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_SetActive(double dactive) {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_SetActive:dactive];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_GetActive() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_GetActive];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_SetLocation(double dlocation) {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_SetLocation:dlocation];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_GetLocation() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_GetLocation];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_IsPresentingGameCenter() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_IsPresentingGameCenter];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_IsVisible() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_IsVisible];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_SetShowHighlights(double dshow) {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_SetShowHighlights:dshow];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_GetShowHighlights() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_GetShowHighlights];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_GetCoordinate(double dcoordid) {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_GetCoordinate:dcoordid];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_PresentWithState(double dstate) {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_PresentWithState:dstate];
-}
-
-GMExport extern "C" double GameCenter_AccessPoint_Present() {
-    return [g_GameCenterSingleton GameCenter_AccessPoint_Present];
+YYEXPORT void /*double*/ GameCenter_AccessPoint_Present(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
+{
+    Result.kind = VALUE_REAL;
+    Result.val =  [g_GameCenterSingleton GameCenter_AccessPoint_Present];
 }
 
 #endif
