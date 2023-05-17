@@ -1251,7 +1251,7 @@ YYEXPORT void /*double*/ GameCenter_PresentView_Leaderboard_C(RValue& Result, CI
 
 YYEXPORT void /*double*/ GameCenter_LocalPlayer_Authenticate_C(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:()
 {
-	g_GameCenterSingleton = [new GameCenter];
+	g_GameCenterSingleton = [GameCenter new];
 	
     Result.kind = VALUE_REAL;
     Result.val =  [g_GameCenterSingleton GameCenter_LocalPlayer_Authenticate];
