@@ -8,8 +8,6 @@
     extern NSViewController *g_controller;
 #endif
 
-////////////////macOS specific:
-
 #if TARGET_OS_OSX
 NSViewController* g_controller = nil;
 NSWindow* g_window = nil;

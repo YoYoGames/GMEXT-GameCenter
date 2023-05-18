@@ -42,7 +42,7 @@
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Leaderboard_Type_Classic","hidden":false,"value":"0",},
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Leaderboard_Type_Recurring","hidden":false,"value":"1",},
         {"resourceType":"GMExtensionConstant","resourceVersion":"1.0","name":"GameCenter_Invalid","hidden":false,"value":"-1",},
-      ],"copyToTargets":9007199254740998,"filename":"GameCenter.ext","final":"","functions":[
+      ],"copyToTargets":9007199254740996,"filename":"GameCenter.ext","final":"","functions":[
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Default","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Default","help":"GameCenter_PresentView_Default()","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Achievements","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Achievements","help":"GameCenter_PresentView_Achievements","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Leaderboards","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Leaderboards","help":"GameCenter_PresentView_Leaderboards()","hidden":false,"kind":4,"returnType":2,},
@@ -167,7 +167,7 @@
       ],"origname":"","ProxyFiles":[
         {"resourceType":"GMProxyFile","resourceVersion":"1.0","name":"libGameCenter.dylib","TargetMask":1,},
       ],"uncompress":false,"usesRunnerInterface":false,},
-    {"resourceType":"GMExtensionFile","resourceVersion":"1.0","name":"","constants":[],"copyToTargets":-1,"filename":"libGameCenter.dylib","final":"","functions":[
+    {"resourceType":"GMExtensionFile","resourceVersion":"1.0","name":"","constants":[],"copyToTargets":2,"filename":"libGameCenter.dylib","final":"","functions":[
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Default","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Default_C","help":"GameCenter_PresentView_Default()","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Achievements","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Achievements_C","help":"GameCenter_PresentView_Achievements","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_PresentView_Leaderboards","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_PresentView_Leaderboards_C","help":"GameCenter_PresentView_Leaderboards()","hidden":false,"kind":4,"returnType":2,},
@@ -254,7 +254,7 @@
             2,
           ],"documentation":"","externalName":"GameCenter_Leaderboard_LoadFriendsOnly_C","help":"GameCenter_Leaderboard_LoadFriendsOnly(leaderboardID,timeScope,rangeStart,rangeEnd)","hidden":false,"kind":4,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"GameCenter_Achievement_Load","argCount":0,"args":[],"documentation":"","externalName":"GameCenter_Achievement_Load_C","help":"GameCenter_Achievement_Load()","hidden":false,"kind":4,"returnType":2,},
-      ],"init":"","kind":1,"order":[],"origname":"","ProxyFiles":[],"uncompress":false,"usesRunnerInterface":false,},
+      ],"init":"","kind":1,"order":[],"origname":"","ProxyFiles":[],"uncompress":false,"usesRunnerInterface":true,},
   ],
   "gradleinject": "",
   "hasConvertedCodeInjection": true,
