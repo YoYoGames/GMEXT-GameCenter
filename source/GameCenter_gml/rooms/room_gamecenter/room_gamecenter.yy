@@ -25,6 +25,7 @@
     {"name":"inst_6E8B23CF","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},
     {"name":"inst_56975BC2","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},
     {"name":"inst_16CCD01A","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},
+    {"name":"inst_51DED83","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},
   ],
   "isDnd": false,
   "layers": [
@@ -47,6 +48,7 @@
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_6E8B23CF","colour":4294967295,"frozen":false,"hasCreationCode":true,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"Obj_YoYo_text","path":"objects/Obj_YoYo_text/Obj_YoYo_text.yy",},"properties":[],"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":224.0,"y":416.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_56975BC2","colour":4294967295,"frozen":false,"hasCreationCode":true,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"Obj_Leaderboard_UI_Programmatic","path":"objects/Obj_Leaderboard_UI_Programmatic/Obj_Leaderboard_UI_Programmatic.yy",},"properties":[],"rotation":0.0,"scaleX":5.0,"scaleY":1.0,"x":1056.0,"y":352.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_16CCD01A","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"Obj_Achievement_UI_Programmatic","path":"objects/Obj_Achievement_UI_Programmatic/Obj_Achievement_UI_Programmatic.yy",},"properties":[],"rotation":0.0,"scaleX":5.0,"scaleY":1.0,"x":640.0,"y":560.0,},
+        {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_51DED83","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"Obj_GameCenter_AccessPoint","path":"objects/Obj_GameCenter_AccessPoint/Obj_GameCenter_AccessPoint.yy",},"properties":[],"rotation":0.0,"scaleX":5.0,"scaleY":1.0,"x":223.0,"y":569.0,},
       ],"layers":[],"properties":[],"userdefinedDepth":false,"visible":true,},
     {"resourceType":"GMRBackgroundLayer","resourceVersion":"1.0","name":"Background","animationFPS":30.0,"animationSpeedType":0,"colour":4294967295,"depth":100,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"hspeed":0.0,"htiled":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"properties":[],"spriteId":{"name":"Spr_YoYo_Background","path":"sprites/Spr_YoYo_Background/Spr_YoYo_Background.yy",},"stretch":false,"userdefinedAnimFPS":false,"userdefinedDepth":false,"visible":true,"vspeed":0.0,"vtiled":false,"x":0,"y":0,},
   ],

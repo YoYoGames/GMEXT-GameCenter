@@ -21,6 +21,7 @@
     {"name":"Spr_YoYo_textbox","order":2,"path":"sprites/Spr_YoYo_textbox/Spr_YoYo_textbox.yy",},
     {"name":"Obj_GameCenter_UI","order":2,"path":"objects/Obj_GameCenter_UI/Obj_GameCenter_UI.yy",},
     {"name":"Obj_Leaderboard_Submit","order":2,"path":"objects/Obj_Leaderboard_Submit/Obj_Leaderboard_Submit.yy",},
+    {"name":"Obj_GameCenter_AccessPoint","order":3,"path":"objects/Obj_GameCenter_AccessPoint/Obj_GameCenter_AccessPoint.yy",},
     {"name":"Obj_Achievement_Report","order":2,"path":"objects/Obj_Achievement_Report/Obj_Achievement_Report.yy",},
     {"name":"Obj_Achievement_Reset","order":3,"path":"objects/Obj_Achievement_Reset/Obj_Achievement_Reset.yy",},
     {"name":"changelog","order":18,"path":"notes/changelog/changelog.yy",},

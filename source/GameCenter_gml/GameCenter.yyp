@@ -42,6 +42,7 @@
     {"id":{"name":"Obj_YoYo_button","path":"objects/Obj_YoYo_button/Obj_YoYo_button.yy",},},
     {"id":{"name":"Obj_GameCenter_UI","path":"objects/Obj_GameCenter_UI/Obj_GameCenter_UI.yy",},},
     {"id":{"name":"Obj_Leaderboard_Submit","path":"objects/Obj_Leaderboard_Submit/Obj_Leaderboard_Submit.yy",},},
+    {"id":{"name":"Obj_GameCenter_AccessPoint","path":"objects/Obj_GameCenter_AccessPoint/Obj_GameCenter_AccessPoint.yy",},},
     {"id":{"name":"Room_GameCenter","path":"rooms/Room_GameCenter/Room_GameCenter.yy",},},
     {"id":{"name":"Obj_Achievement_Report","path":"objects/Obj_Achievement_Report/Obj_Achievement_Report.yy",},},
     {"id":{"name":"Obj_Achievement_Reset","path":"objects/Obj_Achievement_Reset/Obj_Achievement_Reset.yy",},},
