@@ -13,7 +13,22 @@
 		2B9F112A2A1081410059D11A /* Ref.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B9F11272A1081410059D11A /* Ref.h */; };
 		2B9F112B2A1081410059D11A /* Extension_Interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B9F11282A1081410059D11A /* Extension_Interface.h */; };
 		2B9F112C2A1081410059D11A /* YYRValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B9F11292A1081410059D11A /* YYRValue.h */; };
+		6A01E6E22A17D59700449583 /* libGameCenter.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 2B7821DA278CE36400EE6530 /* libGameCenter.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6A01E6E12A17D57800449583 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "${PROJECT_DIR}/../GameCenter_gml/extensions/GameCenter";
+			dstSubfolderSpec = 0;
+			files = (
+				6A01E6E22A17D59700449583 /* libGameCenter.dylib in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2B09D1192A1566E800B8297A /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GameCenter.mm; path = ../../GameCenter_gml/extensions/GameCenter/iOSSource/GameCenter.mm; sourceTree = "<group>"; };
@@ -100,6 +115,7 @@
 				2B7821D6278CE36400EE6530 /* Headers */,
 				2B7821D7278CE36400EE6530 /* Sources */,
 				2B7821D8278CE36400EE6530 /* Frameworks */,
+				6A01E6E12A17D57800449583 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -209,7 +225,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 			};
 			name = Debug;
