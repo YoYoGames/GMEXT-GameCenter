@@ -1,0 +1,14 @@
+[
+    {
+        "projectFile": "source/GameCenter_gml/GameCenter.yyp",
+        "extensionFile": "source/GameCenter_gml/extensions/GameCenter/GameCenter.yy",
+        "packageId": "com.yoyogames.applegamecenter",
+        "packageName": "Apple GameCenter",
+        "packageVersion": "1.1.2",
+        "includeFolders": null,
+        "includeResources": null,
+        "excludeFolders": null,
+        "excludeResources": null,
+        "format": "LTS22"
+    }
+]
