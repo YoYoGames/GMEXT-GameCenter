@@ -96,5 +96,13 @@
 /**
  * @module PresentView
  * 
+ * @section_func
+ * @ref GameCenter_PresentView_Default
+ * @ref GameCenter_PresentView_Achievements
+ * @ref GameCenter_PresentView_Achievement
+ * @ref GameCenter_PresentView_Leaderboards
+ * @ref GameCenter_PresentView_Leaderboard
+ * @section_end
+ * 
  * @module_end
  */
