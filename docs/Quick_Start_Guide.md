@@ -1,3 +1,5 @@
+@title Quick Start Guide
+
 # Quick Start Guide
 
 This section aims to deliver an easy and simple set of examples that should help you migrate your project from a previous version of the GameCenter extension to its latest version. The first thing to notice is that GameCenter functionality used to be part of the runtime and all the included functions were named "**achievement_\***"; these were renamed to "**GameCenter_\***" and also separated into categories to better organize them and provide a cleaner look to the code.
