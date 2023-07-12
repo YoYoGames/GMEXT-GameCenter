@@ -133,7 +133,7 @@
  * ```gml
  * var _origin = [
  *     GameCenter_AccessPoint_GetCoordinate(GameCenter_AccessPoint_Coordinate_OriginX),
-*      GameCenter_AccessPoint_GetCoordinate(GameCenter_AccessPoint_Coordinate_OriginY)
+ *     GameCenter_AccessPoint_GetCoordinate(GameCenter_AccessPoint_Coordinate_OriginY)
  * ];
  * ```
  * 
