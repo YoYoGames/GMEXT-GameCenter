@@ -27,7 +27,7 @@
 
 /**
  * @module MacOS
- * 
+ * @title MacOS
  * @section_func
  * @ref GameCenter_MacOS_SetWindowHandle
  * @section_end

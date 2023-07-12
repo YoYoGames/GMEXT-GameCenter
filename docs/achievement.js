@@ -58,17 +58,42 @@
 
 // Constants
 
+// Structs
 
+/**
+ * @struct PlayerJSON
+ * @member {string} alias A string the player chooses to identify themself to other players.
+ * @member {string} displayName A string to display for the player.
+ * @member {string} playerID A unique identifier for a player of the game.
+ * @struct_end
+ */
+
+/**
+ * @struct AchievementJSON
+ * @member {string} identifier A string that identifies the current achievement.
+ * @member {real} percentComplete The complete percentage of the achievement.
+ * @member {boolean} isComplete Whether or not the achievement was completed.
+ * @member {boolean} showsCompletionBanner Whether or not the achievement shows a completion banner.
+ * @member {struct.PlayerJSON} player A struct containing info on a player
+ * @member {date} lastReportedDate A GameMaker compliant date from when the last report occurred.
+ * @struct_end
+ */
 
 // Modules
 
 /**
- * @module Leaderboard
+ * @module Achievement
+ * @title Achievement
  * 
  * @section_func
  * @ref GameCenter_Achievement_Report
  * @ref GameCenter_Achievement_ResetAll
  * @ref GameCenter_Achievement_Load
+ * @section_end
+ * 
+ * @section_struct
+ * @ref PlayerJSON
+ * @ref AchievementJSON
  * @section_end
  * 
  * @module_end

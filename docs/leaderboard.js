@@ -25,20 +25,20 @@
  * @func GameCenter_Leaderboard_LoadGlobal
  * @desc This function loads the leaderboard's global data for the specified leaderboard IDs that Game Center uses.
  * @param {string} leaderboardID ID of the leaderboard
- * @param {const.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
+ * @param {constant.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
  * @param {real} rangeStart Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
  * @param {real} rangeEnd 	Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
  * @event social
  * @member {string} type "GameCenter_Leaderboard_Load"
  * @member {string} leaderboard_id Whether or not the task succeeded.
  * @member {real} id 
- * @member {const.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
+ * @member {constant.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
  * @member {real} range_start The range start of ranks to use for getting the scores (1-100).
  * @member {real} range_end The range end of ranks to use for getting the scores (1-100).
- * @member {const.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
+ * @member {constant.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
  * @member {string} leaderboard_title The title of the leaderboard.
  * @member {string} leaderboard_group 
- * @member {const.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
+ * @member {constant.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
  * @member {real} leaderboard_start_date The start date of the leaderboard.
  * @member {real} leaderboard_next_start_date The next start date of the leaderboard.
  * @member {real} leaderboard_duration The duration of the leaderboard.
@@ -74,20 +74,20 @@
  * @func GameCenter_Leaderboard_LoadFriendsOnly
  * @desc This function loads the Friends data for the specified leaderboard IDs that Game Center uses.
  * @param {string} leaderboardID The ID of the leaderboard to load.
- * @param {const.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
+ * @param {constant.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
  * @param {real} rangeStart Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
  * @param {real} rangeEnd 	Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
  * @event social
  * @member {string} type "GameCenter_Leaderboard_Load"
  * @member {string} leaderboard_id Whether or not the task succeeded.
  * @member {real} id 
- * @member {const.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
+ * @member {constant.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
  * @member {real} range_start The range start of ranks to use for getting the scores (1-100).
  * @member {real} range_end The range end of ranks to use for getting the scores (1-100).
- * @member {const.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
+ * @member {constant.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
  * @member {string} leaderboard_title The title of the leaderboard.
  * @member {string} leaderboard_group 
- * @member {const.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
+ * @member {constant.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
  * @member {real} leaderboard_start_date The start date of the leaderboard.
  * @member {real} leaderboard_next_start_date The next start date of the leaderboard.
  * @member {real} leaderboard_duration The duration of the leaderboard.
@@ -122,17 +122,27 @@
 // Constants
 
 /**
- * @const GameCenter_Leaderboard_PlayerScope
- * @member {real} GameCenter_Leaderboard_PlayerScope_Global This leaderboard shows all scores
- * @member {real} GameCenter_Leaderboard_PlayerScope_FriendsOnly This leaderboard shows friends only
+ * @constant GameCenter_Leaderboard_PlayerScope
+ * @desc A constant that tells whose scores to show
+ * @member GameCenter_Leaderboard_PlayerScope_Global This leaderboard shows all scores
+ * @member GameCenter_Leaderboard_PlayerScope_FriendsOnly This leaderboard shows friends only
  * @const_end
  */
 
 /**
- * @const GameCenter_Leaderboard_TimeScope
- * @member {real} GameCenter_Leaderboard_TimeScope_Today The leaderboard shows today's scores
- * @member {real} GameCenter_Leaderboard_TimeScope_Week The leaderboard shows this week's scores
- * @member {real} GameCenter_Leaderboard_TimeScope_AllTime The leaderboard shows all-time scores
+ * @constant GameCenter_Leaderboard_TimeScope
+ * @desc A constant that tells the time period to show scores from
+ * @member GameCenter_Leaderboard_TimeScope_Today The leaderboard shows today's scores
+ * @member GameCenter_Leaderboard_TimeScope_Week The leaderboard shows this week's scores
+ * @member GameCenter_Leaderboard_TimeScope_AllTime The leaderboard shows all-time scores
+ * @const_end
+ */
+
+/**
+ * @constant GameCenter_Leaderboard_Type
+ * @desc A constant describing the type of leaderboard: classic (all-time) or recurring (interval)
+ * @member GameCenter_Leaderboard_Type_Classic This type of leaderboard tracks all-time scores
+ * @member GameCenter_Leaderboard_Type_Recurring This type of leaderboard resets based on an interval that you define
  * @const_end
  */
 
@@ -140,7 +150,7 @@
 
 /**
  * @module Leaderboard
- * 
+ * @title Leaderboard
  * @section_func
  * @ref GameCenter_Leaderboard_Submit
  * @ref GameCenter_Leaderboard_LoadGlobal
@@ -150,6 +160,7 @@
  * @section_const
  * @ref GameCenter_Leaderboard_PlayerScope
  * @ref GameCenter_Leaderboard_TimeScope
+ * @ref GameCenter_Leaderboard_Type
  * @section_end
  * 
  * @module_end

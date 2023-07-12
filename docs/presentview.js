@@ -73,8 +73,8 @@
  * @func GameCenter_PresentView_Leaderboard
  * @desc This function displays the Apple GameCenter leaderboard overlay screen with the information of a specific leaderboard. This overlay will trigger an ${event.social} when closed.
  * @param {string} id The unique leaderboard identification string.
- * @param {const.GameCenter_Leaderboard_TimeScope} timescope The time scope to be displayed.
- * @param {const.GameCenter_Leaderboard_PlayerScope} playerscope The player scope to be displayed.
+ * @param {constant.GameCenter_Leaderboard_TimeScope} timescope The time scope to be displayed.
+ * @param {constant.GameCenter_Leaderboard_PlayerScope} playerscope The player scope to be displayed.
  * @event social
  * 
  * @event_end
@@ -95,7 +95,7 @@
 
 /**
  * @module PresentView
- * 
+ * @title PresentView
  * @section_func
  * @ref GameCenter_PresentView_Default
  * @ref GameCenter_PresentView_Achievements

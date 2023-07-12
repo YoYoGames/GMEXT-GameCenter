@@ -99,12 +99,22 @@
 
 // Constants
 
+// Structs
 
+/**
+ * @struct SlotJSON
+ * @member {string} playerID A unique identifier for a player of the game.
+ * @member {string} deviceName The name of the device that the player used to save the game.
+ * @member {date} modificationDate The date when you saved the game data or modified it.
+ * @member {string} name The name of the saved game.
+ * @struct_end
+ */
 
 // Modules
 
 /**
  * @module SavedGames
+ * @title SavedGames
  * 
  * @section_func
  * @ref GameCenter_SavedGames_Fetch
@@ -112,6 +122,10 @@
  * @ref GameCenter_SavedGames_Delete
  * @ref GameCenter_SavedGames_GetData
  * @ref GameCenter_SavedGames_ResolveConflict
+ * @section_end
+ * 
+ * @section_struct
+ * @ref SlotJSON
  * @section_end
  * 
  * @module_end
