@@ -2,7 +2,7 @@
 
 /**
  * @func GameCenter_LocalPlayer_Authenticate
- * @desc This function requests the API for user authentication with GameCenter credentials. When using the Apple GameCenter extension you need to call this function before using any other functions. The function will not return any value but it will create a request that will trigger an ${event.social} callback upon completion.
+ * @desc This function requests the API for user authentication with GameCenter credentials. When using the Apple GameCenter extension you need to call this function before using any other functions. The function will not return any value but it will create a request that will trigger a ${event.social} callback upon completion.
  * @event social
  * @member {string} type "GameCenter_Authenticate"
  * @member {boolean} success Whether or not the task succeeded.

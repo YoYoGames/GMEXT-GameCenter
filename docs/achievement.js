@@ -2,7 +2,7 @@
 
 /**
  * @func GameCenter_Achievement_Report
- * @desc This function requests the Apple GameCenter API to update the completion percentage of the given achievement. The function will not return any value but it will create a request that will trigger an ${event.social} callback upon completion.
+ * @desc This function requests the Apple GameCenter API to update the completion percentage of the given achievement. The function will not return any value but it will create a request that will trigger a ${event.social} callback upon completion.
  * @param {string} identifier The identifier for the achievement.
  * @param {real} percent The new completion percentage.
  * @param {boolean} showcompletionbanner Whether to show the completion banner.

@@ -2,7 +2,7 @@
 
 /**
  * @func GameCenter_SavedGames_Fetch
- * @desc This function requests the Apple GameCenter API to fetch all the existing saved slots. The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to fetch all the existing saved slots. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @event social
  * @member {string} type "GameCenter_SavedGames_Fetch"
  * @member {boolean} success Whether or not the task succeeded.
@@ -20,7 +20,7 @@
 
 /**
  * @func GameCenter_SavedGames_Save
- * @desc This function requests the Apple GameCenter API to save a data string to a save slot. If the slot doesn't exist it gets created (if it exists data is overwritten). The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to save a data string to a save slot. If the slot doesn't exist it gets created (if it exists data is overwritten). The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} name The unique identifier of the save game slot.
  * @param {string} data The data string to be saved. Note that you can save complex data by using structs/arrays/maps/lists and converting them to strings.
  * @event social
@@ -41,7 +41,7 @@
 
 /**
  * @func GameCenter_SavedGames_Delete
- * @desc This function requests the Apple GameCenter API to delete an existing save slot with the given name. The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to delete an existing save slot with the given name. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} name The unique identifier of the save game slot.
  * @event social
  * @member {string} type "GameCenter_SavedGames_Delete"
@@ -59,7 +59,7 @@
 
 /**
  * @func GameCenter_SavedGames_GetData
- * @desc This function requests the Apple GameCenter API to get the data string saved inside a given save slot. The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to get the data string saved inside a given save slot. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} name The unique identifier of the save game slot.
  * @event social
  * @member {string} type "GameCenter_SavedGames_GetData"
@@ -78,7 +78,7 @@
 
 /**
  * @func GameCenter_SavedGames_ResolveConflict
- * @desc This function requests the Apple GameCenter API to perform a conflict resolution given a conflict id. The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to perform a conflict resolution given a conflict id. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {real} conflict_id The unique identifier of the conflict.
  * @param {string} data A string containing the data you want to save (note that you can use a JSON formatted string to store data)
  * @event social

@@ -1,10 +1,12 @@
+@title Setup
+
 # Setup
 
 The Apple GameCenter extension is to be used alongside your Apple Developer account ([App Store Connect webpage](https://appstoreconnect.apple.com/)). All the required personal leaderboard ids and achievement ids should be managed from there.
 
 1. For creating leaderboards follow this guide: [Adding Leaderboards](https://developer.apple.com/help/app-store-connect/configure-game-center/configure-leaderboards)
 2. For creating achievements follow the guide: [Adding Achievements](https://developer.apple.com/help/app-store-connect/configure-game-center/configure-achievements)
-3. If you intend to use [Save Games](Quick_Start_Guide#save-games-new) functionality you need to create a new iCloud container using your Apple developer account dashboard ([dashboard link](https://icloud.developer.apple.com/dashboard/)).
+3. If you intend to use ${module.SavedGames} functionality you need to create a new iCloud container using your Apple developer account dashboard ([dashboard link](https://icloud.developer.apple.com/dashboard/)).
 This also needs to be set up inside the project itself, following these steps:
 
   - Double click the **GameCenter** extension icon on your project: 

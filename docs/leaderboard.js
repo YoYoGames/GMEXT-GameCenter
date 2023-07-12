@@ -2,7 +2,7 @@
 
 /**
  * @func GameCenter_Leaderboard_Submit
- * @desc This function requests the Apple GameCenter API to submit a score to a given leaderboard. The function will not return any value but it will create a request that will trigger an ${event.social} callback when the task is resolved.
+ * @desc This function requests the Apple GameCenter API to submit a score to a given leaderboard. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} id The unique identifier of the leaderboard.
  * @param {real} score The value to be submitted to the leaderboard (remember that only the highest score value is displayed in the leaderboard).
  * @param {real} context **OPTIONAL** This parameter corresponds to the [context](https://developer.apple.com/documentation/gamekit/gkscore/1399250-context?language=objc) parameter.
