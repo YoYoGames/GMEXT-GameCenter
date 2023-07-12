@@ -29,7 +29,8 @@
  * @section_end
  * 
  * @section Guides
- * @desc Guides for the mod.io extension.
+ * @desc Guides for the GameCenter extension.
+ * @ref page.setup
  * @ref page.quick_start_guide
  * @section_end
  * 
