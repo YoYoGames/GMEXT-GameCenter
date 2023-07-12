@@ -76,7 +76,8 @@
  * @param {constant.GameCenter_Leaderboard_TimeScope} timescope The time scope to be displayed.
  * @param {constant.GameCenter_Leaderboard_PlayerScope} playerscope The player scope to be displayed.
  * @event social
- * 
+ * @member {string} type "GameCenter_PresentView_DidFinish"
+ * @member {boolean} success Whether or not the task succeeded.
  * @event_end
  * 
  * @example
