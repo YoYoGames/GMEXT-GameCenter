@@ -4,11 +4,11 @@
         "extensionFile": "source/GameCenter_gml/extensions/GameCenter/GameCenter.yy",
         "packageId": "com.yoyogames.applegamecenter",
         "packageName": "Apple GameCenter",
-        "packageVersion": "1.1.2",
-        "includeFolders": null,
-        "includeResources": null,
+        "packageVersion": "1.2.0",
+        "includeFolders": "GameCenter,GameCenter Demo,YoYo Extensions Assets",
+        "includeResources": "documentation.html",
         "excludeFolders": null,
-        "excludeResources": null,
+        "excludeResources": "GMS2_Desktop_Profile.provisionprofile",
         "format": "LTS22"
     }
 ]
