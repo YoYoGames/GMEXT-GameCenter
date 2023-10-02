@@ -10,7 +10,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "Leaderboards",
-    "path": "folders/GameCenter/Objects/Leaderboards.yy",
+    "path": "folders/GameCenter Demo/Objects/Leaderboards.yy",
   },
   "parentObjectId": {
     "name": "Obj_YoYo_button",

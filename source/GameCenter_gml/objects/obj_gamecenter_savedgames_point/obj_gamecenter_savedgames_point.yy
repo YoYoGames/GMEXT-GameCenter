@@ -10,7 +10,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "SavedGames",
-    "path": "folders/GameCenter/Objects/SavedGames.yy",
+    "path": "folders/GameCenter Demo/Objects/SavedGames.yy",
   },
   "parentObjectId": null,
   "persistent": false,

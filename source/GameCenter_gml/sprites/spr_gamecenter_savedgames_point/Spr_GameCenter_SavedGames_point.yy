@@ -29,7 +29,7 @@
   "origin": 4,
   "parent": {
     "name": "Sprites",
-    "path": "folders/GameCenter/Sprites.yy",
+    "path": "folders/GameCenter Demo/Sprites.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

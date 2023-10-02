@@ -12,7 +12,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "UI_Programmatic",
-    "path": "folders/GameCenter/Objects/Achievements/UI_Programmatic.yy",
+    "path": "folders/GameCenter Demo/Objects/Achievements/UI_Programmatic.yy",
   },
   "parentObjectId": {
     "name": "Obj_YoYo_button",

@@ -10,7 +10,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "Menu",
-    "path": "folders/GameCenter/Objects/Menu.yy",
+    "path": "folders/GameCenter Demo/Objects/Menu.yy",
   },
   "parentObjectId": {
     "name": "Obj_YoYo_button",

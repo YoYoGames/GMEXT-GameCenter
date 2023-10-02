@@ -10,7 +10,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "Achievements",
-    "path": "folders/GameCenter/Objects/Achievements.yy",
+    "path": "folders/GameCenter Demo/Objects/Achievements.yy",
   },
   "parentObjectId": {
     "name": "Obj_YoYo_button",
