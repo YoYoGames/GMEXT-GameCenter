@@ -2,3 +2,5 @@ source/GameCenter_gml/options/extensions/
 *.DS_Store
 
 source/GameCenter_gml/datafiles/GMS2_Desktop_Profile.provisionprofile
+
+output/
