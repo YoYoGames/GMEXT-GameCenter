@@ -20,7 +20,7 @@
 		6A01E6E12A17D57800449583 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "${PROJECT_DIR}/../GameCenter_gml/extensions/GameCenter";
+			dstPath = "${PROJECT_DIR}/..";
 			dstSubfolderSpec = 0;
 			files = (
 				6A01E6E22A17D59700449583 /* libGameCenter.dylib in Copy Files */,
@@ -31,8 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2B09D1192A1566E800B8297A /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GameCenter.mm; path = ../../GameCenter_gml/extensions/GameCenter/iOSSource/GameCenter.mm; sourceTree = "<group>"; };
-		2B09D11A2A1566E800B8297A /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = ../../GameCenter_gml/extensions/GameCenter/iOSSource/GameCenter.h; sourceTree = "<group>"; };
+		2B09D1192A1566E800B8297A /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GameCenter.mm; path = ../../iOSSource/GameCenter.mm; sourceTree = "<group>"; };
+		2B09D11A2A1566E800B8297A /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameCenter.h; path = ../../iOSSource/GameCenter.h; sourceTree = "<group>"; };
 		2B09D11D2A156CCE00B8297A /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		2B7821DA278CE36400EE6530 /* libGameCenter.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libGameCenter.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B9F11212A0F36CE0059D11A /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
