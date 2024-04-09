@@ -92,7 +92,7 @@
 // Modules
 
 /**
- * @module LocalPlayer
+ * @module localplayer
  * @title LocalPlayer
  * @section_func
  * @ref GameCenter_LocalPlayer_Authenticate

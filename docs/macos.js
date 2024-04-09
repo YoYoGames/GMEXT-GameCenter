@@ -10,6 +10,8 @@
  * 
  * @returns {boolean} `true` if successful or `false` if the window is undefined or the view controller is undefined
  * 
+ * @version {}
+ * 
  * @example
  * 
  * ```gml
@@ -26,7 +28,7 @@
 // Modules
 
 /**
- * @module MacOS
+ * @module macos
  * @title MacOS
  * @section_func
  * @ref GameCenter_MacOS_SetWindowHandle

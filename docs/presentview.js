@@ -95,7 +95,7 @@
 // Modules
 
 /**
- * @module PresentView
+ * @module presentview
  * @title PresentView
  * @section_func
  * @ref GameCenter_PresentView_Default

@@ -82,7 +82,7 @@
 // Modules
 
 /**
- * @module Achievement
+ * @module achievement
  * @title Achievement
  * 
  * @section_func

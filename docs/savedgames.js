@@ -113,7 +113,7 @@
 // Modules
 
 /**
- * @module SavedGames
+ * @module savedgames
  * @title SavedGames
  * 
  * @section_func

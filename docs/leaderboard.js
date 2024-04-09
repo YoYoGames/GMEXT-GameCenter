@@ -149,7 +149,7 @@
 // Modules
 
 /**
- * @module Leaderboard
+ * @module leaderboard
  * @title Leaderboard
  * @section_func
  * @ref GameCenter_Leaderboard_Submit
