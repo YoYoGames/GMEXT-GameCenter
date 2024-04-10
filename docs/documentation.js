@@ -37,13 +37,13 @@
  * @section Modules
  * @desc The following are the available modules for the GameCenter extension:
  * 
- * @reference module.PresentView
- * @reference module.LocalPlayer
- * @reference module.SavedGames
- * @reference module.Leaderboard
- * @reference module.Achievement
- * @reference module.MacOS
- * @reference module.AccessPoint
+ * @reference module.presentview
+ * @reference module.localplayer
+ * @reference module.savedgames
+ * @reference module.leaderboard
+ * @reference module.achievement
+ * @reference module.macos
+ * @reference module.accesspoint
  * 
  * @section_end
  * 

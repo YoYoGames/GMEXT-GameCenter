@@ -12,7 +12,7 @@
             "packageFormat": "LTS22",
             "includeFolders": "GameCenter,GameCenter Demo,YoYo Extensions Assets",
             "includeResources": "documentation.html",
-            "excludeResources": "GMS2_Desktop_Profile.provisionprofile",
+            "excludeResources": "GMS2_Desktop_Profile.provisionprofile"
         }
     ]
 }

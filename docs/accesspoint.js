@@ -203,7 +203,7 @@
  */
 
 /**
- * @module AccessPoint
+ * @module accesspoint
  * @title AccessPoint
  * @section_func
  * @ref GameCenter_AccessPoint_SetActive

@@ -136,13 +136,14 @@ GameCenter_PresentView_Achievement(achievementId); // Show single
 GameCenter_PresentView_Achievements(); // Show all
 ```
 
-The migration in the example above is very simple and straightforward. Please take into consideration that the code above will produce ${event.social} callbacks with additional information regarding the task completion (${module.Achievement}).
+The migration in the example above is very simple and straightforward. Please take into consideration that the code above will produce ${event.social} callbacks with additional information regarding the task completion (${module.achievement}).
 
-## Save Games [NEW]
+## Save Games
 
 This functionality is completely new and as such there is no migration guide, however you can experiment with it using the provided demo sample. This section aims to deliver a clean explanation of the code layout used for the demo.
 
-> __:information_source: NOTE__ This feature will only work if the end user's iOS device iCloud Drive is turned on. This feature also requires the developer's project to have a dedicated container defined for the app (defined on the Apple's [CloudKit Dashboard](https://icloud.developer.apple.com/dashboard/home)).
+> [!NOTE]
+> This feature will only work if the end user's iOS device iCloud Drive is turned on. This feature also requires the developer's project to have a dedicated container defined for the app (defined on the Apple's [CloudKit Dashboard](https://icloud.developer.apple.com/dashboard/home)).
 
 ### Objects
 

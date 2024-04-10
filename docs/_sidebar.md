@@ -1,14 +1,15 @@
-* ### [GameCenter](Home)
-* ### [Quick Start Guide](Quick_Start_Guide)
-  * ### [Signing In/Out](Quick_Start_Guide#signing-inout)
-  * ### [Leaderboards](Quick_Start_Guide#leaderboards)
-  * ### [Achievements](Quick_Start_Guide#achievements)
-  * ### [Save Games \[NEW\]](Quick_Start_Guide#save-games-new)
-* ### Functions
-  * ### [PresentView](PresentView)
-  * ### [LocalPlayer](LocalPlayer)
-  * ### [SavedGames](SavedGames)
-  * ### [Leaderboard](Leaderboard)
-  * ### [Achievement](Achievement)
-  * ### [MacOS](MacOS)
-  * ### [AccessPoint](Accesspoint)
+## [GameCenter Ext](home)
+
+### Guides
+
+  * ${page.setup}
+  * ${page.quick_start_guide}
+
+### Modules
+
+  * ${module.presentview}
+  * ${module.localplayer}
+  * ${module.savedgames}
+  * ${module.leaderboard}
+  * ${module.achievement}
+  * ${module.accesspoint}
