@@ -1,18 +1,1 @@
-{
-    "gitHubUrl": "https://github.com/YoYoGames/GMEXT-GameCenter",
-    "projectFile": "source/GameCenter_gml/GameCenter.yyp",
-    "projectVersion": "LTS22",
-    "releaseTemplate": "templates/release_body.md",
-    "extensionMetaData": [
-        {
-            "extensionFile": "source/GameCenter_gml/extensions/GameCenter/GameCenter.yy",
-            "packageId": "com.yoyogames.applegamecenter",
-            "packageName": "Apple GameCenter",
-            "packageVersion": "1.2.1",
-            "packageFormat": "LTS22",
-            "includeFolders": "GameCenter,GameCenter Demo,YoYo Extensions Assets",
-            "includeResources": "documentation.html",
-            "excludeResources": "GMS2_Desktop_Profile.provisionprofile"
-        }
-    ]
-}
+{"gitHubUrl":"https://github.com/YoYoGames/GMEXT-GameCenter","projectFile":"source/GameCenter_gml/GameCenter.yyp","projectVersion":"LTS22","releaseTemplate":"templates/release_body.md","extensionMetaData":[{"extensionFile":"source/GameCenter_gml/extensions/GameCenter/GameCenter.yy","packageId":"com.yoyogames.applegamecenter","packageName":"Apple GameCenter","packageVersion":"1.3.0","packageFormat":"LTS22","includeFolders":null,"includeResources":null,"excludeFolders":null,"excludeResources":null,"postRemovals":["*.DS_Store","datafiles/GMS2_Desktop_Profile.provisionprofile","xcuserdata/"]}]}
