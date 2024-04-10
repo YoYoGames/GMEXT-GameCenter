@@ -7,16 +7,24 @@ This extension is compatible with both macOS and iOS platforms.
 
 IOS SOURCE: `source/GameCenter_gml/extensions/gamecenter/iOSSource/`
 
-MACOS SOURCE: `source/GameCenter_xcode/`
+MACOS SOURCE: `source/GameCenter_gml/extensions/gamecenter/gamecenter_macos/`
 
+---
 
 ## Important
 
 Do not download from the **main branch** this branch is a work in place branch and probably has features that might be broken or not working properly, please download from the releases panel (right side instead).
 
+---
 
 ## Documentation
 
-The partial documentation of the API is included in the extension asset (included files).
-The demo project has a set of new functions that are not yet fully documented.
-We are in the process of moving the documentation to GitHub wiki.
+* Check [the documentation](../../wiki)
+
+The online documentation is regularly updated to ensure it contains the most current information. For those who prefer a different format, we also offer a HTML version. This HTML is directly converted from the GitHub Wiki content, ensuring consistency, although it may follow slightly behind in updates.
+
+We encourage users to refer primarily to the GitHub Wiki for the latest information and updates. The HTML version, included with the extension and within the demo project's data files, serves as a secondary, static reference.
+
+Additionally, if you're contributing new features through PR (Pull Requests), we kindly ask that you also provide accompanying documentation for these features, to maintain the comprehensiveness and usefulness of our resources.
+
+---
