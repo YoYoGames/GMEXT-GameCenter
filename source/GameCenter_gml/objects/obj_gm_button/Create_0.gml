@@ -1,7 +1,7 @@
 
 event_inherited();
 
-font = Font_YoYo_20;
+font = fnt_gm_20;
 locked = false
 clicked = false;
 

@@ -1,6 +1,6 @@
 
 text = ""
-font = Font_YoYo_15
+font = fnt_gm_15
 color = c_white
 
 halign = fa_left;

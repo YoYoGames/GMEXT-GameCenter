@@ -3,7 +3,7 @@
 // Set font preferences before start drawing
 draw_set_halign(fa_left)
 draw_set_valign(fa_top)
-draw_set_font(Font_YoYo_15)
+draw_set_font(fnt_gm_15)
 
 // The 'GameCenter_LocalPlayer_GetInfo' will return a json formatted string containing
 // information related to the currently logged in Player (for details on the information
