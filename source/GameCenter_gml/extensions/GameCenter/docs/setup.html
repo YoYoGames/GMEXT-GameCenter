@@ -45,6 +45,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="setup.html">Setup</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#ios">iOS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#macos">macOS</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -70,10 +74,6 @@
               </ul>
               <ul>
                 <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="macos.html">MacOS</a>
                 </li>
               </ul>
               <ul>
@@ -109,9 +109,13 @@
 <ol>
 <li>For creating leaderboards follow this guide: <a href="https://developer.apple.com/help/app-store-connect/configure-game-center/configure-leaderboards">Adding Leaderboards</a></li>
 <li>For creating achievements follow the guide: <a href="https://developer.apple.com/help/app-store-connect/configure-game-center/configure-achievements">Adding Achievements</a></li>
+<li>If you intend to use <a href="savedgames.html">SavedGames</a> functionality you need to create a new iCloud container using your Apple developer account dashboard (<a href="https://icloud.developer.apple.com/dashboard/">dashboard link</a>).</li>
+</ol>
+<h2 id="ios">iOS</h2>
+<p>These are steps specific to the iOS export of the extension:</p>
+<ol>
 <li>
-<p>If you intend to use <a href="savedgames.html">SavedGames</a> functionality you need to create a new iCloud container using your Apple developer account dashboard (<a href="https://icloud.developer.apple.com/dashboard/">dashboard link</a>).
-This also needs to be set up inside the project itself, following these steps:</p>
+<p>If you intend to use <a href="savedgames.html">SavedGames</a> functionality. You will also need to config your project following these steps:</p>
 </li>
 <li>
 <p>Double click the <strong>GameCenter</strong> extension icon on your project:</p>
@@ -125,8 +129,47 @@ This also needs to be set up inside the project itself, following these steps:</
 <ul>
 <li>This will bring you to the code injection panel:</li>
 </ul>
-<p><img alt="Asset Browser Extension" src="assets/images/GameCenter_Code_Injection.png" /></p>
-<p>In this panel you need to add/replace <strong>(1)</strong> which will configure the XCode project to use the name of the iCloud container you previously created and <strong>(2)</strong> this will make sure the iCloud Drive services permissions are automatically added.</p>
+<p><img alt="Asset Browser Extension" src="assets/images/gamecenter_ios_codeinjection.png" /></p>
+<p>In this panel you need to make sure you have the following code in the <code>SAVED GAMES SECTION</code>:</p>
+<pre class="highlight"><code class="language-gml">    &lt;key&gt;com.apple.developer.icloud-container-identifiers&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;iCloud.${YYBundleIdentifier}&lt;/string&gt;
+    &lt;/array&gt;
+
+    &lt;key&gt;com.apple.developer.icloud-services&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;CloudDocuments&lt;/string&gt;
+    &lt;/array&gt;</code></pre>
+<blockquote>
+<p>If the code is already there and you are not using this functionality you should remove the section entirely.</p>
+</blockquote>
+<h2 id="macos">macOS</h2>
+<p>These are steps specific to the macOS export, in order to properly make use of GameCenter extension:</p>
+<ol>
+<li>After exporting the project to macOS YYC using the IDE open the Xcode project in your mac. And follow the described steps in the image below:</li>
+</ol>
+<p><img alt="Asset Browser Extension" src="assets/images/gamecenter_macos_config1.png" /></p>
+<ol>
+<li>In the <strong>Capabilities</strong> popup window search for <strong>"GameCenter"</strong> on the top bar and double click it to add it to your project:</li>
+</ol>
+<p><img alt="Asset Browser Extension" src="assets/images/gamecenter_macos_config2.png" /></p>
+<ol>
+<li>If you intend to use <a href="savedgames.html">SavedGames</a> functionality, you will need to also add the <strong>"iCloud"</strong> capability.</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To add this capability follow step <code>2.</code> and search for <strong>"iCloud"</strong> and double click it to add it to your project.</p>
+</div>
+<p><img alt="Asset Browser Extension" src="assets/images/gamecenter_macos_config3.png" /></p>
+<p>There are some final options you will need to configure when using this capability:</p>
+<ul>
+<li>Enable - ✅ <strong>iCloud Documents</strong> - from the iCloud section.</li>
+<li>Select the previously created iCloud container.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You are also able to create a new iCloud container directly from XCode (using the <code>+</code> icon).</p>
+</div>
               
             </div>
           </div><footer>

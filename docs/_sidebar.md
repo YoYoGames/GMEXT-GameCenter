@@ -12,5 +12,4 @@
   * ${module.savedgames}
   * ${module.leaderboard}
   * ${module.achievement}
-  * ${module.macos}
   * ${module.accesspoint}

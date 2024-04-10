@@ -124,7 +124,7 @@
   "installdir":"",
   "iosCocoaPodDependencies":"",
   "iosCocoaPods":"",
-  "ioscodeinjection":"\r\n<YYIosEntitlements>\r\n\r\n     <key>com.apple.developer.game-center</key>\r\n      <true/>\r\n\r\n\t<key>com.apple.developer.icloud-container-identifiers</key>\r\n\t<array>\r\n\t\t<string>iCloud.${YYBundleIdentifier}</string>\r\n\t</array>\r\n\r\n\t<key>com.apple.developer.icloud-services</key>\r\n\t<array>\r\n\t\t<string>CloudDocuments</string>\r\n\t</array>\r\n\r\n</YYIosEntitlements>\r\n",
+  "ioscodeinjection":"\r\n<YYIosEntitlements>\r\n\r\n    <key>com.apple.developer.game-center</key>\r\n    <true/>\r\n\r\n    <!--###### SAVED GAMES SECTION ######-->\r\n\r\n\t<key>com.apple.developer.icloud-container-identifiers</key>\r\n\t<array>\r\n\t\t<string>iCloud.${YYBundleIdentifier}</string>\r\n\t</array>\r\n\r\n\t<key>com.apple.developer.icloud-services</key>\r\n\t<array>\r\n\t\t<string>CloudDocuments</string>\r\n\t</array>\r\n\r\n    <!--### END OF SAVED GAMES SECTION ###-->\r\n\r\n</YYIosEntitlements>\r\n",
   "iosdelegatename":"",
   "iosplistinject":"",
   "iosProps":true,
