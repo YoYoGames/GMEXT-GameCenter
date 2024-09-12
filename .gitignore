@@ -1,4 +1,4 @@
-source/GameCenter_gml/options/extensions/
+source/GameCenter_gml/options/
 *.DS_Store
 
 source/GameCenter_gml/datafiles/GMS2_Desktop_Profile.provisionprofile
