@@ -30,12 +30,11 @@
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"GMEXT-GameCenter Unix Docs.html","CopyToMask":0,"filePath":"datafiles","name":"GMEXT-GameCenter Unix Docs.html","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"GMEXT-GameCenter Win Docs.lnk","CopyToMask":-1,"filePath":"datafiles","name":"GMEXT-GameCenter Win Docs.lnk","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
-    {"$GMIncludedFile":"","%Name":"GMS2_Desktop_Profile.provisionprofile","CopyToMask":2,"filePath":"datafiles","name":"GMS2_Desktop_Profile.provisionprofile","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.400.0.532",
+    "IDEVersion":"2024.8.1.171",
   },
   "name":"GameCenter",
   "resources":[

@@ -1003,7 +1003,7 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
         mNSDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                          [mGKPlayer alias], @"alias",
                          [mGKPlayer displayName], @"displayName",
-                         @"", @"playerID",
+                         [mGKPlayer gamePlayerID], @"playerID",
                          [mGKPlayer gamePlayerID], @"gamePlayerID",
                          [mGKPlayer teamPlayerID], @"teamPlayerID",
                          nil];
@@ -1012,9 +1012,9 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
         mNSDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                          [mGKPlayer alias], @"alias",
                          [mGKPlayer displayName], @"displayName",
-                         [mGKPlayer playerID], @"playerID",
-                         @"", @"gamePlayerID",
-                         @"", @"teamPlayerID",
+                         [mGKPlayer gamePlayerID], @"playerID",
+                         [mGKPlayer gamePlayerID], @"gamePlayerID",
+                         [mGKPlayer teamPlayerID], @"teamPlayerID",
                          nil];
     }
     
