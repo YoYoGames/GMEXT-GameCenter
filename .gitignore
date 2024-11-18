@@ -6,3 +6,6 @@ source/GameCenter_gml/datafiles/GMS2_Desktop_Profile.provisionprofile
 output/
 
 xcuserdata/
+source/GameCenter_gml/extensions/GameCenter/scriptUtils.bat.bak
+
+source/GameCenter_gml/extensions/GameCenter/scriptUtils.sh.bak
