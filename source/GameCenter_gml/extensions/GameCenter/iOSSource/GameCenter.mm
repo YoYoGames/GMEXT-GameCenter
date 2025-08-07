@@ -546,14 +546,14 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 }
 
 
--(double) GameCenter_SavedGames_ResolveConflict:(double) conflict_ind data:(NSString*) data
+-(double) GameCenter_SavedGames_ResolveConflict:(double) conflict_id data:(NSString*) data
 {
     GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
-    [localPlayer resolveConflictingSavedGames:self.ArrayOfConflicts[(int)conflict_ind] withData:[data dataUsingEncoding:NSUTF8StringEncoding] completionHandler:^(NSArray<GKSavedGame *> * _Nullable savedGames, NSError * _Nullable error)
+    [localPlayer resolveConflictingSavedGames:self.ArrayOfConflicts[(int)conflict_id] withData:[data dataUsingEncoding:NSUTF8StringEncoding] completionHandler:^(NSArray<GKSavedGame *> * _Nullable savedGames, NSError * _Nullable error)
     {
         int dsMapIndex = CreateDsMap_comaptibility();
         DsMapAddString_comaptibility(dsMapIndex, "type","GameCenter_SavedGames_ResolveConflict");
-        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_ind",conflict_ind);
+        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_id",conflict_id);
         if (error != nil)
         {
             DsMapAddDouble_comaptibility(dsMapIndex, "success", 0);
@@ -572,7 +572,7 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 
 - (void)player:(GKPlayer *)player hasConflictingSavedGames:(NSArray<GKSavedGame *> *)savedGames
 {
-    double conflict_ind = self.ArrayOfConflicts.count;
+    double conflict_id = self.ArrayOfConflicts.count;
     [self.ArrayOfConflicts addObject:savedGames];
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -593,7 +593,7 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         int dsMapIndex = CreateDsMap_comaptibility();
         DsMapAddString_comaptibility(dsMapIndex, "type", "GameCenter_SavedGames_HasConflict");
-        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_ind", conflict_ind);
+        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_id", conflict_id);
 
         // Combine JSON strings into one valid JSON array string
         NSString *joinedJSON = [NSString stringWithFormat:@"[%@]", [array componentsJoinedByString:@","]];
@@ -1360,12 +1360,12 @@ YYEXPORT void /*double*/ GameCenter_SavedGames_GetData(RValue& Result, CInstance
     Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_GetData:@(name)];
 }
 
-YYEXPORT void /*double*/ GameCenter_SavedGames_ResolveConflict(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double conflict_ind, const char* data)
+YYEXPORT void /*double*/ GameCenter_SavedGames_ResolveConflict(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double conflict_id, const char* data)
 {
-    double conflict_ind = YYGetReal(arg, 0);
+    double conflict_id = YYGetReal(arg, 0);
     const char* data = YYGetString(arg, 1);
     Result.kind = VALUE_REAL;
-    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_ind data:@(data)];
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_id data:@(data)];
 }
 
 YYEXPORT void /*double*/ GameCenter_Leaderboard_Submit(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardID, double score, double dcontext)
