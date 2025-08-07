@@ -114,6 +114,9 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
     {
         [[GKLocalPlayer localPlayer] registerListener:self];
         NSLog(@"YYGameCenter: %@", @"Registering GK listener.");
+		
+		self.ArrayOfConflicts = [NSMutableArray array];
+		self.LastAsyncOpId = 0;
     }
     
     return self;
