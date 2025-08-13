@@ -1,6 +1,6 @@
 /// @description Handle callbacks
 
-var count, conflictIndex, slotsArray, slotData;
+var count, conflict_id, slotsArray, slotData;
 
 switch(async_load[?"type"])
 {
@@ -72,7 +72,7 @@ switch(async_load[?"type"])
 	// @triggered by GameCenter_SavedGames_ResolveConflict()
 	case "GameCenter_SavedGames_ResolveConflict":
 	
-		conflictIndex = async_load[?"conflictIndex"]
+		conflict_id = async_load[?"conflict_id"]
 		// Early exit if not successful
 		if (!async_load[?"success"]) break;		
 		break;
@@ -89,10 +89,10 @@ switch(async_load[?"type"])
 	// @triggered whenever there is saving conflict
 	case "GameCenter_SavedGames_HasConflict":
 	
-		// The conflictIndex is an unique identification id of the conflict
+		// The conflict_id is an unique identification id of the conflict
 		// and can be used to call 'GameCenter_SavedGames_ResolveConflict'
 		// for solving the respective conflict.
-		conflictIndex = async_load[?"conflictIndex"];
+		conflict_id = async_load[?"conflict_id"];
 		slotsArray = json_decode(async_load[?"slots"]);
 				
 		// Loop through all the slots
@@ -105,7 +105,7 @@ switch(async_load[?"type"])
 		}
 		
 		// This requires select which data you will approved
-		// GameCenter_SavedGames_ResolveConflict(conflictIndex, "<the data that you choose>")
+		// GameCenter_SavedGames_ResolveConflict(conflict_id, "<the data that you choose>")
 		
 		break;
 	

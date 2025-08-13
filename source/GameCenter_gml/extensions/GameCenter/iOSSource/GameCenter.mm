@@ -114,6 +114,9 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
     {
         [[GKLocalPlayer localPlayer] registerListener:self];
         NSLog(@"YYGameCenter: %@", @"Registering GK listener.");
+		
+		self.ArrayOfConflicts = [NSMutableArray array];
+		self.LastAsyncOpId = 0;
     }
     
     return self;
@@ -546,14 +549,14 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 }
 
 
--(double) GameCenter_SavedGames_ResolveConflict:(double) conflict_ind data:(NSString*) data
+-(double) GameCenter_SavedGames_ResolveConflict:(double) conflict_id data:(NSString*) data
 {
     GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
-    [localPlayer resolveConflictingSavedGames:self.ArrayOfConflicts[(int)conflict_ind] withData:[data dataUsingEncoding:NSUTF8StringEncoding] completionHandler:^(NSArray<GKSavedGame *> * _Nullable savedGames, NSError * _Nullable error)
+    [localPlayer resolveConflictingSavedGames:self.ArrayOfConflicts[(int)conflict_id] withData:[data dataUsingEncoding:NSUTF8StringEncoding] completionHandler:^(NSArray<GKSavedGame *> * _Nullable savedGames, NSError * _Nullable error)
     {
         int dsMapIndex = CreateDsMap_comaptibility();
         DsMapAddString_comaptibility(dsMapIndex, "type","GameCenter_SavedGames_ResolveConflict");
-        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_ind",conflict_ind);
+        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_id",conflict_id);
         if (error != nil)
         {
             DsMapAddDouble_comaptibility(dsMapIndex, "success", 0);
@@ -572,19 +575,43 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 
 - (void)player:(GKPlayer *)player hasConflictingSavedGames:(NSArray<GKSavedGame *> *)savedGames
 {
-    double conflict_ind = self.ArrayOfConflicts.count;
-    [self.ArrayOfConflicts addObject: savedGames];
+    double conflict_id = self.ArrayOfConflicts.count;
+    [self.ArrayOfConflicts addObject:savedGames];
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    for(GKSavedGame *savedGame in savedGames)
-        [array addObject:[GameCenter GKSavedGameJSON: savedGame]];
-    
-    int dsMapIndex = CreateDsMap_comaptibility();
-    DsMapAddString_comaptibility(dsMapIndex, "type","GameCenter_SavedGames_HasConflict");
-    DsMapAddDouble_comaptibility(dsMapIndex, "conflict_ind",conflict_ind);
-    DsMapAddString_comaptibility(dsMapIndex, "slots",(char*)[[GameCenter toJSON: array] UTF8String]);
-    CreateAsyncEventWithDSMap_comaptibility(dsMapIndex);
+    dispatch_group_t group = dispatch_group_create();
+
+    for (GKSavedGame *savedGame in savedGames)
+    {
+        dispatch_group_enter(group);
+
+        [GameCenter GKSavedGameJSONAsync:savedGame completion:^(NSString *jsonString) {
+            @synchronized (array) {
+                [array addObject:jsonString];
+            }
+            dispatch_group_leave(group);
+        }];
+    }
+
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        int dsMapIndex = CreateDsMap_comaptibility();
+        DsMapAddString_comaptibility(dsMapIndex, "type", "GameCenter_SavedGames_HasConflict");
+        DsMapAddDouble_comaptibility(dsMapIndex, "conflict_id", conflict_id);
+
+        // Combine JSON strings into one valid JSON array string
+        NSString *joinedJSON = [NSString stringWithFormat:@"[%@]", [array componentsJoinedByString:@","]];
+        DsMapAddString_comaptibility(dsMapIndex, "slots", (char *)[joinedJSON UTF8String]);
+
+        CreateAsyncEventWithDSMap_comaptibility(dsMapIndex);
+    });
 }
+
+
+
+
+
+
+
 
 - (void)player:(GKPlayer *)player didModifySavedGame:(GKSavedGame *)savedGame;
 {
@@ -601,6 +628,28 @@ void CreateAsyncEventWithDSMap_comaptibility(int dsMapIndex)
 {
     NSDictionary *dic = [GameCenter GKSavedGameDic: mGKSavedGame];
     return [GameCenter toJSON:dic];
+}
+
++ (void)GKSavedGameJSONAsync:(GKSavedGame *)mGKSavedGame completion:(void (^)(NSString *json))completion {
+    NSMutableDictionary *dict = [[GameCenter GKSavedGameDic:mGKSavedGame] mutableCopy];
+
+    [mGKSavedGame loadDataWithCompletionHandler:^(NSData * _Nullable data, NSError * _Nullable error) {
+        if (data && !error) {
+            // Directly use raw bytes as char* string
+            const char *rawBytes = (const char *)[data bytes];
+            NSString *rawString = [NSString stringWithUTF8String:rawBytes];
+            if (!rawString) rawString = @""; // Fallback in case of bad data
+            
+            dict[@"data"] = rawString;
+        } else {
+            dict[@"data"] = [NSNull null];
+        }
+
+        if (completion) {
+            NSString *json = [GameCenter toJSON:dict];
+            completion(json);
+        }
+    }];
 }
 
 +(NSDictionary*) GKSavedGameDic: (GKSavedGame*) mGKSavedGame
@@ -1314,12 +1363,12 @@ YYEXPORT void /*double*/ GameCenter_SavedGames_GetData(RValue& Result, CInstance
     Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_GetData:@(name)];
 }
 
-YYEXPORT void /*double*/ GameCenter_SavedGames_ResolveConflict(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double conflict_ind, const char* data)
+YYEXPORT void /*double*/ GameCenter_SavedGames_ResolveConflict(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(double conflict_id, const char* data)
 {
-    double conflict_ind = YYGetReal(arg, 0);
+    double conflict_id = YYGetReal(arg, 0);
     const char* data = YYGetString(arg, 1);
     Result.kind = VALUE_REAL;
-    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_ind data:@(data)];
+    Result.val =  [g_GameCenterSingleton GameCenter_SavedGames_ResolveConflict:conflict_id data:@(data)];
 }
 
 YYEXPORT void /*double*/ GameCenter_Leaderboard_Submit(RValue& Result, CInstance* selfinst, CInstance* otherinst, int argc, RValue* arg)//:(const char* leaderboardID, double score, double dcontext)
