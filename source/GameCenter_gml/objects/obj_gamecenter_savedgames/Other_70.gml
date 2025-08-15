@@ -93,7 +93,7 @@ switch(async_load[?"type"])
 		// and can be used to call 'GameCenter_SavedGames_ResolveConflict'
 		// for solving the respective conflict.
 		conflict_id = async_load[?"conflict_id"];
-		slotsArray = json_decode(async_load[?"slots"]);
+		slotsArray = json_parse(async_load[?"slots"]);
 				
 		// Loop through all the slots
 		count = array_length(slotsArray)
