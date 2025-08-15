@@ -4,7 +4,7 @@
  * @func GameCenter_SavedGames_Fetch
  * @desc This function requests the Apple GameCenter API to fetch all the existing saved slots. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @event social
- * @member {string} type "GameCenter_SavedGames_Fetch"
+ * @member {string} type The string `"GameCenter_SavedGames_Fetch"`
  * @member {boolean} success Whether or not the task succeeded.
  * @member {string} slots A **JSON formatted string** with an **array** of ${struct.SlotJSON} (can be parsed into a struct using ${function.json_parse})
  * @event_end
@@ -21,13 +21,30 @@
 /**
  * @func GameCenter_SavedGames_Save
  * @desc This function requests the Apple GameCenter API to save a data string to a save slot. If the slot doesn't exist it gets created (if it exists data is overwritten). The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
+ * 
  * @param {string} name The unique identifier of the save game slot.
  * @param {string} data The data string to be saved. Note that you can save complex data by using structs/arrays/maps/lists and converting them to strings.
+ * 
  * @event social
- * @member {string} type "GameCenter_SavedGames_Save"
+ * @desc Triggered on save.
+ * @member {string} type The string `"GameCenter_SavedGames_Save"`
  * @member {boolean} success Whether or not the task succeeded.
  * @member {real} name The unique identifier of the save game slot.
  * @member {string} slots A **JSON formatted string** following the ${struct.SlotJSON} structure. (can be parsed into a struct using ${function.json_parse})
+ * @event_end
+ * 
+ * @event social
+ * @desc Triggered when saved games contain conflicts.
+ * @member {string} type The string `"GameCenter_SavedGames_HasConflict"`
+ * @member {real} conflict_id The unique ID of the conflict
+ * @member {string} slots A **JSON formatted string** containing an array of structs (can be parsed using ${function.json_parse})
+ * @event_end
+ * 
+ * @event social
+ * @desc Triggered when data changes in a saved game file.
+ * @member {string} type The string `"GameCenter_SavedGames_DidModify"`
+ * @member {string} player The unique identifier of the player
+ * @member {string} slot The slot of the game save
  * @event_end
  * 
  * @example
@@ -44,7 +61,7 @@
  * @desc This function requests the Apple GameCenter API to delete an existing save slot with the given name. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} name The unique identifier of the save game slot.
  * @event social
- * @member {string} type "GameCenter_SavedGames_Delete"
+ * @member {string} type The string `"GameCenter_SavedGames_Delete"`
  * @member {boolean} success Whether or not the task succeeded.
  * @event_end
  * 
@@ -62,7 +79,7 @@
  * @desc This function requests the Apple GameCenter API to get the data string saved inside a given save slot. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
  * @param {string} name The unique identifier of the save game slot.
  * @event social
- * @member {string} type "GameCenter_SavedGames_GetData"
+ * @member {string} type The string `"GameCenter_SavedGames_GetData"`
  * @member {boolean} success Whether or not the task succeeded.
  * @member {string} data The data stored inside the save slot.
  * @event_end
@@ -82,7 +99,7 @@
  * @param {real} conflict_id The unique identifier of the conflict.
  * @param {string} data A string containing the data you want to save (note that you can use a JSON formatted string to store data)
  * @event social
- * @member {string} type "GameCenter_SavedGames_ResolveConflict"
+ * @member {string} type The string `"GameCenter_SavedGames_ResolveConflict"`
  * @member {boolean} success Whether or not the task succeeded.
  * @member {real} conflictIndex The unique identification index of the resolved conflict.
  * @event_end
