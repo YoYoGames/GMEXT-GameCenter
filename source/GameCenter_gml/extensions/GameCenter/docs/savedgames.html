@@ -59,7 +59,7 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="savedgames.html">SavedGames</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">SavedGames</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a>
     </li>
@@ -133,6 +133,8 @@
 <pre class="highlight"><code class="language-gml">GameCenter_SavedGames_Fetch()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p>N/A</p>
@@ -154,7 +156,7 @@
 <tr>
 <td>type</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
-<td>"GameCenter_SavedGames_Fetch"</td>
+<td>The string <code>"GameCenter_SavedGames_Fetch"</code></td>
 </tr>
 <tr>
 <td>success</td>
@@ -177,7 +179,7 @@
 <p align="right"><a href="#top">Back To Top</a></p>
 
 <h1 id="gamecenter_savedgames_save">GameCenter_SavedGames_Save</h1>
-<p>This function requests the Apple GameCenter API to save a data string to a save slot. If the slot doesn't exist it gets created (if it exists data is overwritten). The function will not return any value but it will create a request that will trigger a <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a> callback when the task is resolved.</p>
+<p>This function requests the Apple GameCenter API to save a data string to a save slot. If the slot doesn't exist it gets created, if it exists data is overwritten. The function will not return any value but it will create a request that will trigger a <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a> callback when the task is resolved.</p>
 <p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a>.</p>
 <p><br></p>
 <p><strong>Syntax:</strong></p>
@@ -206,6 +208,8 @@
 </tbody>
 </table>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p>N/A</p>
@@ -215,6 +219,7 @@
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a></p>
 </blockquote>
+<p>Triggered on save.</p>
 <table>
 <thead>
 <tr>
@@ -227,12 +232,7 @@
 <tr>
 <td>type</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
-<td>"GameCenter_SavedGames_Save"</td>
-</tr>
-<tr>
-<td>success</td>
-<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
-<td>Whether or not the task succeeded.</td>
+<td>The string <code>"GameCenter_SavedGames_Save"</code></td>
 </tr>
 <tr>
 <td>name</td>
@@ -240,9 +240,80 @@
 <td>The unique identifier of the save game slot.</td>
 </tr>
 <tr>
-<td>slots</td>
+<td>slot</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
 <td>A <strong>JSON formatted string</strong> following the <a href="savedgames.html#slotjson">SlotJSON</a> structure. (can be parsed into a struct using <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/File_Handling/Encoding_And_Hashing/json_parse.htm">json_parse</a>)</td>
+</tr>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether or not the task succeeded.</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code, in case of an error</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error message, in case of an error</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Triggered when saved games contain conflicts.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The string <code>"GameCenter_SavedGames_HasConflict"</code></td>
+</tr>
+<tr>
+<td>conflict_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The unique ID of the conflict</td>
+</tr>
+<tr>
+<td>slots</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A <strong>JSON formatted string</strong> containing an array of structs (can be parsed using <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/File_Handling/Encoding_And_Hashing/json_parse.htm">json_parse</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Triggered when data changes in a saved game file.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The string <code>"GameCenter_SavedGames_DidModify"</code></td>
+</tr>
+<tr>
+<td>player</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The unique identifier of the player</td>
+</tr>
+<tr>
+<td>slot</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The slot of the game save</td>
 </tr>
 </tbody>
 </table>
@@ -279,6 +350,8 @@
 </tbody>
 </table>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p>N/A</p>
@@ -300,7 +373,7 @@
 <tr>
 <td>type</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
-<td>"GameCenter_SavedGames_Delete"</td>
+<td>The string <code>"GameCenter_SavedGames_Delete"</code></td>
 </tr>
 <tr>
 <td>success</td>
@@ -342,6 +415,8 @@
 </tbody>
 </table>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p>N/A</p>
@@ -363,7 +438,7 @@
 <tr>
 <td>type</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
-<td>"GameCenter_SavedGames_GetData"</td>
+<td>The string <code>"GameCenter_SavedGames_GetData"</code></td>
 </tr>
 <tr>
 <td>success</td>
@@ -386,7 +461,7 @@
 <p align="right"><a href="#top">Back To Top</a></p>
 
 <h1 id="gamecenter_savedgames_resolveconflict">GameCenter_SavedGames_ResolveConflict</h1>
-<p>This function requests the Apple GameCenter API to perform a conflict resolution given a conflict id. The function will not return any value but it will create a request that will trigger a <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a> callback when the task is resolved.</p>
+<p>This function requests the Apple GameCenter API to perform a conflict resolution given a conflict ID. The function will not return any value but it will create a request that will trigger a <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a> callback when the task is resolved.</p>
 <p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Object_Properties/Async_Events/Social.htm">Social Async Event</a>.</p>
 <p><br></p>
 <p><strong>Syntax:</strong></p>
@@ -405,7 +480,7 @@
 <tr>
 <td>conflict_id</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
-<td>The unique identifier of the conflict.</td>
+<td>The unique identifier of the conflict</td>
 </tr>
 <tr>
 <td>data</td>
@@ -414,6 +489,8 @@
 </tr>
 </tbody>
 </table>
+<p><br></p>
+<p><br></p>
 <p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
@@ -436,17 +513,27 @@
 <tr>
 <td>type</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
-<td>"GameCenter_SavedGames_ResolveConflict"</td>
+<td>The string <code>"GameCenter_SavedGames_ResolveConflict"</code></td>
+</tr>
+<tr>
+<td>conflict_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The unique identification index of the resolved conflict</td>
 </tr>
 <tr>
 <td>success</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
-<td>Whether or not the task succeeded.</td>
+<td>Whether or not the task succeeded</td>
 </tr>
 <tr>
-<td>conflictIndex</td>
+<td>error_code</td>
 <td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
-<td>The unique identification index of the resolved conflict.</td>
+<td>The error code, in case of an error</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error message, in case of an error</td>
 </tr>
 </tbody>
 </table>
@@ -504,7 +591,7 @@
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p><p align="center">GameMaker 2024</p></p>
+      <p><p align="center">GameMaker 2025</p></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

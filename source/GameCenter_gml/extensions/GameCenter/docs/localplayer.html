@@ -55,7 +55,7 @@
                 </li>
               </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="localplayer.html">LocalPlayer</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">LocalPlayer</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a>
     </li>
@@ -127,6 +127,8 @@
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_Authenticate()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p>N/A</p>
@@ -173,10 +175,13 @@
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_IsAuthenticated()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
 </blockquote>
+<p>Whether or not authentication succeeded.</p>
 <p><br></p>
 <p><strong>Example:</strong></p>
 <pre class="highlight"><code class="language-gml">var _auth = GameCenter_LocalPlayer_IsAuthenticated();</code></pre>
@@ -193,10 +198,13 @@
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_IsUnderage()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
 </blockquote>
+<p>Whether or not the current player is underaged.</p>
 <p><br></p>
 <p><strong>Example:</strong></p>
 <pre class="highlight"><code class="language-gml">var _underage = GameCenter_LocalPlayer_IsUnderage();</code></pre>
@@ -213,10 +221,13 @@
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_GetInfo()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></p>
 </blockquote>
+<p>A <strong>JSON formatted string</strong> containing player information.</p>
 <p><br></p>
 <p><strong>Example:</strong></p>
 <pre class="highlight"><code class="language-gml">var _json = GameCenter_LocalPlayer_GetInfo();
@@ -234,10 +245,13 @@ var _player_info = json_parse(_json);</code></pre>
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_IsMultiplayerGamingRestricted()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
 </blockquote>
+<p>Whether multiplayer gaming is restricted or not.</p>
 <p><br></p>
 <p><strong>Example:</strong></p>
 <pre class="highlight"><code class="language-gml">var _multiplayer_restricted = GameCenter_LocalPlayer_IsMultiplayerGamingRestricted();</code></pre>
@@ -255,10 +269,13 @@ var _player_info = json_parse(_json);</code></pre>
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted()</code></pre>
 </blockquote>
 <p><br></p>
+<p><br></p>
+<p><br></p>
 <p><strong>Returns:</strong></p>
 <blockquote>
 <p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
 </blockquote>
+<p>Whether personalized communication is restricted or not.</p>
 <p><br></p>
 <p><strong>Example:</strong></p>
 <pre class="highlight"><code class="language-gml">GameCenter_LocalPlayer_IsPersonalizedCommunicationRestricted();</code></pre>
@@ -276,7 +293,7 @@ var _player_info = json_parse(_json);</code></pre>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p><p align="center">GameMaker 2024</p></p>
+      <p><p align="center">GameMaker 2025</p></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
