@@ -14,7 +14,7 @@
   "copyToTargets":9007199254740998,
   "description":"",
   "exportToGame":true,
-  "extensionVersion":"1.3.0",
+  "extensionVersion":"1.3.1",
   "files":[
     {"$GMExtensionFile":"","%Name":"","constants":[
         {"$GMExtensionConstant":"","%Name":"GameCenter_Leaderboard_PlayerScope_Global","hidden":false,"name":"GameCenter_Leaderboard_PlayerScope_Global","resourceType":"GMExtensionConstant","resourceVersion":"2.0","value":"0",},
