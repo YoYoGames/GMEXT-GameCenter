@@ -102,7 +102,7 @@ static double DateToGMDate(NSDate *date)
         stream.add("player_id", StringFromNSString(player.playerID));
         stream.add("game_player_id", StringFromNSString(player.playerID));
 #pragma clang diagnostic pop
-        stream.add("team_player_id", "");
+        stream.add("team_player_id", std::string_view(""));
     }
 
     return stream;
@@ -334,7 +334,7 @@ static double DateToGMDate(NSDate *date)
 {
     [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
         gm::wire::ArrayStream slots;
-        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.add([self savedGameMetadataStream:savedGame]);
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
 
         gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
         result.add("slots", slots);
@@ -376,7 +376,7 @@ static double DateToGMDate(NSDate *date)
         if (fetchError != nil) {
             gm::wire::StructStream result = [self errorResult:fetchError success:false];
             result.add("name", StringFromNSString(saveName));
-            result.add("data", "");
+            result.add("data", std::string_view(""));
             callback.call(result);
             return;
         }
@@ -390,9 +390,9 @@ static double DateToGMDate(NSDate *date)
             gm::wire::StructStream result;
             result.add("success", false);
             result.add("name", StringFromNSString(saveName));
-            result.add("data", "");
+            result.add("data", std::string_view(""));
             result.add("error_code", static_cast<std::int32_t>(0));
-            result.add("error_message", "Saved game was not found.");
+            result.add("error_message", std::string_view("Saved game was not found."));
             callback.call(result);
             return;
         }
@@ -420,7 +420,7 @@ static double DateToGMDate(NSDate *date)
         result.add("success", false);
         result.add("conflict_id", static_cast<std::int32_t>(index));
         result.add("error_code", static_cast<std::int32_t>(0));
-        result.add("error_message", "Invalid conflict ID.");
+        result.add("error_message", std::string_view("Invalid conflict ID."));
         callback.call(result);
         return;
     }
@@ -432,7 +432,7 @@ static double DateToGMDate(NSDate *date)
                                                     withData:resolvedData
                                            completionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
         gm::wire::ArrayStream slots;
-        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.add([self savedGameMetadataStream:savedGame]);
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
 
         gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
         result.add("conflict_id", static_cast<std::int32_t>(index));
@@ -449,10 +449,10 @@ static double DateToGMDate(NSDate *date)
     if (!self.savedGamesEventCallback) return;
 
     gm::wire::ArrayStream slots;
-    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.add([self savedGameMetadataStream:savedGame]);
+    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
 
     gm::wire::StructStream event;
-    event.add("type", "conflict");
+    event.add("type", std::string_view("conflict"));
     event.add("conflict_id", static_cast<std::int32_t>(conflictId));
     event.add("player", [self playerStream:player]);
     event.add("slots", slots);
@@ -464,7 +464,7 @@ static double DateToGMDate(NSDate *date)
     if (!self.savedGamesEventCallback) return;
 
     gm::wire::StructStream event;
-    event.add("type", "modified");
+    event.add("type", std::string_view("modified"));
     event.add("player", [self playerStream:player]);
     event.add("slot", [self savedGameMetadataStream:savedGame]);
     self.savedGamesEventCallback.call(event);
@@ -529,7 +529,7 @@ static double DateToGMDate(NSDate *date)
 
             [leaderboard loadEntriesForPlayerScope:ps timeScope:ts range:range completionHandler:^(GKLeaderboardEntry *localEntry, NSArray<GKLeaderboardEntry *> *entries, NSInteger totalPlayerCount, NSError *error) {
                 gm::wire::ArrayStream entryArray;
-                for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.add([self leaderboardEntryStream:entry]);
+                for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push([self leaderboardEntryStream:entry]);
 
                 gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
                 result.add("leaderboard_id", StringFromNSString(identifier));
@@ -560,7 +560,7 @@ static double DateToGMDate(NSDate *date)
 
         [request loadScoresWithCompletionHandler:^(NSArray<GKScore *> *scores, NSError *error) {
             gm::wire::ArrayStream entryArray;
-            for (GKScore *entry in scores ?: @[]) entryArray.add([self legacyScoreStream:entry]);
+            for (GKScore *entry in scores ?: @[]) entryArray.push([self legacyScoreStream:entry]);
 
             gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
             result.add("leaderboard_id", StringFromNSString(identifier));
@@ -614,7 +614,7 @@ static double DateToGMDate(NSDate *date)
 {
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> *achievements, NSError *error) {
         gm::wire::ArrayStream values;
-        for (GKAchievement *achievement in achievements ?: @[]) values.add([self achievementStream:achievement]);
+        for (GKAchievement *achievement in achievements ?: @[]) values.push([self achievementStream:achievement]);
 
         gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
         result.add("achievements", values);
