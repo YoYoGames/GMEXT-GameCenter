@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"Spr_GameCenter_SavedGames_point",
   "bboxMode":0,
   "bbox_bottom":63,
@@ -12,10 +12,10 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"780df70a-90a1-4088-8b86-baa4ace9101c","name":"780df70a-90a1-4088-8b86-baa4ace9101c","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
-    {"$GMSpriteFrame":"","%Name":"a6762fcf-2cab-4bd4-965d-a9fe96823739","name":"a6762fcf-2cab-4bd4-965d-a9fe96823739","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
-    {"$GMSpriteFrame":"","%Name":"e591d169-c9b0-48ee-b936-d9daf2760543","name":"e591d169-c9b0-48ee-b936-d9daf2760543","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
-    {"$GMSpriteFrame":"","%Name":"e1a0fd88-a681-4560-8578-2e210a9dc9e8","name":"e1a0fd88-a681-4560-8578-2e210a9dc9e8","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"780df70a-90a1-4088-8b86-baa4ace9101c","name":"780df70a-90a1-4088-8b86-baa4ace9101c","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"a6762fcf-2cab-4bd4-965d-a9fe96823739","name":"a6762fcf-2cab-4bd4-965d-a9fe96823739","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"e591d169-c9b0-48ee-b936-d9daf2760543","name":"e591d169-c9b0-48ee-b936-d9daf2760543","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"e1a0fd88-a681-4560-8578-2e210a9dc9e8","name":"e1a0fd88-a681-4560-8578-2e210a9dc9e8","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

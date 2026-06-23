@@ -1,0 +1,141 @@
+[gml_api]
+module GMGameCenter;
+
+// Structured Java/Objective-C++ -> GML values are returned with StructStream
+// and ArrayStream. Structured callbacks receive exactly one result struct.
+
+// View presentation
+[global, bind = typed_gml]
+function gamecenter_view_callback_subscribe(callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_present_view_default(): bool;
+[global, bind = typed_gml]
+function gamecenter_present_view_achievements(): bool;
+[global, bind = typed_gml]
+function gamecenter_present_view_achievement(achievement_id: string): bool;
+[global, bind = typed_gml]
+function gamecenter_present_view_leaderboards(): bool;
+[global, bind = typed_gml]
+function gamecenter_present_view_leaderboard(
+    leaderboard_id: string,
+    [type_hint=`GameCenterLeaderboardTimeScope`] time_scope,
+    [type_hint=`GameCenterLeaderboardPlayerScope`] player_scope
+): bool;
+
+// Local player
+[global, bind = typed_gml]
+function gamecenter_local_player_authenticate(callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_local_player_is_authenticated(): bool;
+[global, bind = typed_gml]
+function gamecenter_local_player_is_underage(): bool;
+[global, bind = typed_gml]
+function gamecenter_local_player_is_multiplayer_gaming_restricted(): bool;
+[global, bind = typed_gml]
+function gamecenter_local_player_is_personalized_communication_restricted(): bool;
+[global, bind = typed_gml]
+function gamecenter_local_player_get_info(): gmval;
+
+// Saved games
+[global, bind = typed_gml]
+function gamecenter_saved_games_callback_subscribe(callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_saved_games_fetch(callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_saved_games_save(name: string, data: string, callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_saved_games_delete(name: string, callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_saved_games_get_data(name: string, callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_saved_games_resolve_conflict(conflict_id: real, data: string, callback: func): unit;
+
+// Leaderboards
+[global, bind = typed_gml]
+function gamecenter_leaderboard_submit(leaderboard_id: string, score: real, context: real, callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_leaderboard_load(
+    leaderboard_id: string,
+    [type_hint=`GameCenterLeaderboardTimeScope`] time_scope,
+    range_start: real,
+    range_count: real,
+    [type_hint=`GameCenterLeaderboardPlayerScope`] player_scope,
+    callback: func
+): unit;
+
+// Achievements
+[global, bind = typed_gml]
+function gamecenter_achievement_report(identifier: string, percent_complete: real, show_completion_banner: bool, callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_achievement_reset_all(callback: func): unit;
+[global, bind = typed_gml]
+function gamecenter_achievement_load(callback: func): unit;
+
+// Access point
+[global, bind = typed_gml]
+function gamecenter_access_point_set_active(active: bool): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_get_active(): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_set_location([type_hint=`GameCenterAccessPointLocation`] location): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_get_location(): real;
+[global, bind = typed_gml]
+function gamecenter_access_point_is_presenting_game_center(): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_is_visible(): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_set_show_highlights(show: bool): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_get_show_highlights(): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_get_coordinate([type_hint=`GameCenterAccessPointCoordinate`] coordinate): real;
+[global, bind = typed_gml]
+function gamecenter_access_point_present_with_state([type_hint=`GameCenterViewState`] state, callback: func): bool;
+[global, bind = typed_gml]
+function gamecenter_access_point_present(callback: func): bool;
+
+[global, bind = typed_gml]
+enum GameCenterLeaderboardTimeScope:int32
+{
+    Today = 0,
+    Week = 1,
+    AllTime = 2,
+}
+
+[global, bind = typed_gml]
+enum GameCenterLeaderboardPlayerScope:int32
+{
+    Global = 0,
+    FriendsOnly = 1,
+}
+
+[global, bind = typed_gml]
+enum GameCenterAccessPointLocation:int32
+{
+    TopLeading = 0,
+    TopTrailing = 1,
+    BottomLeading = 2,
+    BottomTrailing = 3,
+}
+
+[global, bind = typed_gml]
+enum GameCenterAccessPointCoordinate:int32
+{
+    X = 0,
+    Y = 1,
+    Width = 2,
+    Height = 3,
+}
+
+[global, bind = typed_gml]
+enum GameCenterViewState:int32
+{
+    Default = -1,
+    Leaderboards = 0,
+    Achievements = 1,
+    Challenges = 2,
+    LocalPlayerProfile = 3,
+    Dashboard = 4,
+    LocalPlayerFriendsList = 5,
+}

@@ -17,6 +17,7 @@
     {"name":"Sprites","order":3,"path":"folders/GM Extension Assets/Sprites.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"GMGameCenter","order":1,"path":"extensions/GMGameCenter/GMGameCenter.yy",},
     {"name":"fnt_gm_20","order":1,"path":"fonts/fnt_gm_20/fnt_gm_20.yy",},
     {"name":"fnt_gm_30","order":2,"path":"fonts/fnt_gm_30/fnt_gm_30.yy",},
     {"name":"Obj_Achievement_Report","order":2,"path":"objects/Obj_Achievement_Report/Obj_Achievement_Report.yy",},
@@ -37,6 +38,7 @@
     {"name":"Obj_Leaderboard_UI_All","order":3,"path":"objects/Obj_Leaderboard_UI_All/Obj_Leaderboard_UI_All.yy",},
     {"name":"Obj_Leaderboard_UI_Specific","order":4,"path":"objects/Obj_Leaderboard_UI_Specific/Obj_Leaderboard_UI_Specific.yy",},
     {"name":"Room_GameCenter_SavedGames","order":1,"path":"rooms/Room_GameCenter_SavedGames/Room_GameCenter_SavedGames.yy",},
+    {"name":"GMGameCenter_API","order":2,"path":"scripts/GMGameCenter_API/GMGameCenter_API.yy",},
     {"name":"spr_gm_button","order":1,"path":"sprites/spr_gm_button/spr_gm_button.yy",},
     {"name":"spr_gm_textbox","order":2,"path":"sprites/spr_gm_textbox/spr_gm_textbox.yy",},
   ],
