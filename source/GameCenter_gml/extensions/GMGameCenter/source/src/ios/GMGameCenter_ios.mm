@@ -23,7 +23,7 @@ static NSString *NSStringFromStringView(std::string_view value)
     NSString *result = [[NSString alloc] initWithBytes:value.data()
                                                 length:value.size()
                                               encoding:NSUTF8StringEncoding];
-    return result != nil ? [result autorelease] : @"";
+    return result != nil ? result : @"";
 }
 
 static std::string StringFromNSString(NSString *value)
@@ -47,10 +47,10 @@ static double DateToGMDate(NSDate *date)
     return ((((double)[date timeIntervalSince1970]) + 0.5) / 86400.0) + 25569.0;
 }
 
-@interface GMGameCenter ()
+@interface GMGameCenter () <GKLocalPlayerListener, GKGameCenterControllerDelegate>
 @property(nonatomic, assign) gm::wire::GMFunction viewCallback;
 @property(nonatomic, assign) gm::wire::GMFunction savedGamesEventCallback;
-@property(nonatomic, retain) NSMutableArray *conflictGroups;
+@property(nonatomic, strong) NSMutableArray *conflictGroups;
 @end
 
 @implementation GMGameCenter
@@ -69,7 +69,6 @@ static double DateToGMDate(NSDate *date)
 {
     [[GKLocalPlayer localPlayer] unregisterListener:self];
     self.conflictGroups = nil;
-    [super dealloc];
 }
 
 #pragma mark - Stream helpers
@@ -126,8 +125,8 @@ static double DateToGMDate(NSDate *date)
 
     stream.add("context", static_cast<std::uint64_t>(entry.context));
     stream.add("date", DateToGMDate(entry.date));
-    stream.add("rank", static_cast<std::int64_t>(entry.rank));
-    stream.add("score", static_cast<std::int64_t>(entry.score));
+    stream.add("rank", static_cast<double>(entry.rank));
+    stream.add("score", static_cast<double>(entry.score));
     stream.add("formatted_score", StringFromNSString(entry.formattedScore));
     stream.add("player", [self playerStream:entry.player]);
     return stream;
@@ -140,8 +139,8 @@ static double DateToGMDate(NSDate *date)
 
     stream.add("context", static_cast<std::uint64_t>(score.context));
     stream.add("date", DateToGMDate(score.date));
-    stream.add("rank", static_cast<std::int64_t>(score.rank));
-    stream.add("score", static_cast<std::int64_t>(score.value));
+    stream.add("rank", static_cast<double>(score.rank));
+    stream.add("score", static_cast<double>(score.value));
     stream.add("formatted_score", StringFromNSString(score.formattedValue));
     stream.add("player", [self playerStream:score.player]);
     return stream;
@@ -184,9 +183,9 @@ static double DateToGMDate(NSDate *date)
 {
     GKGameCenterViewController *controller = nil;
     if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateDefault] autorelease];
+        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateDefault];
     } else {
-        controller = [[[GKGameCenterViewController alloc] init] autorelease];
+        controller = [[GKGameCenterViewController alloc] init];
         controller.viewState = GKGameCenterViewControllerStateDefault;
     }
     return [self presentController:controller];
@@ -196,9 +195,9 @@ static double DateToGMDate(NSDate *date)
 {
     GKGameCenterViewController *controller = nil;
     if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements] autorelease];
+        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements];
     } else {
-        controller = [[[GKGameCenterViewController alloc] init] autorelease];
+        controller = [[GKGameCenterViewController alloc] init];
         controller.viewState = GKGameCenterViewControllerStateAchievements;
     }
     return [self presentController:controller];
@@ -207,8 +206,8 @@ static double DateToGMDate(NSDate *date)
 - (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
-        GKGameCenterViewController *controller = [[[GKGameCenterViewController alloc]
-            initWithAchievementID:NSStringFromStringView(achievement_id)] autorelease];
+        GKGameCenterViewController *controller = [[GKGameCenterViewController alloc]
+            initWithAchievementID:NSStringFromStringView(achievement_id)];
         return [self presentController:controller];
     }
     return false;
@@ -218,9 +217,9 @@ static double DateToGMDate(NSDate *date)
 {
     GKGameCenterViewController *controller = nil;
     if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards] autorelease];
+        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards];
     } else {
-        controller = [[[GKGameCenterViewController alloc] init] autorelease];
+        controller = [[GKGameCenterViewController alloc] init];
         controller.viewState = GKGameCenterViewControllerStateLeaderboards;
     }
     return [self presentController:controller];
@@ -235,12 +234,12 @@ static double DateToGMDate(NSDate *date)
 
     GKGameCenterViewController *controller = nil;
     if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[[GKGameCenterViewController alloc]
+        controller = [[GKGameCenterViewController alloc]
             initWithLeaderboardID:NSStringFromStringView(leaderboard_id)
                        playerScope:ps
-                         timeScope:ts] autorelease];
+                         timeScope:ts];
     } else {
-        controller = [[[GKGameCenterViewController alloc] init] autorelease];
+        controller = [[GKGameCenterViewController alloc] init];
         controller.viewState = GKGameCenterViewControllerStateLeaderboards;
         controller.leaderboardIdentifier = NSStringFromStringView(leaderboard_id);
         controller.leaderboardTimeScope = ts;
@@ -399,7 +398,7 @@ static double DateToGMDate(NSDate *date)
 
         [match loadDataWithCompletionHandler:^(NSData *loadedData, NSError *loadError) {
             NSString *text = loadedData != nil
-                ? [[[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding] autorelease]
+                ? [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding]
                 : @"";
 
             gm::wire::StructStream result = [self errorResult:loadError success:(loadError == nil)];
@@ -496,7 +495,7 @@ static double DateToGMDate(NSDate *date)
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        GKScore *legacyScore = [[[GKScore alloc] initWithLeaderboardIdentifier:identifier] autorelease];
+        GKScore *legacyScore = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
         legacyScore.value = (int64_t)score;
         legacyScore.context = (uint64_t)context;
         [GKScore reportScores:@[legacyScore] withCompletionHandler:completion];
@@ -543,7 +542,7 @@ static double DateToGMDate(NSDate *date)
                 result.add("leaderboard_start_date", DateToGMDate(leaderboard.startDate));
                 result.add("leaderboard_next_start_date", DateToGMDate(leaderboard.nextStartDate));
                 result.add("leaderboard_duration", leaderboard.duration);
-                result.add("total_players_count", static_cast<std::int64_t>(totalPlayerCount));
+                result.add("total_players_count", static_cast<double>(totalPlayerCount));
                 result.add("local_entry", [self leaderboardEntryStream:localEntry]);
                 result.add("entries", entryArray);
                 callback.call(result);
@@ -552,7 +551,7 @@ static double DateToGMDate(NSDate *date)
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        GKLeaderboard *request = [[[GKLeaderboard alloc] init] autorelease];
+        GKLeaderboard *request = [[GKLeaderboard alloc] init];
         request.identifier = identifier;
         request.timeScope = ts;
         request.playerScope = ps;
@@ -574,7 +573,7 @@ static double DateToGMDate(NSDate *date)
             result.add("leaderboard_start_date", -1.0);
             result.add("leaderboard_next_start_date", -1.0);
             result.add("leaderboard_duration", -1.0);
-            result.add("total_players_count", static_cast<std::int64_t>(scores.count));
+            result.add("total_players_count", static_cast<double>(scores.count));
             result.add("local_entry", [self legacyScoreStream:request.localPlayerScore]);
             result.add("entries", entryArray);
             callback.call(result);
@@ -591,7 +590,7 @@ static double DateToGMDate(NSDate *date)
                              callback:(gm::wire::GMFunction)callback
 {
     NSString *achievementId = NSStringFromStringView(identifier);
-    GKAchievement *achievement = [[[GKAchievement alloc] initWithIdentifier:achievementId] autorelease];
+    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:achievementId];
     achievement.percentComplete = percent_complete;
     achievement.showsCompletionBanner = show_completion_banner;
 
