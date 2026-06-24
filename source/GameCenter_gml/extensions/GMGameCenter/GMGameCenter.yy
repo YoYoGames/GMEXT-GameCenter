@@ -70,10 +70,12 @@
   "iosSystemFrameworkEntries":[
     {"$GMExtensionFrameworkEntry":"","%Name":"GameKit.framework","embed":0,"name":"GameKit.framework","resourceType":"GMExtensionFrameworkEntry","resourceVersion":"2.0","weakReference":false,},
   ],
-  "iosThirdPartyFrameworkEntries":[],
+  "iosThirdPartyFrameworkEntries":[
+    {"$GMExtensionFrameworkEntry":"","%Name":"GMGameCenter.xcframework","embed":0,"name":"GMGameCenter.xcframework","resourceType":"GMExtensionFrameworkEntry","resourceVersion":"2.0","weakReference":false,},
+  ],
   "license":"",
   "maccompilerflags":"",
-  "maclinkerflags":"\"-ObjC\" -ObjC",
+  "maclinkerflags":"\"-ObjC\"",
   "macsourcedir":"",
   "name":"GMGameCenter",
   "options":[
