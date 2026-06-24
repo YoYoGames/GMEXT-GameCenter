@@ -1,0 +1,866 @@
+// macOS implementation of the GameCenter native (C++) free-function API.
+//
+// The desktop targets run in extgen "native" mode: code_gen/native exposes the
+// GMEXPORT C entry points which forward to the free gamecenter_* functions
+// declared in code_gen/native/GMGameCenterInternal_native.h. This file provides
+// those functions for macOS using GameKit.
+//
+// The iOS target (src/ios/GMGameCenter_ios.mm) implements the same surface as an
+// Objective-C class because iOS runs in "objc" mode. The GameKit logic mirrors
+// that file. The main macOS difference is presentation: dialogs are shown with
+// GKDialogController over the application's key window (AppKit) rather than via
+// the iOS-only g_controller / UIViewController presentation path.
+
+#import "GMGameCenter_native.h"
+
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+#import <GameKit/GameKit.h>
+
+#include <cstdint>
+#include <string>
+#include <string_view>
+#include <vector>
+
+using namespace gm_structs;
+using namespace gm_enums;
+
+#pragma mark - Conversion helpers
+
+static NSString *NSStringFromStringView(std::string_view value)
+{
+    NSString *result = [[NSString alloc] initWithBytes:value.data()
+                                                length:value.size()
+                                              encoding:NSUTF8StringEncoding];
+    return result != nil ? result : @"";
+}
+
+static std::string StringFromNSString(NSString *value)
+{
+    if (value == nil) return std::string();
+    const char *utf8 = value.UTF8String;
+    return utf8 != nullptr ? std::string(utf8) : std::string();
+}
+
+static std::string ErrorMessage(NSError *error)
+{
+    if (error == nil) return std::string();
+    NSString *message = error.localizedDescription;
+    if (message == nil || message.length == 0) message = error.description;
+    return StringFromNSString(message);
+}
+
+static double DateToGMDate(NSDate *date)
+{
+    if (date == nil) return -1.0;
+    return ((((double)[date timeIntervalSince1970]) + 0.5) / 86400.0) + 25569.0;
+}
+
+// Fills the common success/error fields shared by every result struct. Works on
+// any gm_structs type that exposes `success`, `error_code` and `error_message`.
+template <typename T>
+static void GCFillError(T &out, NSError *error)
+{
+    out.success = (error == nil);
+    out.error_code = static_cast<std::int32_t>(error != nil ? error.code : 0);
+    out.error_message = ErrorMessage(error);
+}
+
+#pragma mark - Internal state holder / GameKit delegate
+
+@interface GMGameCenterMac : NSObject <GKLocalPlayerListener, GKGameCenterControllerDelegate>
+
++ (instancetype)shared;
+
+@property(nonatomic, strong) NSMutableArray *conflictGroups;
+
+// View presentation
+- (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_present_view_default;
+- (bool)gamecenter_present_view_achievements;
+- (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id;
+- (bool)gamecenter_present_view_leaderboards;
+- (bool)gamecenter_present_view_leaderboard:(std::string_view)leaderboard_id
+                                 time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
+                               player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope;
+
+// Local player
+- (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_local_player_is_authenticated;
+- (bool)gamecenter_local_player_is_underage;
+- (bool)gamecenter_local_player_is_multiplayer_gaming_restricted;
+- (bool)gamecenter_local_player_is_personalized_communication_restricted;
+- (gm_structs::GameCenterPlayer)gamecenter_local_player_get_info;
+
+// Saved games
+- (void)gamecenter_saved_games_callback_subscribe:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_save:(std::string_view)name data:(std::string_view)data callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_delete:(std::string_view)name callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_get_data:(std::string_view)name callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(std::string_view)data callback:(gm::wire::GMFunction)callback;
+
+// Leaderboards
+- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(double)score context:(double)context callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id
+                         time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
+                        range_start:(double)range_start
+                        range_count:(double)range_count
+                       player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope
+                           callback:(gm::wire::GMFunction)callback;
+
+// Achievements
+- (void)gamecenter_achievement_report:(std::string_view)identifier percent_complete:(double)percent_complete show_completion_banner:(bool)show_completion_banner callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_achievement_reset_all:(gm::wire::GMFunction)callback;
+- (void)gamecenter_achievement_load:(gm::wire::GMFunction)callback;
+
+// Access point
+- (bool)gamecenter_access_point_set_active:(bool)active;
+- (bool)gamecenter_access_point_get_active;
+- (bool)gamecenter_access_point_set_location:(gm_enums::GameCenterAccessPointLocation)location;
+- (double)gamecenter_access_point_get_location;
+- (bool)gamecenter_access_point_is_presenting_game_center;
+- (bool)gamecenter_access_point_is_visible;
+- (bool)gamecenter_access_point_set_show_highlights:(bool)show;
+- (bool)gamecenter_access_point_get_show_highlights;
+- (double)gamecenter_access_point_get_coordinate:(gm_enums::GameCenterAccessPointCoordinate)coordinate;
+- (bool)gamecenter_access_point_present_with_state:(gm_enums::GameCenterViewState)state callback:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_access_point_present:(gm::wire::GMFunction)callback;
+
+@end
+
+@implementation GMGameCenterMac {
+    gm::wire::GMFunction _viewCallback;
+    gm::wire::GMFunction _savedGamesEventCallback;
+}
+
++ (instancetype)shared
+{
+    static GMGameCenterMac *instance = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ instance = [[GMGameCenterMac alloc] init]; });
+    return instance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.conflictGroups = [NSMutableArray array];
+        [[GKLocalPlayer localPlayer] registerListener:self];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [[GKLocalPlayer localPlayer] unregisterListener:self];
+    self.conflictGroups = nil;
+}
+
+#pragma mark - Struct helpers
+
+- (gm_structs::GameCenterPlayer)playerStructFor:(GKPlayer *)player
+{
+    gm_structs::GameCenterPlayer out{};
+    if (player == nil) return out;
+
+    out.alias = StringFromNSString(player.alias);
+    out.display_name = StringFromNSString(player.displayName);
+    out.player_id = StringFromNSString(player.gamePlayerID);
+    out.game_player_id = StringFromNSString(player.gamePlayerID);
+    out.team_player_id = StringFromNSString(player.teamPlayerID);
+    return out;
+}
+
+- (gm_structs::GameCenterSavedGame)savedGameStructFor:(GKSavedGame *)savedGame
+{
+    gm_structs::GameCenterSavedGame out{};
+    if (savedGame == nil) return out;
+
+    out.device_name = StringFromNSString(savedGame.deviceName);
+    out.modification_date = DateToGMDate(savedGame.modificationDate);
+    out.name = StringFromNSString(savedGame.name);
+    return out;
+}
+
+- (gm_structs::GameCenterLeaderboardEntry)leaderboardEntryStructFor:(GKLeaderboardEntry *)entry
+{
+    gm_structs::GameCenterLeaderboardEntry out{};
+    if (entry == nil) {
+        out.rank = -1; // sentinel: this player has no entry in the requested range
+        return out;
+    }
+
+    out.context = static_cast<double>(entry.context);
+    out.date = DateToGMDate(entry.date);
+    out.rank = static_cast<double>(entry.rank);
+    out.score = static_cast<double>(entry.score);
+    out.formatted_score = StringFromNSString(entry.formattedScore);
+    out.player = [self playerStructFor:entry.player];
+    return out;
+}
+
+- (gm_structs::GameCenterAchievement)achievementStructFor:(GKAchievement *)achievement
+{
+    gm_structs::GameCenterAchievement out{};
+    if (achievement == nil) return out;
+
+    out.identifier = StringFromNSString(achievement.identifier);
+    out.percent_complete = achievement.percentComplete;
+    out.is_completed = (achievement.isCompleted == YES);
+    out.shows_completion_banner = (achievement.showsCompletionBanner == YES);
+    out.player = [self playerStructFor:achievement.player];
+    out.last_reported_date = DateToGMDate(achievement.lastReportedDate);
+    return out;
+}
+
+#pragma mark - Presentation (macOS)
+
+// GameKit dialogs on macOS are shown through the shared GKDialogController, which
+// needs a host window to anchor to. Use the application's key/main window.
+- (NSWindow *)parentWindow
+{
+    NSApplication *app = [NSApplication sharedApplication];
+    NSWindow *window = app.keyWindow;
+    if (window == nil) window = app.mainWindow;
+    if (window == nil) window = app.windows.firstObject;
+    return window;
+}
+
+- (bool)presentController:(GKGameCenterViewController *)controller
+{
+    if (controller == nil) return false;
+    controller.gameCenterDelegate = self;
+
+    GKDialogController *dialog = [GKDialogController sharedDialogController];
+    dialog.parentWindow = [self parentWindow];
+    return [dialog presentViewController:(NSViewController<GKViewController> *)controller] == YES;
+}
+
+#pragma mark - View presentation
+
+- (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback
+{
+    _viewCallback = callback;
+}
+
+- (bool)gamecenter_present_view_default
+{
+    GKGameCenterViewController *controller =
+        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateDefault];
+    return [self presentController:controller];
+}
+
+- (bool)gamecenter_present_view_achievements
+{
+    GKGameCenterViewController *controller =
+        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements];
+    return [self presentController:controller];
+}
+
+- (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id
+{
+    GKGameCenterViewController *controller =
+        [[GKGameCenterViewController alloc] initWithAchievementID:NSStringFromStringView(achievement_id)];
+    return [self presentController:controller];
+}
+
+- (bool)gamecenter_present_view_leaderboards
+{
+    GKGameCenterViewController *controller =
+        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards];
+    return [self presentController:controller];
+}
+
+- (bool)gamecenter_present_view_leaderboard:(std::string_view)leaderboard_id
+                                 time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
+                               player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope
+{
+    GKLeaderboardTimeScope ts = static_cast<GKLeaderboardTimeScope>(time_scope);
+    GKLeaderboardPlayerScope ps = static_cast<GKLeaderboardPlayerScope>(player_scope);
+
+    GKGameCenterViewController *controller =
+        [[GKGameCenterViewController alloc] initWithLeaderboardID:NSStringFromStringView(leaderboard_id)
+                                                     playerScope:ps
+                                                       timeScope:ts];
+    return [self presentController:controller];
+}
+
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)controller
+{
+    bool success = controller != nil;
+    [[GKDialogController sharedDialogController] dismiss:self];
+
+    if (_viewCallback) {
+        gm_structs::GameCenterViewResult result{};
+        result.success = success;
+        _viewCallback.call(result);
+    }
+}
+
+#pragma mark - Local player
+
+- (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
+{
+    [GKLocalPlayer localPlayer].authenticateHandler = ^(NSViewController *viewController, NSError *error) {
+        GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+        std::string state = "unknown";
+
+        if (viewController != nil) {
+            GKDialogController *dialog = [GKDialogController sharedDialogController];
+            dialog.parentWindow = [self parentWindow];
+            [dialog presentViewController:(NSViewController<GKViewController> *)viewController];
+            state = "presenting_view";
+        } else if (localPlayer.isAuthenticated) {
+            state = "authenticated";
+        }
+
+        gm_structs::GameCenterAuthResult result{};
+        GCFillError(result, error);
+        result.authentication_state = state;
+        result.authenticated = (localPlayer.isAuthenticated == YES);
+        result.player = [self playerStructFor:localPlayer];
+        callback.call(result);
+    };
+}
+
+- (bool)gamecenter_local_player_is_authenticated { return [GKLocalPlayer localPlayer].isAuthenticated == YES; }
+- (bool)gamecenter_local_player_is_underage { return [GKLocalPlayer localPlayer].isUnderage == YES; }
+
+- (bool)gamecenter_local_player_is_multiplayer_gaming_restricted
+{
+    return [GKLocalPlayer localPlayer].isMultiplayerGamingRestricted == YES;
+}
+
+- (bool)gamecenter_local_player_is_personalized_communication_restricted
+{
+    return [GKLocalPlayer localPlayer].isPersonalizedCommunicationRestricted == YES;
+}
+
+- (gm_structs::GameCenterPlayer)gamecenter_local_player_get_info
+{
+    return [self playerStructFor:[GKLocalPlayer localPlayer]];
+}
+
+#pragma mark - Saved games
+
+- (void)gamecenter_saved_games_callback_subscribe:(gm::wire::GMFunction)callback
+{
+    _savedGamesEventCallback = callback;
+}
+
+- (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback
+{
+    [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
+        std::vector<gm_structs::GameCenterSavedGame> slots;
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
+
+        gm_structs::GameCenterSavedGamesFetchResult result{};
+        GCFillError(result, error);
+        result.slots = std::move(slots);
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_saved_games_save:(std::string_view)name
+                               data:(std::string_view)data
+                           callback:(gm::wire::GMFunction)callback
+{
+    NSString *saveName = NSStringFromStringView(name);
+    NSData *saveData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+
+    [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
+        gm_structs::GameCenterSavedGamesSaveResult result{};
+        GCFillError(result, error);
+        result.name = StringFromNSString(saveName);
+        result.slot = [self savedGameStructFor:savedGame];
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_saved_games_delete:(std::string_view)name
+                             callback:(gm::wire::GMFunction)callback
+{
+    NSString *saveName = NSStringFromStringView(name);
+    [[GKLocalPlayer localPlayer] deleteSavedGamesWithName:saveName completionHandler:^(NSError *error) {
+        gm_structs::GameCenterSavedGamesDeleteResult result{};
+        GCFillError(result, error);
+        result.name = StringFromNSString(saveName);
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_saved_games_get_data:(std::string_view)name
+                               callback:(gm::wire::GMFunction)callback
+{
+    NSString *saveName = NSStringFromStringView(name);
+    [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *fetchError) {
+        if (fetchError != nil) {
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            GCFillError(result, fetchError);
+            result.name = StringFromNSString(saveName);
+            result.data = std::string();
+            callback.call(result);
+            return;
+        }
+
+        GKSavedGame *match = nil;
+        for (GKSavedGame *savedGame in savedGames ?: @[]) {
+            if ([savedGame.name isEqualToString:saveName]) { match = savedGame; break; }
+        }
+
+        if (match == nil) {
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            result.success = false;
+            result.name = StringFromNSString(saveName);
+            result.data = std::string();
+            result.error_code = 0;
+            result.error_message = "Saved game was not found.";
+            callback.call(result);
+            return;
+        }
+
+        [match loadDataWithCompletionHandler:^(NSData *loadedData, NSError *loadError) {
+            NSString *text = loadedData != nil
+                ? [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding]
+                : @"";
+
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            GCFillError(result, loadError);
+            result.name = StringFromNSString(saveName);
+            result.data = StringFromNSString(text);
+            callback.call(result);
+        }];
+    }];
+}
+
+- (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id
+                                           data:(std::string_view)data
+                                       callback:(gm::wire::GMFunction)callback
+{
+    NSInteger index = (NSInteger)conflict_id;
+    if (index < 0 || index >= (NSInteger)self.conflictGroups.count) {
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        result.success = false;
+        result.conflict_id = static_cast<std::int32_t>(index);
+        result.error_code = 0;
+        result.error_message = "Invalid conflict ID.";
+        callback.call(result);
+        return;
+    }
+
+    NSArray<GKSavedGame *> *conflicts = self.conflictGroups[index];
+    NSData *resolvedData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+
+    [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
+                                                    withData:resolvedData
+                                           completionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
+        std::vector<gm_structs::GameCenterSavedGame> slots;
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
+
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        GCFillError(result, error);
+        result.conflict_id = static_cast<std::int32_t>(index);
+        result.slots = std::move(slots);
+        callback.call(result);
+    }];
+}
+
+- (void)player:(GKPlayer *)player hasConflictingSavedGames:(NSArray<GKSavedGame *> *)savedGames
+{
+    NSInteger conflictId = self.conflictGroups.count;
+    [self.conflictGroups addObject:savedGames];
+
+    if (!_savedGamesEventCallback) return;
+
+    std::vector<gm_structs::GameCenterSavedGame> slots;
+    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
+
+    gm_structs::GameCenterSavedGamesEvent event{};
+    event.type = "conflict";
+    event.conflict_id = static_cast<std::int32_t>(conflictId);
+    event.player = [self playerStructFor:player];
+    event.slots = std::move(slots);
+    _savedGamesEventCallback.call(event);
+}
+
+- (void)player:(GKPlayer *)player didModifySavedGame:(GKSavedGame *)savedGame
+{
+    if (!_savedGamesEventCallback) return;
+
+    gm_structs::GameCenterSavedGamesEvent event{};
+    event.type = "modified";
+    event.player = [self playerStructFor:player];
+    event.slot = [self savedGameStructFor:savedGame];
+    _savedGamesEventCallback.call(event);
+}
+
+#pragma mark - Leaderboards
+
+- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id
+                                score:(double)score
+                              context:(double)context
+                             callback:(gm::wire::GMFunction)callback
+{
+    NSString *identifier = NSStringFromStringView(leaderboard_id);
+
+    [GKLeaderboard submitScore:(NSInteger)score
+                       context:(NSUInteger)context
+                        player:[GKLocalPlayer localPlayer]
+                leaderboardIDs:@[identifier]
+             completionHandler:^(NSError *error) {
+        gm_structs::GameCenterLeaderboardSubmitResult result{};
+        GCFillError(result, error);
+        result.leaderboard_id = StringFromNSString(identifier);
+        result.score = score;
+        result.context = context;
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id
+                         time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
+                        range_start:(double)range_start
+                        range_count:(double)range_count
+                       player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope
+                           callback:(gm::wire::GMFunction)callback
+{
+    NSString *identifier = NSStringFromStringView(leaderboard_id);
+    GKLeaderboardTimeScope ts = static_cast<GKLeaderboardTimeScope>(time_scope);
+    GKLeaderboardPlayerScope ps = static_cast<GKLeaderboardPlayerScope>(player_scope);
+    NSRange range = NSMakeRange((NSUInteger)range_start, (NSUInteger)range_count);
+
+    [GKLeaderboard loadLeaderboardsWithIDs:@[identifier] completionHandler:^(NSArray<GKLeaderboard *> *leaderboards, NSError *loadError) {
+        GKLeaderboard *leaderboard = leaderboards.firstObject;
+        if (loadError != nil || leaderboard == nil) {
+            gm_structs::GameCenterLeaderboardLoadResult result{};
+            GCFillError(result, loadError);
+            result.success = false;
+            result.leaderboard_id = StringFromNSString(identifier);
+            result.local_entry = [self leaderboardEntryStructFor:nil];
+            callback.call(result);
+            return;
+        }
+
+        [leaderboard loadEntriesForPlayerScope:ps timeScope:ts range:range completionHandler:^(GKLeaderboardEntry *localEntry, NSArray<GKLeaderboardEntry *> *entries, NSInteger totalPlayerCount, NSError *error) {
+            std::vector<gm_structs::GameCenterLeaderboardEntry> entryArray;
+            for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push_back([self leaderboardEntryStructFor:entry]);
+
+            gm_structs::GameCenterLeaderboardLoadResult result{};
+            GCFillError(result, error);
+            result.leaderboard_id = StringFromNSString(identifier);
+            result.time_scope = static_cast<std::int32_t>(time_scope);
+            result.range_start = range_start;
+            result.range_count = range_count;
+            result.player_scope = static_cast<std::int32_t>(player_scope);
+            result.leaderboard_title = StringFromNSString(leaderboard.title);
+            result.leaderboard_group = StringFromNSString(leaderboard.groupIdentifier);
+            result.leaderboard_type = static_cast<std::int32_t>(leaderboard.type);
+            result.leaderboard_start_date = DateToGMDate(leaderboard.startDate);
+            result.leaderboard_next_start_date = DateToGMDate(leaderboard.nextStartDate);
+            result.leaderboard_duration = leaderboard.duration;
+            result.total_players_count = static_cast<double>(totalPlayerCount);
+            result.local_entry = [self leaderboardEntryStructFor:localEntry];
+            result.entries = std::move(entryArray);
+            callback.call(result);
+        }];
+    }];
+}
+
+#pragma mark - Achievements
+
+- (void)gamecenter_achievement_report:(std::string_view)identifier
+                     percent_complete:(double)percent_complete
+               show_completion_banner:(bool)show_completion_banner
+                             callback:(gm::wire::GMFunction)callback
+{
+    NSString *achievementId = NSStringFromStringView(identifier);
+    GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:achievementId];
+    achievement.percentComplete = percent_complete;
+    achievement.showsCompletionBanner = show_completion_banner;
+
+    [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError *error) {
+        gm_structs::GameCenterAchievementReportResult result{};
+        GCFillError(result, error);
+        result.identifier = StringFromNSString(achievementId);
+        result.percent_complete = percent_complete;
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_achievement_reset_all:(gm::wire::GMFunction)callback
+{
+    [GKAchievement resetAchievementsWithCompletionHandler:^(NSError *error) {
+        gm_structs::GameCenterAchievementResetResult result{};
+        GCFillError(result, error);
+        callback.call(result);
+    }];
+}
+
+- (void)gamecenter_achievement_load:(gm::wire::GMFunction)callback
+{
+    [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> *achievements, NSError *error) {
+        std::vector<gm_structs::GameCenterAchievement> values;
+        for (GKAchievement *achievement in achievements ?: @[]) values.push_back([self achievementStructFor:achievement]);
+
+        gm_structs::GameCenterAchievementsResult result{};
+        GCFillError(result, error);
+        result.achievements = std::move(values);
+        callback.call(result);
+    }];
+}
+
+#pragma mark - Access point
+
+- (bool)gamecenter_access_point_set_active:(bool)active
+{
+    [GKAccessPoint shared].active = active;
+    return true;
+}
+
+- (bool)gamecenter_access_point_get_active { return [GKAccessPoint shared].active == YES; }
+
+- (bool)gamecenter_access_point_set_location:(gm_enums::GameCenterAccessPointLocation)location
+{
+    [GKAccessPoint shared].location = static_cast<GKAccessPointLocation>(location);
+    return true;
+}
+
+- (double)gamecenter_access_point_get_location { return (double)[GKAccessPoint shared].location; }
+
+- (bool)gamecenter_access_point_is_presenting_game_center { return [GKAccessPoint shared].isPresentingGameCenter == YES; }
+
+- (bool)gamecenter_access_point_is_visible { return [GKAccessPoint shared].visible == YES; }
+
+- (bool)gamecenter_access_point_set_show_highlights:(bool)show
+{
+    [GKAccessPoint shared].showHighlights = show;
+    return true;
+}
+
+- (bool)gamecenter_access_point_get_show_highlights { return [GKAccessPoint shared].showHighlights == YES; }
+
+- (double)gamecenter_access_point_get_coordinate:(gm_enums::GameCenterAccessPointCoordinate)coordinate
+{
+    CGRect frame = [GKAccessPoint shared].frameInScreenCoordinates;
+    switch (coordinate) {
+        case gm_enums::GameCenterAccessPointCoordinate::X: return frame.origin.x;
+        case gm_enums::GameCenterAccessPointCoordinate::Y: return frame.origin.y;
+        case gm_enums::GameCenterAccessPointCoordinate::Width: return frame.size.width;
+        case gm_enums::GameCenterAccessPointCoordinate::Height: return frame.size.height;
+    }
+    return 0;
+}
+
+- (bool)gamecenter_access_point_present_with_state:(gm_enums::GameCenterViewState)state
+                                          callback:(gm::wire::GMFunction)callback
+{
+    [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
+        gm_structs::GameCenterViewResult result{};
+        result.success = true;
+        callback.call(result);
+    }];
+    return true;
+}
+
+- (bool)gamecenter_access_point_present:(gm::wire::GMFunction)callback
+{
+    [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
+        gm_structs::GameCenterViewResult result{};
+        result.success = true;
+        callback.call(result);
+    }];
+    return true;
+}
+
+@end
+
+#pragma mark - C++ free-function API (called by the code_gen/native shim)
+
+void gamecenter_view_callback_subscribe(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_view_callback_subscribe:callback];
+}
+
+bool gamecenter_present_view_default()
+{
+    return [[GMGameCenterMac shared] gamecenter_present_view_default];
+}
+
+bool gamecenter_present_view_achievements()
+{
+    return [[GMGameCenterMac shared] gamecenter_present_view_achievements];
+}
+
+bool gamecenter_present_view_achievement(std::string_view achievement_id)
+{
+    return [[GMGameCenterMac shared] gamecenter_present_view_achievement:achievement_id];
+}
+
+bool gamecenter_present_view_leaderboards()
+{
+    return [[GMGameCenterMac shared] gamecenter_present_view_leaderboards];
+}
+
+bool gamecenter_present_view_leaderboard(std::string_view leaderboard_id,
+                                         gm_enums::GameCenterLeaderboardTimeScope time_scope,
+                                         gm_enums::GameCenterLeaderboardPlayerScope player_scope)
+{
+    return [[GMGameCenterMac shared] gamecenter_present_view_leaderboard:leaderboard_id
+                                                            time_scope:time_scope
+                                                          player_scope:player_scope];
+}
+
+void gamecenter_local_player_authenticate(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_local_player_authenticate:callback];
+}
+
+bool gamecenter_local_player_is_authenticated()
+{
+    return [[GMGameCenterMac shared] gamecenter_local_player_is_authenticated];
+}
+
+bool gamecenter_local_player_is_underage()
+{
+    return [[GMGameCenterMac shared] gamecenter_local_player_is_underage];
+}
+
+bool gamecenter_local_player_is_multiplayer_gaming_restricted()
+{
+    return [[GMGameCenterMac shared] gamecenter_local_player_is_multiplayer_gaming_restricted];
+}
+
+bool gamecenter_local_player_is_personalized_communication_restricted()
+{
+    return [[GMGameCenterMac shared] gamecenter_local_player_is_personalized_communication_restricted];
+}
+
+gm_structs::GameCenterPlayer gamecenter_local_player_get_info()
+{
+    return [[GMGameCenterMac shared] gamecenter_local_player_get_info];
+}
+
+void gamecenter_saved_games_callback_subscribe(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_callback_subscribe:callback];
+}
+
+void gamecenter_saved_games_fetch(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_fetch:callback];
+}
+
+void gamecenter_saved_games_save(std::string_view name, std::string_view data, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_save:name data:data callback:callback];
+}
+
+void gamecenter_saved_games_delete(std::string_view name, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_delete:name callback:callback];
+}
+
+void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_get_data:name callback:callback];
+}
+
+void gamecenter_saved_games_resolve_conflict(double conflict_id, std::string_view data, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_saved_games_resolve_conflict:conflict_id data:data callback:callback];
+}
+
+void gamecenter_leaderboard_submit(std::string_view leaderboard_id, double score, double context, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_leaderboard_submit:leaderboard_id score:score context:context callback:callback];
+}
+
+void gamecenter_leaderboard_load(std::string_view leaderboard_id,
+                                 gm_enums::GameCenterLeaderboardTimeScope time_scope,
+                                 double range_start,
+                                 double range_count,
+                                 gm_enums::GameCenterLeaderboardPlayerScope player_scope,
+                                 const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_leaderboard_load:leaderboard_id
+                                              time_scope:time_scope
+                                             range_start:range_start
+                                             range_count:range_count
+                                            player_scope:player_scope
+                                                callback:callback];
+}
+
+void gamecenter_achievement_report(std::string_view identifier, double percent_complete, bool show_completion_banner, const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_achievement_report:identifier
+                                          percent_complete:percent_complete
+                                    show_completion_banner:show_completion_banner
+                                                  callback:callback];
+}
+
+void gamecenter_achievement_reset_all(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_achievement_reset_all:callback];
+}
+
+void gamecenter_achievement_load(const gm::wire::GMFunction& callback)
+{
+    [[GMGameCenterMac shared] gamecenter_achievement_load:callback];
+}
+
+bool gamecenter_access_point_set_active(bool active)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_set_active:active];
+}
+
+bool gamecenter_access_point_get_active()
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_get_active];
+}
+
+bool gamecenter_access_point_set_location(gm_enums::GameCenterAccessPointLocation location)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_set_location:location];
+}
+
+double gamecenter_access_point_get_location()
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_get_location];
+}
+
+bool gamecenter_access_point_is_presenting_game_center()
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_is_presenting_game_center];
+}
+
+bool gamecenter_access_point_is_visible()
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_is_visible];
+}
+
+bool gamecenter_access_point_set_show_highlights(bool show)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_set_show_highlights:show];
+}
+
+bool gamecenter_access_point_get_show_highlights()
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_get_show_highlights];
+}
+
+double gamecenter_access_point_get_coordinate(gm_enums::GameCenterAccessPointCoordinate coordinate)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_get_coordinate:coordinate];
+}
+
+bool gamecenter_access_point_present_with_state(gm_enums::GameCenterViewState state, const gm::wire::GMFunction& callback)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_present_with_state:state callback:callback];
+}
+
+bool gamecenter_access_point_present(const gm::wire::GMFunction& callback)
+{
+    return [[GMGameCenterMac shared] gamecenter_access_point_present:callback];
+}

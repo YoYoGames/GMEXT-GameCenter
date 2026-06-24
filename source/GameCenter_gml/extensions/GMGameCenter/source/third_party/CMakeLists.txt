@@ -25,13 +25,28 @@ elseif(APPLE)
     # headers (#import <GameKit/GameKit.h>) resolve automatically with no -F
     # search path and no CocoaPods. We only need to link the framework so the
     # final app pulls in the GameKit symbols.
-    target_link_libraries(ext_third_party INTERFACE "-framework" "GameKit")
+    #
+    # Pass "-framework GameKit" as a SINGLE string. If "-framework" and
+    # "GameKit" are given as two separate list items, CMake treats "GameKit"
+    # as a plain library name and emits "-lGameKit", which the linker cannot
+    # resolve (ld: framework '-lGameKit' not found).
+    target_link_libraries(ext_third_party INTERFACE "-framework GameKit")
 
   # ----------------------
   # macOS (desktop)
   # ----------------------
   else()
-    target_link_libraries(ext_third_party INTERFACE "-framework" "GameKit")
+    # The macOS desktop target is a standalone .dylib (not statically linked
+    # into a GameMaker Xcode project like iOS), so it must pull in Foundation
+    # and AppKit itself. AppKit provides NSApplication / NSWindow /
+    # NSViewController, which the native implementation uses to present GameKit
+    # dialogs via GKDialogController. Each framework is a SINGLE string for the
+    # same reason as GameKit above.
+    target_link_libraries(ext_third_party INTERFACE
+      "-framework GameKit"
+      "-framework Foundation"
+      "-framework AppKit"
+    )
   endif()
 
 # =============================================================================
