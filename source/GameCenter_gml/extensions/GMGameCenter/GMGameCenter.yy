@@ -52,7 +52,9 @@
         {"$GMExtensionFunction":"","%Name":"__gamecenter_access_point_present_with_state","argCount":2,"args":[1,2,],"documentation":"@param {Pointer} _arg_buffer\r\n@param {Real} _arg_buffer_length\r\n@returns {Real}","externalName":"__EXT_NATIVE__gamecenter_access_point_present_with_state","help":"","hidden":true,"kind":4,"name":"__gamecenter_access_point_present_with_state","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":2,},
         {"$GMExtensionFunction":"","%Name":"__gamecenter_access_point_present","argCount":2,"args":[1,2,],"documentation":"@param {Pointer} _arg_buffer\r\n@param {Real} _arg_buffer_length\r\n@returns {Real}","externalName":"__EXT_NATIVE__gamecenter_access_point_present","help":"","hidden":true,"kind":4,"name":"__gamecenter_access_point_present","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":2,},
         {"$GMExtensionFunction":"","%Name":"__GMGameCenter_invocation_handler","argCount":2,"args":[1,2,],"documentation":"@param {Pointer} _buffer_ptr\r\n@param {Real} _buffer_size","externalName":"__EXT_NATIVE__GMGameCenter_invocation_handler","help":"","hidden":true,"kind":4,"name":"__GMGameCenter_invocation_handler","resourceType":"GMExtensionFunction","resourceVersion":"2.0","returnType":2,},
-      ],"init":"","kind":4,"name":"","origname":"","ProxyFiles":[],"resourceType":"GMExtensionFile","resourceVersion":"2.0","uncompress":false,"usesRunnerInterface":false,},
+      ],"init":"","kind":4,"name":"","origname":"","ProxyFiles":[
+        {"$GMProxyFile":"","%Name":"libGMGameCenter.dylib","name":"libGMGameCenter.dylib","resourceType":"GMProxyFile","resourceVersion":"2.0","TargetMask":1,},
+      ],"resourceType":"GMExtensionFile","resourceVersion":"2.0","uncompress":false,"usesRunnerInterface":false,},
   ],
   "gradleinject":null,
   "hasConvertedCodeInjection":true,
