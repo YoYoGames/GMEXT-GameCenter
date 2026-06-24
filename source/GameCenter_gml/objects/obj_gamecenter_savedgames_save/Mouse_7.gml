@@ -1,30 +1,28 @@
 /// @description Save data
 
-// Early exit if locked
-if(locked) exit;
-	
-var data = [];
+if (locked) exit;
 
-// Loop through all the points to be saved and store their poisition
-// and image index inside an array.
-with(Obj_GameCenter_SavedGames_Point)
+var _data = [];
+
+with (Obj_GameCenter_SavedGames_Point)
 {
-	var pointData = { };
-	pointData.x = x;
-	pointData.y = y;
-	pointData.image_index = image_index;
-	
-	array_push(data, pointData);
+    array_push(_data, {
+        x: x,
+        y: y,
+        image_index: image_index
+    });
 }
 
-// Convert the array into a string
-var dataJSON = json_stringify(data);
+var _manager = Obj_GameCenter_SavedGames;
+var _data_json = json_stringify(_data);
 
-// Save the new data into the target save slot.
-// This function call will save a string of data into a given slotId
-// Data will be overwritten if existing or created if nonexistent.
-// This function doesn't return any value but will trigger a Social Async event
-// after the task is resolved.
-GameCenter_SavedGames_Save(Obj_GameCenter_SavedGames.selected, dataJSON);
+gamecenter_saved_games_save(_manager.selected, _data_json, function(_result)
+{
+    if (!_result.success)
+    {
+        _manager.show_saved_game_error("Save game", _result);
+        exit;
+    }
 
-
+    _manager.fetch_saved_game_slots();
+});

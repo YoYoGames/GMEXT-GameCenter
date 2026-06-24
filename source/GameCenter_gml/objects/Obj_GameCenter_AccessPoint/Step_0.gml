@@ -1,4 +1,3 @@
-
 event_inherited();
 
-text = GameCenter_AccessPoint_GetActive()?"AccessPoint: ON":"AccessPoint: OFF"
+text = gamecenter_access_point_get_active() ? "AccessPoint: ON" : "AccessPoint: OFF";

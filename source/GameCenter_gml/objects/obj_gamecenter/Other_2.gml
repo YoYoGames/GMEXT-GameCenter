@@ -1,14 +1,30 @@
-/// @description Authenticate
-	
-// This is the first function that needs to be called before any other
-// functionality can be used. This function will authenticate the users
-// with their GameCenter account and will log them in.
-// The function call triggers an Async Social Event.
-if (!GameCenter_LocalPlayer_Authenticate())
-	show_message_async("The extension doesn't seem to be loaded.");
+/// @description Authenticate and subscribe to Game Center events
 
-// Try to setup the Game Center access point.
-GameCenter_AccessPoint_SetActive(true);
-GameCenter_AccessPoint_SetLocation(GameCenter_AccessPoint_Location_BottomLeading);
-GameCenter_AccessPoint_SetShowHighlights(true);
+// Subscribe once to the callback fired after a native Game Center view closes.
+gamecenter_view_callback_subscribe(function(_result)
+{
+    show_debug_message("Game Center view finished: " + json_stringify(_result));
+});
 
+// Authenticate before using the remaining Game Center functionality.
+gamecenter_local_player_authenticate(function(_result)
+{
+    show_debug_message("Game Center authentication: " + json_stringify(_result));
+
+    if (!_result.success)
+    {
+        show_message_async(
+            "Game Center authentication failed.\n" +
+            "Error " + string(_result.error_code) + ": " + _result.error_message
+        );
+        exit;
+    }
+
+    show_debug_message("Authentication state: " + _result.authentication_state);
+    show_debug_message("Authenticated: " + string(_result.authenticated));
+});
+
+// Try to set up the Game Center access point.
+gamecenter_access_point_set_active(true);
+gamecenter_access_point_set_location(GameCenterAccessPointLocation.BottomLeading);
+gamecenter_access_point_set_show_highlights(true);

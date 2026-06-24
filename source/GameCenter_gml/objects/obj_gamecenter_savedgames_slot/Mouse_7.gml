@@ -1,11 +1,6 @@
 /// @description Get data
 
-// Early exit if locked
-if(locked) exit
-	
-Obj_GameCenter_SavedGames.selected = name
+if (locked) exit;
 
-// This function gets data from the Apple GameCenter
-// refering to the specific save slot.
-// The function triggers a Social Async callback.
-GameCenter_SavedGames_GetData(name);
+Obj_GameCenter_SavedGames.selected = name;
+Obj_GameCenter_SavedGames.load_saved_game_data(name);

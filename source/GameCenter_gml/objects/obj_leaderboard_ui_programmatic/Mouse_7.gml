@@ -1,16 +1,63 @@
 /// @description Fetch data from leaderboard
 
-// This function fetches data from a leaderboard
-// without displaying the Game Center UI.
-// It is only recommended if you want to guard against Daily Run cheating,
-// for actual in-game display, the native Present() functions are recommended.
-// The function returns an async operation id, or 'GameCenter_Invalid' if the request could not be created.
-// NOTE: Some information such as Start Date, Next Date and Leaderboard Type are ONLY
-//       available since iOS 14.0 and macOS 11.0, for older APIs a constant 'GameCenter_Invalid' will be stored instead.
-// For more information, please see Apple Developer Documentation on GameKit.
-// NOTE 2: You cannot fetch more than 100 entries per operation. Please use sparingly.
-asyncOpId = GameCenter_Leaderboard_LoadGlobal(leaderboardID, GameCenter_Leaderboard_TimeScope_AllTime, 1, 5);
+if (asyncBusy) exit;
 
-if (asyncOpId != GameCenter_Invalid) {
-	asyncBusy = true;
-}
+asyncBusy = true;
+
+gamecenter_leaderboard_load(
+    leaderboardID,
+    GameCenterLeaderboardTimeScope.AllTime,
+    1,
+    5,
+    GameCenterLeaderboardPlayerScope.Global,
+    function(_result)
+    {
+        asyncBusy = false;
+
+        var _text = "Game Center Leaderboard Data:\n";
+
+        if (!_result.success)
+        {
+            _text += "Error:\n";
+            _text += "Message: " + _result.error_message + "\n";
+            _text += "Code: " + string(_result.error_code) + "\n";
+        }
+        else
+        {
+            _text += "Leaderboard: " + _result.leaderboard_id + "\n";
+
+            var _entries = _result.entries;
+            var _entry_count = array_length(_entries);
+            _text += "Entries: " + string(_entry_count) +
+                ", rank display_name formatted_score date context score:\n";
+
+            for (var _i = 0; _i < _entry_count; ++_i)
+            {
+                var _entry = _entries[_i];
+                _text +=
+                    string(_entry.rank) + " " +
+                    _entry.player.display_name + " " +
+                    _entry.formatted_score + " " +
+                    date_datetime_string(_entry.date) + " " +
+                    string(_entry.context) + " " +
+                    string(_entry.score) + "\n";
+            }
+
+            var _local_entry = _result.local_entry;
+            if (is_struct(_local_entry) && variable_struct_exists(_local_entry, "rank"))
+            {
+                _text += "--- This player is present: same format\n";
+                _text +=
+                    string(_local_entry.rank) + " " +
+                    _local_entry.player.display_name + " " +
+                    _local_entry.formatted_score + " " +
+                    date_datetime_string(_local_entry.date) + " " +
+                    string(_local_entry.context) + " " +
+                    string(_local_entry.score) + "\n";
+            }
+        }
+
+        _text += "\nData End.\n";
+        show_message_async(_text);
+    }
+);
