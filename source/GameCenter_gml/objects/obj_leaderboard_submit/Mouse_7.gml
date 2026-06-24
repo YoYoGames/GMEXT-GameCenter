@@ -1,21 +1,9 @@
-/// @description Submit score
+/// @description Report achievement
 
-var _new_score = irandom(999);
-show_message_async("Your Score: " + string(_new_score));
+var newScore = irandom(999)
+show_message_async("Your Score: " + string(newScore))
 
-gamecenter_leaderboard_submit(leaderboardID, _new_score, 0, function(_result)
-{
-    if (_result.success)
-    {
-        show_debug_message(
-            "Leaderboard score submitted: " + string(_result.score)
-        );
-    }
-    else
-    {
-        show_message_async(
-            "Failed to submit leaderboard score.\n" +
-            "Error " + string(_result.error_code) + ": " + _result.error_message
-        );
-    }
-});
+// This function allows to submit a new score to a leaderboard.
+// The developer should pass in an leaderboardID and the new score.
+// The function task will trigger a Async Social Event.
+GameCenter_Leaderboard_Submit(leaderboardID, newScore,noone)

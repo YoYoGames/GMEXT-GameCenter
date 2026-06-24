@@ -1,5 +1,6 @@
 /// @description Close edit mode
 
-if (locked) exit;
-
-Obj_GameCenter_SavedGames.fetch_saved_game_slots();
+// Early exit if locked
+if(locked) exit;
+		
+GameCenter_SavedGames_Fetch();

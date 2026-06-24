@@ -1,3 +1,5 @@
-/// @description Show Game Center UI
+/// @description Show GameCenter UI
 
-gamecenter_present_view_default();
+// This function shows the default GameCenter screen overlay.
+// The function task will trigger a Async Social Event when dismissing the view.
+GameCenter_PresentView_Default();
