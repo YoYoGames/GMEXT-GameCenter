@@ -4,7 +4,7 @@
   "root": "./",
   "gamemaker": {
     "wrappers": {
-      "outputFile": "../../../scripts/GMGameCenters_API/GMGameCenter_API.gml"
+      "outputFile": "../../../scripts/GMGameCenter_API/GMGameCenter_API.gml"
     },
     "extension": {
       "mode": "patch",

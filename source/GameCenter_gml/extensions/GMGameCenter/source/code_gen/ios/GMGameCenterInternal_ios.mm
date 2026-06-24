@@ -204,11 +204,11 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
 
 - (double)__EXT_NATIVE__gamecenter_local_player_get_info:(char*)__ret_buffer arg1:(double)__ret_buffer_length
 {
-    gm::wire::DataStream __result = [__impl gamecenter_local_player_get_info];
+    gm_structs::GameCenterPlayer __result = [__impl gamecenter_local_player_get_info];
 
     gm::byteio::BufferWriter __bw{__ret_buffer, static_cast<size_t>(__ret_buffer_length)};
 
-    // return: __result, type: Any
+    // return: __result, type: struct GameCenterPlayer
     gm::wire::codec::writeValue(__bw, __result);
     return 0;
 }

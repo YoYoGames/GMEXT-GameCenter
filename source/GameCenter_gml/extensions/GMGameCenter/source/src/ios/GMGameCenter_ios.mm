@@ -47,6 +47,16 @@ static double DateToGMDate(NSDate *date)
     return ((((double)[date timeIntervalSince1970]) + 0.5) / 86400.0) + 25569.0;
 }
 
+// Fills the common success/error fields shared by every result struct. Works on
+// any gm_structs type that exposes `success`, `error_code` and `error_message`.
+template <typename T>
+static void GCFillError(T &out, NSError *error)
+{
+    out.success = (error == nil);
+    out.error_code = static_cast<std::int32_t>(error != nil ? error.code : 0);
+    out.error_message = ErrorMessage(error);
+}
+
 @interface GMGameCenter () <GKLocalPlayerListener, GKGameCenterControllerDelegate>
 @property(nonatomic, assign) gm::wire::GMFunction viewCallback;
 @property(nonatomic, assign) gm::wire::GMFunction savedGamesEventCallback;
@@ -71,93 +81,89 @@ static double DateToGMDate(NSDate *date)
     self.conflictGroups = nil;
 }
 
-#pragma mark - Stream helpers
+#pragma mark - Struct helpers
 
-- (gm::wire::StructStream)errorResult:(NSError *)error
-                              success:(bool)success
+- (gm_structs::GameCenterPlayer)playerStructFor:(GKPlayer *)player
 {
-    gm::wire::StructStream result;
-    result.add("success", success);
-    result.add("error_code", static_cast<std::int32_t>(error != nil ? error.code : 0));
-    result.add("error_message", ErrorMessage(error));
-    return result;
-}
+    gm_structs::GameCenterPlayer out{};
+    if (player == nil) return out;
 
-- (gm::wire::StructStream)playerStream:(GKPlayer *)player
-{
-    gm::wire::StructStream stream;
-    if (player == nil) return stream;
-
-    stream.add("alias", StringFromNSString(player.alias));
-    stream.add("display_name", StringFromNSString(player.displayName));
+    out.alias = StringFromNSString(player.alias);
+    out.display_name = StringFromNSString(player.displayName);
 
     if (@available(iOS 12.4, macOS 10.14.6, *)) {
-        stream.add("player_id", StringFromNSString(player.gamePlayerID));
-        stream.add("game_player_id", StringFromNSString(player.gamePlayerID));
-        stream.add("team_player_id", StringFromNSString(player.teamPlayerID));
+        out.player_id = StringFromNSString(player.gamePlayerID);
+        out.game_player_id = StringFromNSString(player.gamePlayerID);
+        out.team_player_id = StringFromNSString(player.teamPlayerID);
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        stream.add("player_id", StringFromNSString(player.playerID));
-        stream.add("game_player_id", StringFromNSString(player.playerID));
+        out.player_id = StringFromNSString(player.playerID);
+        out.game_player_id = StringFromNSString(player.playerID);
 #pragma clang diagnostic pop
-        stream.add("team_player_id", std::string_view(""));
+        out.team_player_id = std::string();
     }
 
-    return stream;
+    return out;
 }
 
-- (gm::wire::StructStream)savedGameMetadataStream:(GKSavedGame *)savedGame
+- (gm_structs::GameCenterSavedGame)savedGameStructFor:(GKSavedGame *)savedGame
 {
-    gm::wire::StructStream stream;
-    if (savedGame == nil) return stream;
+    gm_structs::GameCenterSavedGame out{};
+    if (savedGame == nil) return out;
 
-    stream.add("device_name", StringFromNSString(savedGame.deviceName));
-    stream.add("modification_date", DateToGMDate(savedGame.modificationDate));
-    stream.add("name", StringFromNSString(savedGame.name));
-    return stream;
+    out.device_name = StringFromNSString(savedGame.deviceName);
+    out.modification_date = DateToGMDate(savedGame.modificationDate);
+    out.name = StringFromNSString(savedGame.name);
+    return out;
 }
 
-- (gm::wire::StructStream)leaderboardEntryStream:(GKLeaderboardEntry *)entry
+- (gm_structs::GameCenterLeaderboardEntry)leaderboardEntryStructFor:(GKLeaderboardEntry *)entry
 {
-    gm::wire::StructStream stream;
-    if (entry == nil) return stream;
+    gm_structs::GameCenterLeaderboardEntry out{};
+    if (entry == nil) {
+        out.rank = -1; // sentinel: this player has no entry in the requested range
+        return out;
+    }
 
-    stream.add("context", static_cast<std::uint64_t>(entry.context));
-    stream.add("date", DateToGMDate(entry.date));
-    stream.add("rank", static_cast<double>(entry.rank));
-    stream.add("score", static_cast<double>(entry.score));
-    stream.add("formatted_score", StringFromNSString(entry.formattedScore));
-    stream.add("player", [self playerStream:entry.player]);
-    return stream;
+    out.context = static_cast<double>(entry.context);
+    out.date = DateToGMDate(entry.date);
+    out.rank = static_cast<double>(entry.rank);
+    out.score = static_cast<double>(entry.score);
+    out.formatted_score = StringFromNSString(entry.formattedScore);
+    out.player = [self playerStructFor:entry.player];
+    return out;
 }
 
-- (gm::wire::StructStream)legacyScoreStream:(GKScore *)score
+- (gm_structs::GameCenterLeaderboardEntry)legacyScoreStructFor:(GKScore *)score
 {
-    gm::wire::StructStream stream;
-    if (score == nil) return stream;
+    gm_structs::GameCenterLeaderboardEntry out{};
+    if (score == nil) {
+        out.rank = -1; // sentinel: this player has no entry in the requested range
+        return out;
+    }
 
-    stream.add("context", static_cast<std::uint64_t>(score.context));
-    stream.add("date", DateToGMDate(score.date));
-    stream.add("rank", static_cast<double>(score.rank));
-    stream.add("score", static_cast<double>(score.value));
-    stream.add("formatted_score", StringFromNSString(score.formattedValue));
-    stream.add("player", [self playerStream:score.player]);
-    return stream;
+    out.context = static_cast<double>(score.context);
+    out.date = DateToGMDate(score.date);
+    out.rank = static_cast<double>(score.rank);
+    out.score = static_cast<double>(score.value);
+    out.formatted_score = StringFromNSString(score.formattedValue);
+    out.player = [self playerStructFor:score.player];
+    return out;
 }
 
-- (gm::wire::StructStream)achievementStream:(GKAchievement *)achievement
+- (gm_structs::GameCenterAchievement)achievementStructFor:(GKAchievement *)achievement
 {
-    gm::wire::StructStream stream;
-    if (achievement == nil) return stream;
+    gm_structs::GameCenterAchievement out{};
+    if (achievement == nil) return out;
 
-    stream.add("identifier", StringFromNSString(achievement.identifier));
-    stream.add("percent_complete", achievement.percentComplete);
-    stream.add("is_completed", achievement.isCompleted == YES);
-    stream.add("shows_completion_banner", achievement.showsCompletionBanner == YES);
-    stream.add("player", [self playerStream:achievement.player]);
-    stream.add("last_reported_date", DateToGMDate(achievement.lastReportedDate));
-    return stream;
+    out.identifier = StringFromNSString(achievement.identifier);
+    out.percent_complete = achievement.percentComplete;
+    out.is_completed = (achievement.isCompleted == YES);
+    out.shows_completion_banner = (achievement.showsCompletionBanner == YES);
+    out.player = [self playerStructFor:achievement.player];
+    out.last_reported_date = DateToGMDate(achievement.lastReportedDate);
+    return out;
 }
 
 #pragma mark - View presentation
@@ -257,8 +263,8 @@ static double DateToGMDate(NSDate *date)
 #endif
 
     if (self.viewCallback) {
-        gm::wire::StructStream result;
-        result.add("success", success);
+        gm_structs::GameCenterViewResult result{};
+        result.success = success;
         self.viewCallback.call(result);
     }
 }
@@ -290,10 +296,11 @@ static double DateToGMDate(NSDate *date)
             state = "authenticated";
         }
 
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("authentication_state", state);
-        result.add("authenticated", localPlayer.isAuthenticated == YES);
-        result.add("player", [self playerStream:localPlayer]);
+        gm_structs::GameCenterAuthResult result{};
+        GCFillError(result, error);
+        result.authentication_state = state;
+        result.authenticated = (localPlayer.isAuthenticated == YES);
+        result.player = [self playerStructFor:localPlayer];
         callback.call(result);
     };
 }
@@ -317,9 +324,9 @@ static double DateToGMDate(NSDate *date)
     return false;
 }
 
-- (gm::wire::DataStream)gamecenter_local_player_get_info
+- (gm_structs::GameCenterPlayer)gamecenter_local_player_get_info
 {
-    return [self playerStream:[GKLocalPlayer localPlayer]];
+    return [self playerStructFor:[GKLocalPlayer localPlayer]];
 }
 
 #pragma mark - Saved games
@@ -332,11 +339,12 @@ static double DateToGMDate(NSDate *date)
 - (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback
 {
     [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
-        gm::wire::ArrayStream slots;
-        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
+        std::vector<gm_structs::GameCenterSavedGame> slots;
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
 
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("slots", slots);
+        gm_structs::GameCenterSavedGamesFetchResult result{};
+        GCFillError(result, error);
+        result.slots = std::move(slots);
         callback.call(result);
     }];
 }
@@ -349,9 +357,10 @@ static double DateToGMDate(NSDate *date)
     NSData *saveData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
 
     [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("name", StringFromNSString(saveName));
-        result.add("slot", [self savedGameMetadataStream:savedGame]);
+        gm_structs::GameCenterSavedGamesSaveResult result{};
+        GCFillError(result, error);
+        result.name = StringFromNSString(saveName);
+        result.slot = [self savedGameStructFor:savedGame];
         callback.call(result);
     }];
 }
@@ -361,8 +370,9 @@ static double DateToGMDate(NSDate *date)
 {
     NSString *saveName = NSStringFromStringView(name);
     [[GKLocalPlayer localPlayer] deleteSavedGamesWithName:saveName completionHandler:^(NSError *error) {
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("name", StringFromNSString(saveName));
+        gm_structs::GameCenterSavedGamesDeleteResult result{};
+        GCFillError(result, error);
+        result.name = StringFromNSString(saveName);
         callback.call(result);
     }];
 }
@@ -373,9 +383,10 @@ static double DateToGMDate(NSDate *date)
     NSString *saveName = NSStringFromStringView(name);
     [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *fetchError) {
         if (fetchError != nil) {
-            gm::wire::StructStream result = [self errorResult:fetchError success:false];
-            result.add("name", StringFromNSString(saveName));
-            result.add("data", std::string_view(""));
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            GCFillError(result, fetchError);
+            result.name = StringFromNSString(saveName);
+            result.data = std::string();
             callback.call(result);
             return;
         }
@@ -386,12 +397,12 @@ static double DateToGMDate(NSDate *date)
         }
 
         if (match == nil) {
-            gm::wire::StructStream result;
-            result.add("success", false);
-            result.add("name", StringFromNSString(saveName));
-            result.add("data", std::string_view(""));
-            result.add("error_code", static_cast<std::int32_t>(0));
-            result.add("error_message", std::string_view("Saved game was not found."));
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            result.success = false;
+            result.name = StringFromNSString(saveName);
+            result.data = std::string();
+            result.error_code = 0;
+            result.error_message = "Saved game was not found.";
             callback.call(result);
             return;
         }
@@ -401,9 +412,10 @@ static double DateToGMDate(NSDate *date)
                 ? [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding]
                 : @"";
 
-            gm::wire::StructStream result = [self errorResult:loadError success:(loadError == nil)];
-            result.add("name", StringFromNSString(saveName));
-            result.add("data", StringFromNSString(text));
+            gm_structs::GameCenterSavedGamesDataResult result{};
+            GCFillError(result, loadError);
+            result.name = StringFromNSString(saveName);
+            result.data = StringFromNSString(text);
             callback.call(result);
         }];
     }];
@@ -415,11 +427,11 @@ static double DateToGMDate(NSDate *date)
 {
     NSInteger index = (NSInteger)conflict_id;
     if (index < 0 || index >= (NSInteger)self.conflictGroups.count) {
-        gm::wire::StructStream result;
-        result.add("success", false);
-        result.add("conflict_id", static_cast<std::int32_t>(index));
-        result.add("error_code", static_cast<std::int32_t>(0));
-        result.add("error_message", std::string_view("Invalid conflict ID."));
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        result.success = false;
+        result.conflict_id = static_cast<std::int32_t>(index);
+        result.error_code = 0;
+        result.error_message = "Invalid conflict ID.";
         callback.call(result);
         return;
     }
@@ -430,12 +442,13 @@ static double DateToGMDate(NSDate *date)
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData
                                            completionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
-        gm::wire::ArrayStream slots;
-        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
+        std::vector<gm_structs::GameCenterSavedGame> slots;
+        for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
 
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("conflict_id", static_cast<std::int32_t>(index));
-        result.add("slots", slots);
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        GCFillError(result, error);
+        result.conflict_id = static_cast<std::int32_t>(index);
+        result.slots = std::move(slots);
         callback.call(result);
     }];
 }
@@ -447,14 +460,14 @@ static double DateToGMDate(NSDate *date)
 
     if (!self.savedGamesEventCallback) return;
 
-    gm::wire::ArrayStream slots;
-    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push([self savedGameMetadataStream:savedGame]);
+    std::vector<gm_structs::GameCenterSavedGame> slots;
+    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
 
-    gm::wire::StructStream event;
-    event.add("type", std::string_view("conflict"));
-    event.add("conflict_id", static_cast<std::int32_t>(conflictId));
-    event.add("player", [self playerStream:player]);
-    event.add("slots", slots);
+    gm_structs::GameCenterSavedGamesEvent event{};
+    event.type = "conflict";
+    event.conflict_id = static_cast<std::int32_t>(conflictId);
+    event.player = [self playerStructFor:player];
+    event.slots = std::move(slots);
     self.savedGamesEventCallback.call(event);
 }
 
@@ -462,10 +475,10 @@ static double DateToGMDate(NSDate *date)
 {
     if (!self.savedGamesEventCallback) return;
 
-    gm::wire::StructStream event;
-    event.add("type", std::string_view("modified"));
-    event.add("player", [self playerStream:player]);
-    event.add("slot", [self savedGameMetadataStream:savedGame]);
+    gm_structs::GameCenterSavedGamesEvent event{};
+    event.type = "modified";
+    event.player = [self playerStructFor:player];
+    event.slot = [self savedGameStructFor:savedGame];
     self.savedGamesEventCallback.call(event);
 }
 
@@ -479,10 +492,11 @@ static double DateToGMDate(NSDate *date)
     NSString *identifier = NSStringFromStringView(leaderboard_id);
 
     void (^completion)(NSError *) = ^(NSError *error) {
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("leaderboard_id", StringFromNSString(identifier));
-        result.add("score", score);
-        result.add("context", context);
+        gm_structs::GameCenterLeaderboardSubmitResult result{};
+        GCFillError(result, error);
+        result.leaderboard_id = StringFromNSString(identifier);
+        result.score = score;
+        result.context = context;
         callback.call(result);
     };
 
@@ -519,32 +533,35 @@ static double DateToGMDate(NSDate *date)
         [GKLeaderboard loadLeaderboardsWithIDs:@[identifier] completionHandler:^(NSArray<GKLeaderboard *> *leaderboards, NSError *loadError) {
             GKLeaderboard *leaderboard = leaderboards.firstObject;
             if (loadError != nil || leaderboard == nil) {
-                gm::wire::StructStream result = [self errorResult:loadError success:false];
-                result.add("leaderboard_id", StringFromNSString(identifier));
-                result.add("entries", gm::wire::ArrayStream());
+                gm_structs::GameCenterLeaderboardLoadResult result{};
+                GCFillError(result, loadError);
+                result.success = false;
+                result.leaderboard_id = StringFromNSString(identifier);
+                result.local_entry = [self leaderboardEntryStructFor:nil];
                 callback.call(result);
                 return;
             }
 
             [leaderboard loadEntriesForPlayerScope:ps timeScope:ts range:range completionHandler:^(GKLeaderboardEntry *localEntry, NSArray<GKLeaderboardEntry *> *entries, NSInteger totalPlayerCount, NSError *error) {
-                gm::wire::ArrayStream entryArray;
-                for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push([self leaderboardEntryStream:entry]);
+                std::vector<gm_structs::GameCenterLeaderboardEntry> entryArray;
+                for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push_back([self leaderboardEntryStructFor:entry]);
 
-                gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-                result.add("leaderboard_id", StringFromNSString(identifier));
-                result.add("time_scope", static_cast<std::int32_t>(time_scope));
-                result.add("range_start", range_start);
-                result.add("range_count", range_count);
-                result.add("player_scope", static_cast<std::int32_t>(player_scope));
-                result.add("leaderboard_title", StringFromNSString(leaderboard.title));
-                result.add("leaderboard_group", StringFromNSString(leaderboard.groupIdentifier));
-                result.add("leaderboard_type", static_cast<std::int32_t>(leaderboard.type));
-                result.add("leaderboard_start_date", DateToGMDate(leaderboard.startDate));
-                result.add("leaderboard_next_start_date", DateToGMDate(leaderboard.nextStartDate));
-                result.add("leaderboard_duration", leaderboard.duration);
-                result.add("total_players_count", static_cast<double>(totalPlayerCount));
-                result.add("local_entry", [self leaderboardEntryStream:localEntry]);
-                result.add("entries", entryArray);
+                gm_structs::GameCenterLeaderboardLoadResult result{};
+                GCFillError(result, error);
+                result.leaderboard_id = StringFromNSString(identifier);
+                result.time_scope = static_cast<std::int32_t>(time_scope);
+                result.range_start = range_start;
+                result.range_count = range_count;
+                result.player_scope = static_cast<std::int32_t>(player_scope);
+                result.leaderboard_title = StringFromNSString(leaderboard.title);
+                result.leaderboard_group = StringFromNSString(leaderboard.groupIdentifier);
+                result.leaderboard_type = static_cast<std::int32_t>(leaderboard.type);
+                result.leaderboard_start_date = DateToGMDate(leaderboard.startDate);
+                result.leaderboard_next_start_date = DateToGMDate(leaderboard.nextStartDate);
+                result.leaderboard_duration = leaderboard.duration;
+                result.total_players_count = static_cast<double>(totalPlayerCount);
+                result.local_entry = [self leaderboardEntryStructFor:localEntry];
+                result.entries = std::move(entryArray);
                 callback.call(result);
             }];
         }];
@@ -558,24 +575,25 @@ static double DateToGMDate(NSDate *date)
         request.range = range;
 
         [request loadScoresWithCompletionHandler:^(NSArray<GKScore *> *scores, NSError *error) {
-            gm::wire::ArrayStream entryArray;
-            for (GKScore *entry in scores ?: @[]) entryArray.push([self legacyScoreStream:entry]);
+            std::vector<gm_structs::GameCenterLeaderboardEntry> entryArray;
+            for (GKScore *entry in scores ?: @[]) entryArray.push_back([self legacyScoreStructFor:entry]);
 
-            gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-            result.add("leaderboard_id", StringFromNSString(identifier));
-            result.add("time_scope", static_cast<std::int32_t>(time_scope));
-            result.add("range_start", range_start);
-            result.add("range_count", range_count);
-            result.add("player_scope", static_cast<std::int32_t>(player_scope));
-            result.add("leaderboard_title", StringFromNSString(request.title));
-            result.add("leaderboard_group", StringFromNSString(request.groupIdentifier));
-            result.add("leaderboard_type", static_cast<std::int32_t>(-1));
-            result.add("leaderboard_start_date", -1.0);
-            result.add("leaderboard_next_start_date", -1.0);
-            result.add("leaderboard_duration", -1.0);
-            result.add("total_players_count", static_cast<double>(scores.count));
-            result.add("local_entry", [self legacyScoreStream:request.localPlayerScore]);
-            result.add("entries", entryArray);
+            gm_structs::GameCenterLeaderboardLoadResult result{};
+            GCFillError(result, error);
+            result.leaderboard_id = StringFromNSString(identifier);
+            result.time_scope = static_cast<std::int32_t>(time_scope);
+            result.range_start = range_start;
+            result.range_count = range_count;
+            result.player_scope = static_cast<std::int32_t>(player_scope);
+            result.leaderboard_title = StringFromNSString(request.title);
+            result.leaderboard_group = StringFromNSString(request.groupIdentifier);
+            result.leaderboard_type = static_cast<std::int32_t>(-1);
+            result.leaderboard_start_date = -1.0;
+            result.leaderboard_next_start_date = -1.0;
+            result.leaderboard_duration = -1.0;
+            result.total_players_count = static_cast<double>(scores.count);
+            result.local_entry = [self legacyScoreStructFor:request.localPlayerScore];
+            result.entries = std::move(entryArray);
             callback.call(result);
         }];
 #pragma clang diagnostic pop
@@ -595,9 +613,10 @@ static double DateToGMDate(NSDate *date)
     achievement.showsCompletionBanner = show_completion_banner;
 
     [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError *error) {
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("identifier", StringFromNSString(achievementId));
-        result.add("percent_complete", percent_complete);
+        gm_structs::GameCenterAchievementReportResult result{};
+        GCFillError(result, error);
+        result.identifier = StringFromNSString(achievementId);
+        result.percent_complete = percent_complete;
         callback.call(result);
     }];
 }
@@ -605,18 +624,21 @@ static double DateToGMDate(NSDate *date)
 - (void)gamecenter_achievement_reset_all:(gm::wire::GMFunction)callback
 {
     [GKAchievement resetAchievementsWithCompletionHandler:^(NSError *error) {
-        callback.call([self errorResult:error success:(error == nil)]);
+        gm_structs::GameCenterAchievementResetResult result{};
+        GCFillError(result, error);
+        callback.call(result);
     }];
 }
 
 - (void)gamecenter_achievement_load:(gm::wire::GMFunction)callback
 {
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> *achievements, NSError *error) {
-        gm::wire::ArrayStream values;
-        for (GKAchievement *achievement in achievements ?: @[]) values.push([self achievementStream:achievement]);
+        std::vector<gm_structs::GameCenterAchievement> values;
+        for (GKAchievement *achievement in achievements ?: @[]) values.push_back([self achievementStructFor:achievement]);
 
-        gm::wire::StructStream result = [self errorResult:error success:(error == nil)];
-        result.add("achievements", values);
+        gm_structs::GameCenterAchievementsResult result{};
+        GCFillError(result, error);
+        result.achievements = std::move(values);
         callback.call(result);
     }];
 }
@@ -693,8 +715,8 @@ static double DateToGMDate(NSDate *date)
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
-            gm::wire::StructStream result;
-            result.add("success", true);
+            gm_structs::GameCenterViewResult result{};
+            result.success = true;
             callback.call(result);
         }];
         return true;
@@ -706,8 +728,8 @@ static double DateToGMDate(NSDate *date)
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
-            gm::wire::StructStream result;
-            result.add("success", true);
+            gm_structs::GameCenterViewResult result{};
+            result.success = true;
             callback.call(result);
         }];
         return true;

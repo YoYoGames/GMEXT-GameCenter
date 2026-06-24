@@ -4,8 +4,8 @@
 if(locked) exit;
 	
 // This function deletes a save slot with a given name from the Apple GameCenter servers.
-// The function triggers a Social Async callback.
-GameCenter_SavedGames_Delete(Obj_GameCenter_SavedGames.selected)
+// The result is delivered to the callback handled by Obj_GameCenter_SavedGames.
+gamecenter_saved_games_delete(Obj_GameCenter_SavedGames.selected, Obj_GameCenter_SavedGames.handleSaveOrDelete)
 
 Obj_GameCenter_SavedGames.selected = ""
 

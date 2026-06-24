@@ -21,10 +21,9 @@ with(Obj_GameCenter_SavedGames_Point)
 var dataJSON = json_stringify(data);
 
 // Save the new data into the target save slot.
-// This function call will save a string of data into a given slotId
+// This function call will save a string of data into a given slotId.
 // Data will be overwritten if existing or created if nonexistent.
-// This function doesn't return any value but will trigger a Social Async event
-// after the task is resolved.
-GameCenter_SavedGames_Save(Obj_GameCenter_SavedGames.selected, dataJSON);
+// The result is delivered to the callback handled by Obj_GameCenter_SavedGames.
+gamecenter_saved_games_save(Obj_GameCenter_SavedGames.selected, dataJSON, Obj_GameCenter_SavedGames.handleSaveOrDelete);
 
 
