@@ -5,9 +5,9 @@ This repository was created with the intent of presenting users with the latest 
 
 This extension is compatible with both macOS and iOS platforms.
 
-IOS SOURCE: `source/GameCenter_gml/extensions/gamecenter/iOSSource/`
+IOS SOURCE: `source/GameCenter_gml/extensions/GMGameCenter/source/src/ios/`
 
-MACOS SOURCE: `source/GameCenter_gml/extensions/gamecenter/gamecenter_macos/`
+MACOS SOURCE: `source/GameCenter_gml/extensions/GMGameCenter/source/src/native/`
 
 ---
 
