@@ -18,8 +18,10 @@
 #import <GameKit/GameKit.h>
 
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 using namespace gm_structs;
@@ -72,7 +74,7 @@ static void GCFillError(T &out, NSError *error)
 
 + (instancetype)shared;
 
-@property(nonatomic, strong) NSMutableArray *conflictGroups;
+@property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSArray<GKSavedGame *> *> *conflictGroups;
 
 // View presentation
 - (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback;
@@ -132,6 +134,11 @@ static void GCFillError(T &out, NSError *error)
 @implementation GMGameCenterMac {
     gm::wire::GMFunction _viewCallback;
     gm::wire::GMFunction _savedGamesEventCallback;
+    // Guards _viewCallback / _savedGamesEventCallback / conflictGroups against concurrent access
+    // from GameKit listener/delegate callbacks (not guaranteed to be on the main thread) and the
+    // game-thread entry points. Callbacks are copied under the lock and fired outside it.
+    std::mutex _stateMutex;
+    NSInteger _nextConflictId;
 }
 
 + (instancetype)shared
@@ -146,7 +153,7 @@ static void GCFillError(T &out, NSError *error)
 {
     self = [super init];
     if (self) {
-        self.conflictGroups = [NSMutableArray array];
+        self.conflictGroups = [NSMutableDictionary dictionary];
         [[GKLocalPlayer localPlayer] registerListener:self];
     }
     return self;
@@ -167,9 +174,20 @@ static void GCFillError(T &out, NSError *error)
 
     out.alias = StringFromNSString(player.alias);
     out.display_name = StringFromNSString(player.displayName);
-    out.player_id = StringFromNSString(player.gamePlayerID);
-    out.game_player_id = StringFromNSString(player.gamePlayerID);
-    out.team_player_id = StringFromNSString(player.teamPlayerID);
+
+    if (@available(iOS 12.4, macOS 10.14.6, *)) {
+        out.player_id = StringFromNSString(player.gamePlayerID);
+        out.game_player_id = StringFromNSString(player.gamePlayerID);
+        out.team_player_id = StringFromNSString(player.teamPlayerID);
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        out.player_id = StringFromNSString(player.playerID);
+        out.game_player_id = StringFromNSString(player.playerID);
+#pragma clang diagnostic pop
+        out.team_player_id = std::string();
+    }
+
     return out;
 }
 
@@ -242,6 +260,7 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback
 {
+    std::lock_guard<std::mutex> lock(_stateMutex);
     _viewCallback = callback;
 }
 
@@ -292,10 +311,15 @@ static void GCFillError(T &out, NSError *error)
     bool success = controller != nil;
     [[GKDialogController sharedDialogController] dismiss:self];
 
-    if (_viewCallback) {
+    gm::wire::GMFunction viewCallback;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        viewCallback = _viewCallback;
+    }
+    if (viewCallback) {
         gm_structs::GameCenterViewResult result{};
         result.success = success;
-        _viewCallback.call(result);
+        viewCallback.call(result);
     }
 }
 
@@ -347,6 +371,7 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gamecenter_saved_games_callback_subscribe:(gm::wire::GMFunction)callback
 {
+    std::lock_guard<std::mutex> lock(_stateMutex);
     _savedGamesEventCallback = callback;
 }
 
@@ -407,7 +432,13 @@ static void GCFillError(T &out, NSError *error)
 
         GKSavedGame *match = nil;
         for (GKSavedGame *savedGame in savedGames ?: @[]) {
-            if ([savedGame.name isEqualToString:saveName]) { match = savedGame; break; }
+            if (![savedGame.name isEqualToString:saveName]) continue;
+            // A name with unresolved conflicts can have several saves; pick the most recently
+            // modified one rather than an arbitrary first match.
+            if (match == nil ||
+                [savedGame.modificationDate compare:match.modificationDate] == NSOrderedDescending) {
+                match = savedGame;
+            }
         }
 
         if (match == nil) {
@@ -422,14 +453,28 @@ static void GCFillError(T &out, NSError *error)
         }
 
         [match loadDataWithCompletionHandler:^(NSData *loadedData, NSError *loadError) {
-            NSString *text = loadedData != nil
-                ? [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding]
-                : @"";
-
             gm_structs::GameCenterSavedGamesDataResult result{};
             GCFillError(result, loadError);
             result.name = StringFromNSString(saveName);
-            result.data = StringFromNSString(text);
+
+            if (loadError == nil && loadedData != nil) {
+                NSString *text = [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding];
+                if (text == nil) {
+                    // Saved data exists but is not valid UTF-8 (e.g. a binary/blob payload or a
+                    // save written by another device/version). The current contract only supports
+                    // UTF-8 text, so report failure rather than silently returning empty data with
+                    // success == true.
+                    result.success = false;
+                    result.error_code = 0;
+                    result.error_message = "Saved game data is not valid UTF-8 text and cannot be returned as a string.";
+                    result.data = std::string();
+                } else {
+                    result.data = StringFromNSString(text);
+                }
+            } else {
+                result.data = std::string();
+            }
+
             callback.call(result);
         }];
     }];
@@ -439,29 +484,40 @@ static void GCFillError(T &out, NSError *error)
                                            data:(std::string_view)data
                                        callback:(gm::wire::GMFunction)callback
 {
-    NSInteger index = (NSInteger)conflict_id;
-    if (index < 0 || index >= (NSInteger)self.conflictGroups.count) {
+    NSInteger conflictId = (NSInteger)conflict_id;
+    NSArray<GKSavedGame *> *conflicts = nil;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        conflicts = self.conflictGroups[@(conflictId)];
+    }
+
+    if (conflicts == nil) {
         gm_structs::GameCenterSavedGamesResolveResult result{};
         result.success = false;
-        result.conflict_id = static_cast<std::int32_t>(index);
+        result.conflict_id = static_cast<std::int32_t>(conflictId);
         result.error_code = 0;
         result.error_message = "Invalid conflict ID.";
         callback.call(result);
         return;
     }
 
-    NSArray<GKSavedGame *> *conflicts = self.conflictGroups[index];
     NSData *resolvedData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
 
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData
                                            completionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
+        if (error == nil) {
+            // Resolved: drop the stored group so it can't be resolved twice or leak.
+            std::lock_guard<std::mutex> lock(_stateMutex);
+            [self.conflictGroups removeObjectForKey:@(conflictId)];
+        }
+
         std::vector<gm_structs::GameCenterSavedGame> slots;
         for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
 
         gm_structs::GameCenterSavedGamesResolveResult result{};
         GCFillError(result, error);
-        result.conflict_id = static_cast<std::int32_t>(index);
+        result.conflict_id = static_cast<std::int32_t>(conflictId);
         result.slots = std::move(slots);
         callback.call(result);
     }];
@@ -469,31 +525,59 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)player:(GKPlayer *)player hasConflictingSavedGames:(NSArray<GKSavedGame *> *)savedGames
 {
-    NSInteger conflictId = self.conflictGroups.count;
-    [self.conflictGroups addObject:savedGames];
+    // GameKit can deliver conflicts spanning several filenames in one callback, and each filename
+    // must be resolved separately with its own data. Segment by name so every conflict_id maps to
+    // exactly one filename's conflicting saves.
+    NSMutableDictionary<NSString *, NSMutableArray<GKSavedGame *> *> *byName = [NSMutableDictionary dictionary];
+    for (GKSavedGame *savedGame in savedGames ?: @[]) {
+        NSString *key = savedGame.name ?: @"";
+        NSMutableArray<GKSavedGame *> *group = byName[key];
+        if (group == nil) { group = [NSMutableArray array]; byName[key] = group; }
+        [group addObject:savedGame];
+    }
 
-    if (!_savedGamesEventCallback) return;
+    // Assign ids and snapshot the callback under the lock; fire events outside it.
+    std::vector<std::pair<std::int32_t, NSArray<GKSavedGame *> *>> assigned;
+    gm::wire::GMFunction callback;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        for (NSString *key in byName) {
+            NSInteger conflictId = _nextConflictId++;
+            self.conflictGroups[@(conflictId)] = byName[key];
+            assigned.emplace_back(static_cast<std::int32_t>(conflictId), byName[key]);
+        }
+        callback = _savedGamesEventCallback;
+    }
 
-    std::vector<gm_structs::GameCenterSavedGame> slots;
-    for (GKSavedGame *savedGame in savedGames ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
+    if (!callback) return;
 
-    gm_structs::GameCenterSavedGamesEvent event{};
-    event.type = "conflict";
-    event.conflict_id = static_cast<std::int32_t>(conflictId);
-    event.player = [self playerStructFor:player];
-    event.slots = std::move(slots);
-    _savedGamesEventCallback.call(event);
+    for (auto &entry : assigned) {
+        std::vector<gm_structs::GameCenterSavedGame> slots;
+        for (GKSavedGame *savedGame in entry.second ?: @[]) slots.push_back([self savedGameStructFor:savedGame]);
+
+        gm_structs::GameCenterSavedGamesEvent event{};
+        event.type = "conflict";
+        event.conflict_id = entry.first;
+        event.player = [self playerStructFor:player];
+        event.slots = std::move(slots);
+        callback.call(event);
+    }
 }
 
 - (void)player:(GKPlayer *)player didModifySavedGame:(GKSavedGame *)savedGame
 {
-    if (!_savedGamesEventCallback) return;
+    gm::wire::GMFunction callback;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        callback = _savedGamesEventCallback;
+    }
+    if (!callback) return;
 
     gm_structs::GameCenterSavedGamesEvent event{};
     event.type = "modified";
     event.player = [self playerStructFor:player];
     event.slot = [self savedGameStructFor:savedGame];
-    _savedGamesEventCallback.call(event);
+    callback.call(event);
 }
 
 #pragma mark - Leaderboards
@@ -529,6 +613,13 @@ static void GCFillError(T &out, NSError *error)
     NSString *identifier = NSStringFromStringView(leaderboard_id);
     GKLeaderboardTimeScope ts = static_cast<GKLeaderboardTimeScope>(time_scope);
     GKLeaderboardPlayerScope ps = static_cast<GKLeaderboardPlayerScope>(player_scope);
+    // GameKit leaderboard ranges are 1-based (rank 1..N); a start of 0 is invalid and yields
+    // empty/garbage results, so clamp it up to 1.
+    if (range_start < 1.0) range_start = 1.0;
+    // GameKit caps a leaderboard load at 100 entries (the span between min and max rank must not
+    // exceed 100); clamp range_count into 1..100 to stay within the documented limit.
+    if (range_count < 1.0) range_count = 1.0;
+    if (range_count > 100.0) range_count = 100.0;
     NSRange range = NSMakeRange((NSUInteger)range_start, (NSUInteger)range_count);
 
     [GKLeaderboard loadLeaderboardsWithIDs:@[identifier] completionHandler:^(NSArray<GKLeaderboard *> *leaderboards, NSError *loadError) {
@@ -577,14 +668,18 @@ static void GCFillError(T &out, NSError *error)
 {
     NSString *achievementId = NSStringFromStringView(identifier);
     GKAchievement *achievement = [[GKAchievement alloc] initWithIdentifier:achievementId];
-    achievement.percentComplete = percent_complete;
+    // GKAchievement.percentComplete must be a whole integer in [0, 100]; clamp + round the GML
+    // double (GameKit does not document clamping of out-of-range or fractional values).
+    double pct = percent_complete < 0.0 ? 0.0 : (percent_complete > 100.0 ? 100.0 : percent_complete);
+    pct = (double)(long)(pct + 0.5);
+    achievement.percentComplete = pct;
     achievement.showsCompletionBanner = show_completion_banner;
 
     [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError *error) {
         gm_structs::GameCenterAchievementReportResult result{};
         GCFillError(result, error);
         result.identifier = StringFromNSString(achievementId);
-        result.percent_complete = percent_complete;
+        result.percent_complete = pct;
         callback.call(result);
     }];
 }
