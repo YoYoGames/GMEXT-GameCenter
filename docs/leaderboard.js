@@ -1,167 +1,163 @@
-// Functions
+
+// FUNCTIONS
 
 /**
- * @func GameCenter_Leaderboard_Submit
- * @desc This function requests the Apple GameCenter API to submit a score to a given leaderboard. The function will not return any value but it will create a request that will trigger a ${event.social} callback when the task is resolved.
- * @param {string} id The unique identifier of the leaderboard.
- * @param {real} score The value to be submitted to the leaderboard (remember that only the highest score value is displayed in the leaderboard).
- * @param {real} [context] This is an integer value that your game uses. It corresponds to the [context](https://developer.apple.com/documentation/gamekit/gkscore/1399250-context?language=objc) parameter.
- * @event social
- * @member {string} type "GameCenter_Leaderboard_Submit"
- * @member {boolean} success Whether or not the task succeeded.
+ * @function gamecenter_leaderboard_submit
+ * @desc This function submits a score to a Game Center leaderboard. This is an Apple-only feature (iOS and macOS).
+ *
+ * Both `score` and `context` are integers.
+ *
+ * [[Note: GameKit leaderboard scores are integer-only; a fractional `score` or `context` is truncated. For decimal scores configure a formatter in App Store Connect and submit a scaled integer (e.g. score*100).]]
+ *
+ * @param {String} leaderboard_id The leaderboard's ID as configured in App Store Connect
+ * @param {Real} score The score to submit (integer)
+ * @param {Real} context An integer value of your choice stored alongside the score
+ * @param {Function} callback The function to call when the submission completes
+ *
+ * @event callback
+ * @desc This callback is triggered when the score submission has completed.
+ * @member {Struct.GameCenterLeaderboardSubmitResult} result The struct containing the result of the submission
  * @event_end
- * 
+ *
  * @example
- * 
  * ```gml
- * var _score = irandom(999);
- * GameCenter_Leaderboard_Submit("YYLeaderboard2", _score);
+ * gamecenter_leaderboard_submit("my_leaderboard", 1500, 0, function(_result) {
+ *     if (_result.success) {
+ *         show_debug_message($"Submitted {_result.score} to {_result.leaderboard_id}");
+ *     } else {
+ *         show_debug_message($"Submit failed: {_result.error_message}");
+ *     }
+ * });
  * ```
- * 
- * @func_end
+ * This code submits a score to a leaderboard and outputs the result in a debug message.
+ * @function_end
  */
 
 /**
- * @func GameCenter_Leaderboard_LoadGlobal
- * @desc This function loads the leaderboard's global data for the specified leaderboard IDs that Game Center uses.
- * @param {string} leaderboardID ID of the leaderboard
- * @param {constant.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
- * @param {real} rangeStart Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
- * @param {real} rangeEnd 	Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
- * @event social
- * @member {string} type "GameCenter_Leaderboard_Load"
- * @member {string} leaderboard_id Whether or not the task succeeded.
- * @member {real} id 
- * @member {constant.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
- * @member {real} range_start The range start of ranks to use for getting the scores (1-100).
- * @member {real} range_end The range end of ranks to use for getting the scores (1-100).
- * @member {constant.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
- * @member {string} leaderboard_title The title of the leaderboard.
- * @member {string} leaderboard_group 
- * @member {constant.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
- * @member {real} leaderboard_start_date The start date of the leaderboard.
- * @member {real} leaderboard_next_start_date The next start date of the leaderboard.
- * @member {real} leaderboard_duration The duration of the leaderboard.
- * @member {boolean} success the **error_*** are only present if **success** is `false` (async response will not have any other members in that case)
- * @member {real} error_code The error code returned, in case of an error.
- * @member {string} error_message The error message, in case of an error.
- * @member {real} total_players_count The total number of players in the leaderboard.
- * @member {real} local_context 
- * @member {real} local_date 
- * @member {real} local_rank 
- * @member {real} local_score 
- * @member {string} local_formatted_score 
- * @member {string} local_info 
- * @member {real} entries for the following **X** will take values from **0** to **entries-1**
- * @member {real} entry_context_X The context for the X'th entry.
- * @member {real} entry_date_X The date of the X'th entry.
- * @member {real} entry_rank_X The rank of the X'th entry.
- * @member {real} entry_score_X The score for the X'th entry.
- * @member {string} entry_formatted_score_X 
- * @member {string} entry_info_X entry_info_X
+ * @function gamecenter_leaderboard_load
+ * @desc This function loads entries from a Game Center leaderboard. This is an Apple-only feature (iOS and macOS).
+ *
+ * Ranks are 1-based. `range_start` is the first rank to fetch (`>= 1`) and `range_count` is how many entries to fetch.
+ *
+ * [[Note: GameKit limits a single load to 100 entries — `range_count` is capped to 1..100.]]
+ *
+ * @param {String} leaderboard_id The leaderboard's ID as configured in App Store Connect
+ * @param {Constant.GameCenterLeaderboardTimeScope} time_scope The time scope of the scores to fetch
+ * @param {Real} range_start The first rank to fetch (`>= 1`)
+ * @param {Real} range_count The number of entries to fetch (1..100)
+ * @param {Constant.GameCenterLeaderboardPlayerScope} player_scope Whose scores to fetch
+ * @param {Function} callback The function to call when the load completes
+ *
+ * @event callback
+ * @desc This callback is triggered when the leaderboard entries have finished loading.
+ * @member {Struct.GameCenterLeaderboardLoadResult} result The struct containing the loaded leaderboard data
  * @event_end
- * 
+ *
  * @example
- * 
  * ```gml
- * GameCenter_Leaderboard_LoadGlobal("YYLeaderboard2", GameCenter_Leaderboard_TimeScope_AllTime, 1, 5);
+ * gamecenter_leaderboard_load("my_leaderboard", GameCenterLeaderboardTimeScope.AllTime, 1, 10, GameCenterLeaderboardPlayerScope.Global, function(_result) {
+ *     if (_result.success) {
+ *         show_debug_message($"Total players: {_result.total_players_count}");
+ *         array_foreach(_result.entries, function(_entry) {
+ *             show_debug_message($"#{_entry.rank}: {_entry.formatted_score} ({_entry.player.display_name})");
+ *         });
+ *     } else {
+ *         show_debug_message($"Load failed: {_result.error_message}");
+ *     }
+ * });
  * ```
- * 
- * @func_end
+ * This code loads the top 10 all-time global entries from a leaderboard and outputs them in debug messages.
+ * @function_end
+ */
+
+// STRUCTS
+
+/**
+ * @struct GameCenterLeaderboardEntry
+ * @desc This struct represents a single entry (a player's score) on a Game Center leaderboard.
+ * @member {Real} context The integer context value that was submitted alongside the score
+ * @member {Real} date The date and time the score was submitted, as a GameMaker datetime (`-1` if not available)
+ * @member {Real} rank The 1-based rank of this entry on the leaderboard
+ * @member {Real} score The raw score value
+ * @member {String} formatted_score The score formatted according to the leaderboard's formatter in App Store Connect
+ * @member {Struct.GameCenterPlayer} player The player this entry belongs to (see ${struct.GameCenterPlayer})
+ * @struct_end
  */
 
 /**
- * @func GameCenter_Leaderboard_LoadFriendsOnly
- * @desc This function loads the Friends data for the specified leaderboard IDs that Game Center uses.
- * @param {string} leaderboardID The ID of the leaderboard to load.
- * @param {constant.GameCenter_Leaderboard_TimeScope} timeScope The time scope to load (today, week or all time).
- * @param {real} rangeStart Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
- * @param {real} rangeEnd 	Specifies the range of ranks to use for getting the scores. The minimum rank is 1 and the maximum rank is 100.
- * @event social
- * @member {string} type "GameCenter_Leaderboard_Load"
- * @member {string} leaderboard_id Whether or not the task succeeded.
- * @member {real} id 
- * @member {constant.GameCenter_Leaderboard_TimeScope} time_scope The time scope that was loaded.
- * @member {real} range_start The range start of ranks to use for getting the scores (1-100).
- * @member {real} range_end The range end of ranks to use for getting the scores (1-100).
- * @member {constant.GameCenter_Leaderboard_PlayerScope} player_scope The player scope that was loaded.
- * @member {string} leaderboard_title The title of the leaderboard.
- * @member {string} leaderboard_group 
- * @member {constant.GameCenter_Leaderboard_Type} leaderboard_type The type of leaderboard.
- * @member {real} leaderboard_start_date The start date of the leaderboard.
- * @member {real} leaderboard_next_start_date The next start date of the leaderboard.
- * @member {real} leaderboard_duration The duration of the leaderboard.
- * @member {boolean} success the **error_*** are only present if **success** is `false` (async response will not have any other members in that case)
- * @member {real} error_code The error code returned, in case of an error.
- * @member {string} error_message The error message, in case of an error.
- * @member {real} total_players_count The total number of players in the leaderboard.
- * @member {real} local_context 
- * @member {real} local_date 
- * @member {real} local_rank 
- * @member {real} local_score 
- * @member {string} local_formatted_score 
- * @member {string} local_info 
- * @member {real} entries for the following **X** will take values from **0** to **entries-1**
- * @member {real} entry_context_X The context for the X'th entry.
- * @member {real} entry_date_X The date of the X'th entry.
- * @member {real} entry_rank_X The rank of the X'th entry.
- * @member {real} entry_score_X The score for the X'th entry.
- * @member {string} entry_formatted_score_X 
- * @member {string} entry_info_X entry_info_X
- * @event_end
- * 
- * @example
- * 
- * ```gml
- * GameCenter_Leaderboard_LoadFriendsOnly("YYLeaderboard1", GameCenter_Leaderboard_TimeScope_AllTime, 1, 5);
- * ```
- * 
- * @func_end
+ * @struct GameCenterLeaderboardSubmitResult
+ * @desc This struct is passed to the callback of ${function.gamecenter_leaderboard_submit} and contains the result of a score submission.
+ * @member {Bool} success Whether the submission succeeded
+ * @member {Real} error_code The error code (only meaningful when `success` is `false`)
+ * @member {String} error_message A human-readable error message (only meaningful when `success` is `false`)
+ * @member {String} leaderboard_id The ID of the leaderboard the score was submitted to
+ * @member {Real} score The score that was submitted
+ * @member {Real} context The context value that was submitted
+ * @struct_end
  */
 
-// Constants
+/**
+ * @struct GameCenterLeaderboardLoadResult
+ * @desc This struct is passed to the callback of ${function.gamecenter_leaderboard_load} and contains the loaded leaderboard data.
+ * @member {Bool} success Whether the load succeeded
+ * @member {Real} error_code The error code (only meaningful when `success` is `false`)
+ * @member {String} error_message A human-readable error message (only meaningful when `success` is `false`)
+ * @member {String} leaderboard_id The ID of the leaderboard that was loaded
+ * @member {Real} time_scope The time scope that was requested (see ${constant.GameCenterLeaderboardTimeScope})
+ * @member {Real} range_start The first rank that was requested
+ * @member {Real} range_count The number of entries that was requested
+ * @member {Real} player_scope The player scope that was requested (see ${constant.GameCenterLeaderboardPlayerScope})
+ * @member {String} leaderboard_title The display title of the leaderboard
+ * @member {String} leaderboard_group The group identifier of the leaderboard
+ * @member {Real} leaderboard_type The type of the leaderboard
+ * @member {Real} leaderboard_start_date The leaderboard's start date as a GameMaker datetime (`-1` if not available)
+ * @member {Real} leaderboard_next_start_date The leaderboard's next start date as a GameMaker datetime (`-1` if not available)
+ * @member {Real} leaderboard_duration The leaderboard's duration
+ * @member {Real} total_players_count The size of the whole leaderboard pool matching the scopes (NOT the number of entries returned)
+ * @member {Struct.GameCenterLeaderboardEntry} local_entry The local player's own entry (a `rank` of `-1` means the player has no entry in range)
+ * @member {Array[Struct.GameCenterLeaderboardEntry]} entries The array of fetched leaderboard entries
+ * @struct_end
+ */
+
+// CONSTANTS
 
 /**
- * @constant GameCenter_Leaderboard_PlayerScope
- * @desc A constant that tells whose scores to show
- * @member GameCenter_Leaderboard_PlayerScope_Global This leaderboard shows all scores
- * @member GameCenter_Leaderboard_PlayerScope_FriendsOnly This leaderboard shows friends only
+ * @const GameCenterLeaderboardTimeScope
+ * @desc This enumeration contains the time scopes that can be used when loading a leaderboard.
+ * @member Today The leaderboard shows today's scores.
+ * @member Week The leaderboard shows this week's scores.
+ * @member AllTime The leaderboard shows all-time scores.
  * @const_end
  */
 
 /**
- * @constant GameCenter_Leaderboard_TimeScope
- * @desc A constant that tells the time period to show scores from
- * @member GameCenter_Leaderboard_TimeScope_Today The leaderboard shows today's scores
- * @member GameCenter_Leaderboard_TimeScope_Week The leaderboard shows this week's scores
- * @member GameCenter_Leaderboard_TimeScope_AllTime The leaderboard shows all-time scores
+ * @const GameCenterLeaderboardPlayerScope
+ * @desc This enumeration contains the player scopes that can be used when loading a leaderboard.
+ * @member Global The leaderboard shows scores from all players.
+ * @member FriendsOnly The leaderboard shows scores from the local player's friends only.
  * @const_end
  */
 
-/**
- * @constant GameCenter_Leaderboard_Type
- * @desc A constant describing the type of leaderboard: classic (all-time) or recurring (interval)
- * @member GameCenter_Leaderboard_Type_Classic This type of leaderboard tracks all-time scores
- * @member GameCenter_Leaderboard_Type_Recurring This type of leaderboard resets based on an interval that you define
- * @const_end
- */
-
-// Modules
+// MODULES
 
 /**
  * @module leaderboard
  * @title Leaderboard
  * @section_func
- * @ref GameCenter_Leaderboard_Submit
- * @ref GameCenter_Leaderboard_LoadGlobal
- * @ref GameCenter_Leaderboard_LoadFriendsOnly
+ * @ref gamecenter_leaderboard_submit
+ * @ref gamecenter_leaderboard_load
  * @section_end
- * 
+ *
+ * @section_struct
+ * @ref GameCenterLeaderboardEntry
+ * @ref GameCenterLeaderboardSubmitResult
+ * @ref GameCenterLeaderboardLoadResult
+ * @section_end
+ *
  * @section_const
- * @ref GameCenter_Leaderboard_PlayerScope
- * @ref GameCenter_Leaderboard_TimeScope
- * @ref GameCenter_Leaderboard_Type
+ * @ref GameCenterLeaderboardTimeScope
+ * @ref GameCenterLeaderboardPlayerScope
  * @section_end
- * 
+ *
  * @module_end
  */
