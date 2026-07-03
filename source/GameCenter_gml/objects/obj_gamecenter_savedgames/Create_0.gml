@@ -8,7 +8,7 @@ msgId = noone;
 // function handles that logic).
 function setSlotEditMode(enable)
 {
-	Obj_GameCenter_SavedGames_New.locked = enable;
+	with(Obj_GameCenter_SavedGames_New) locked = enable;
 	with(Obj_GameCenter_SavedGames_Slot) locked = enable;
 
 	Obj_GameCenter_SavedGames_Save.locked = !enable;
