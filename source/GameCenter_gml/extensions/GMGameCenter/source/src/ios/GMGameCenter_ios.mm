@@ -871,10 +871,13 @@ static void GCFillError(T &out, NSError *error)
                                           callback:(gm::wire::GMFunction)callback
 {
     // Check availability for iOS 17.2+ / macOS 14.2+ states (Challenges, Dashboard, LocalPlayerFriendsList).
-    if ((state == 2 || state == 4 || state == 5) && !(@available(iOS 17.2, macOS 14.2, *))) {
-        gm_structs::GameCenterViewResult result{};
-        callback.call(result);
-        return false;
+    auto stateInt = static_cast<int>(state);
+    if (!(@available(iOS 17.2, macOS 14.2, *))) {
+        if (stateInt == 2 || stateInt == 4 || stateInt == 5) {
+            gm_structs::GameCenterViewResult result{};
+            callback.call(result);
+            return false;
+        }
     }
 
     if (@available(iOS 14.0, macOS 11.0, *)) {
