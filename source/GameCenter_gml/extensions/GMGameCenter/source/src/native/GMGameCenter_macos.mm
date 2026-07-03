@@ -76,6 +76,7 @@ static void GCFillError(T &out, NSError *error)
 + (instancetype)shared;
 
 @property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSArray<GKSavedGame *> *> *conflictGroups;
+@property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSData *> *heldSavedGameData;
 
 // View presentation
 - (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback;
@@ -136,11 +137,12 @@ static void GCFillError(T &out, NSError *error)
 @implementation GMGameCenterMac {
     gm::wire::GMFunction _viewCallback;
     gm::wire::GMFunction _savedGamesEventCallback;
-    // Guards _viewCallback / _savedGamesEventCallback / conflictGroups against concurrent access
+    // Guards _viewCallback / _savedGamesEventCallback / conflictGroups / heldSavedGameData against concurrent access
     // from GameKit listener/delegate callbacks (not guaranteed to be on the main thread) and the
     // game-thread entry points. Callbacks are copied under the lock and fired outside it.
     std::mutex _stateMutex;
     NSInteger _nextConflictId;
+    NSInteger _nextDataHandleId;
 }
 
 + (instancetype)shared
@@ -156,6 +158,8 @@ static void GCFillError(T &out, NSError *error)
     self = [super init];
     if (self) {
         self.conflictGroups = [NSMutableDictionary dictionary];
+        self.heldSavedGameData = [NSMutableDictionary dictionary];
+        _nextDataHandleId = 1;
         [[GKLocalPlayer localPlayer] registerListener:self];
     }
     return self;
@@ -165,6 +169,7 @@ static void GCFillError(T &out, NSError *error)
 {
     [[GKLocalPlayer localPlayer] unregisterListener:self];
     self.conflictGroups = nil;
+    self.heldSavedGameData = nil;
 }
 
 #pragma mark - Struct helpers
@@ -825,7 +830,6 @@ static void GCFillError(T &out, NSError *error)
 {
     [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
         gm_structs::GameCenterViewResult result{};
-        result.success = true;
         callback.call(result);
     }];
     return true;
