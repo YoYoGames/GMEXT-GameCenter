@@ -53,13 +53,13 @@ enum GameCenterViewState
 // #####################################################################
 
 /**
- * @returns {Struct.GameCenterPlayer} 
+ * @returns {Struct.GameCenterPlayer}
  */
 function GameCenterPlayer() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 2277098723;
 
@@ -72,13 +72,13 @@ function GameCenterPlayer() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGame} 
+ * @returns {Struct.GameCenterSavedGame}
  */
 function GameCenterSavedGame() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 2021007683;
 
@@ -89,13 +89,13 @@ function GameCenterSavedGame() constructor
 }
 
 /**
- * @returns {Struct.GameCenterViewResult} 
+ * @returns {Struct.GameCenterViewResult}
  */
 function GameCenterViewResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 4191388138;
 
@@ -103,13 +103,13 @@ function GameCenterViewResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesDeleteResult} 
+ * @returns {Struct.GameCenterSavedGamesDeleteResult}
  */
 function GameCenterSavedGamesDeleteResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1756637986;
 
@@ -121,13 +121,13 @@ function GameCenterSavedGamesDeleteResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesDataResult} 
+ * @returns {Struct.GameCenterSavedGamesDataResult}
  */
 function GameCenterSavedGamesDataResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 529441505;
 
@@ -141,13 +141,13 @@ function GameCenterSavedGamesDataResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterLeaderboardSubmitResult} 
+ * @returns {Struct.GameCenterLeaderboardSubmitResult}
  */
 function GameCenterLeaderboardSubmitResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 3075034796;
 
@@ -161,13 +161,13 @@ function GameCenterLeaderboardSubmitResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterAchievementReportResult} 
+ * @returns {Struct.GameCenterAchievementReportResult}
  */
 function GameCenterAchievementReportResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1411479750;
 
@@ -180,13 +180,13 @@ function GameCenterAchievementReportResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterAchievementResetResult} 
+ * @returns {Struct.GameCenterAchievementResetResult}
  */
 function GameCenterAchievementResetResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1729814725;
 
@@ -197,13 +197,13 @@ function GameCenterAchievementResetResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterLeaderboardEntry} 
+ * @returns {Struct.GameCenterLeaderboardEntry}
  */
 function GameCenterLeaderboardEntry() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 2759294555;
 
@@ -217,13 +217,13 @@ function GameCenterLeaderboardEntry() constructor
 }
 
 /**
- * @returns {Struct.GameCenterAchievement} 
+ * @returns {Struct.GameCenterAchievement}
  */
 function GameCenterAchievement() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1240377713;
 
@@ -237,13 +237,13 @@ function GameCenterAchievement() constructor
 }
 
 /**
- * @returns {Struct.GameCenterAuthResult} 
+ * @returns {Struct.GameCenterAuthResult}
  */
 function GameCenterAuthResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 4154585625;
 
@@ -257,13 +257,13 @@ function GameCenterAuthResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesFetchResult} 
+ * @returns {Struct.GameCenterSavedGamesFetchResult}
  */
 function GameCenterSavedGamesFetchResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1869400769;
 
@@ -275,13 +275,13 @@ function GameCenterSavedGamesFetchResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesSaveResult} 
+ * @returns {Struct.GameCenterSavedGamesSaveResult}
  */
 function GameCenterSavedGamesSaveResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 4292535228;
 
@@ -294,13 +294,13 @@ function GameCenterSavedGamesSaveResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesResolveResult} 
+ * @returns {Struct.GameCenterSavedGamesResolveResult}
  */
 function GameCenterSavedGamesResolveResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1799530597;
 
@@ -313,13 +313,13 @@ function GameCenterSavedGamesResolveResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterSavedGamesEvent} 
+ * @returns {Struct.GameCenterSavedGamesEvent}
  */
 function GameCenterSavedGamesEvent() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 2444331672;
 
@@ -332,13 +332,13 @@ function GameCenterSavedGamesEvent() constructor
 }
 
 /**
- * @returns {Struct.GameCenterLeaderboardLoadResult} 
+ * @returns {Struct.GameCenterLeaderboardLoadResult}
  */
 function GameCenterLeaderboardLoadResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 4040485904;
 
@@ -363,13 +363,13 @@ function GameCenterLeaderboardLoadResult() constructor
 }
 
 /**
- * @returns {Struct.GameCenterAchievementsResult} 
+ * @returns {Struct.GameCenterAchievementsResult}
  */
 function GameCenterAchievementsResult() constructor
 {
     /**
      * Internally generated hash for quick validation
-     * @ignore 
+     * @ignore
      */
     static __uid = 1074684623;
 
@@ -390,7 +390,7 @@ function GameCenterAchievementsResult() constructor
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterPlayer_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -429,8 +429,8 @@ function __GameCenterPlayer_encode(_inst, _buffer, _offset, _where = _GMFUNCTION
  * @func __GameCenterPlayer_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterPlayer} 
- * @ignore 
+ * @returns {Struct.GameCenterPlayer}
+ * @ignore
  */
 function __GameCenterPlayer_decode(_buffer, _offset)
 {
@@ -470,7 +470,7 @@ function __GameCenterPlayer_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGame_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -498,8 +498,8 @@ function __GameCenterSavedGame_encode(_inst, _buffer, _offset, _where = _GMFUNCT
  * @func __GameCenterSavedGame_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGame} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGame}
+ * @ignore
  */
 function __GameCenterSavedGame_decode(_buffer, _offset)
 {
@@ -530,7 +530,7 @@ function __GameCenterSavedGame_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterViewResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -544,8 +544,8 @@ function __GameCenterViewResult_encode(_inst, _buffer, _offset, _where = _GMFUNC
  * @func __GameCenterViewResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterViewResult} 
- * @ignore 
+ * @returns {Struct.GameCenterViewResult}
+ * @ignore
  */
 function __GameCenterViewResult_decode(_buffer, _offset)
 {
@@ -565,7 +565,7 @@ function __GameCenterViewResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesDeleteResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -597,8 +597,8 @@ function __GameCenterSavedGamesDeleteResult_encode(_inst, _buffer, _offset, _whe
  * @func __GameCenterSavedGamesDeleteResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesDeleteResult} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesDeleteResult}
+ * @ignore
  */
 function __GameCenterSavedGamesDeleteResult_decode(_buffer, _offset)
 {
@@ -632,7 +632,7 @@ function __GameCenterSavedGamesDeleteResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesDataResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -672,8 +672,8 @@ function __GameCenterSavedGamesDataResult_encode(_inst, _buffer, _offset, _where
  * @func __GameCenterSavedGamesDataResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesDataResult} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesDataResult}
+ * @ignore
  */
 function __GameCenterSavedGamesDataResult_decode(_buffer, _offset)
 {
@@ -713,7 +713,7 @@ function __GameCenterSavedGamesDataResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterLeaderboardSubmitResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -738,13 +738,13 @@ function __GameCenterLeaderboardSubmitResult_encode(_inst, _buffer, _offset, _wh
         buffer_write(_buffer, buffer_u32, string_byte_length(self.leaderboard_id));
         buffer_write(_buffer, buffer_string, self.leaderboard_id);
 
-        // field: score, type: Float64
+        // field: score, type: Int32
         if (!is_numeric(self.score)) show_error($"{_where} :: self.score expected number", true);
-        buffer_write(_buffer, buffer_f64, self.score);
+        buffer_write(_buffer, buffer_s32, self.score);
 
-        // field: context, type: Float64
+        // field: context, type: Int32
         if (!is_numeric(self.context)) show_error($"{_where} :: self.context expected number", true);
-        buffer_write(_buffer, buffer_f64, self.context);
+        buffer_write(_buffer, buffer_s32, self.context);
 
     }
 }
@@ -753,8 +753,8 @@ function __GameCenterLeaderboardSubmitResult_encode(_inst, _buffer, _offset, _wh
  * @func __GameCenterLeaderboardSubmitResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterLeaderboardSubmitResult} 
- * @ignore 
+ * @returns {Struct.GameCenterLeaderboardSubmitResult}
+ * @ignore
  */
 function __GameCenterLeaderboardSubmitResult_decode(_buffer, _offset)
 {
@@ -777,11 +777,11 @@ function __GameCenterLeaderboardSubmitResult_decode(_buffer, _offset)
         buffer_read(_buffer, buffer_u32);
         self.leaderboard_id = buffer_read(_buffer, buffer_string);
 
-        // field: score, type: Float64
-        self.score = buffer_read(_buffer, buffer_f64);
+        // field: score, type: Int32
+        self.score = buffer_read(_buffer, buffer_s32);
 
-        // field: context, type: Float64
-        self.context = buffer_read(_buffer, buffer_f64);
+        // field: context, type: Int32
+        self.context = buffer_read(_buffer, buffer_s32);
 
     }
 
@@ -794,7 +794,7 @@ function __GameCenterLeaderboardSubmitResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterAchievementReportResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -830,8 +830,8 @@ function __GameCenterAchievementReportResult_encode(_inst, _buffer, _offset, _wh
  * @func __GameCenterAchievementReportResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterAchievementReportResult} 
- * @ignore 
+ * @returns {Struct.GameCenterAchievementReportResult}
+ * @ignore
  */
 function __GameCenterAchievementReportResult_decode(_buffer, _offset)
 {
@@ -868,7 +868,7 @@ function __GameCenterAchievementReportResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterAchievementResetResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -895,8 +895,8 @@ function __GameCenterAchievementResetResult_encode(_inst, _buffer, _offset, _whe
  * @func __GameCenterAchievementResetResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterAchievementResetResult} 
- * @ignore 
+ * @returns {Struct.GameCenterAchievementResetResult}
+ * @ignore
  */
 function __GameCenterAchievementResetResult_decode(_buffer, _offset)
 {
@@ -926,7 +926,7 @@ function __GameCenterAchievementResetResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterLeaderboardEntry_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -965,8 +965,8 @@ function __GameCenterLeaderboardEntry_encode(_inst, _buffer, _offset, _where = _
  * @func __GameCenterLeaderboardEntry_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterLeaderboardEntry} 
- * @ignore 
+ * @returns {Struct.GameCenterLeaderboardEntry}
+ * @ignore
  */
 function __GameCenterLeaderboardEntry_decode(_buffer, _offset)
 {
@@ -1005,7 +1005,7 @@ function __GameCenterLeaderboardEntry_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterAchievement_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1044,8 +1044,8 @@ function __GameCenterAchievement_encode(_inst, _buffer, _offset, _where = _GMFUN
  * @func __GameCenterAchievement_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterAchievement} 
- * @ignore 
+ * @returns {Struct.GameCenterAchievement}
+ * @ignore
  */
 function __GameCenterAchievement_decode(_buffer, _offset)
 {
@@ -1084,7 +1084,7 @@ function __GameCenterAchievement_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterAuthResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1124,8 +1124,8 @@ function __GameCenterAuthResult_encode(_inst, _buffer, _offset, _where = _GMFUNC
  * @func __GameCenterAuthResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterAuthResult} 
- * @ignore 
+ * @returns {Struct.GameCenterAuthResult}
+ * @ignore
  */
 function __GameCenterAuthResult_decode(_buffer, _offset)
 {
@@ -1165,7 +1165,7 @@ function __GameCenterAuthResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesFetchResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1202,8 +1202,8 @@ function __GameCenterSavedGamesFetchResult_encode(_inst, _buffer, _offset, _wher
  * @func __GameCenterSavedGamesFetchResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesFetchResult} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesFetchResult}
+ * @ignore
  */
 function __GameCenterSavedGamesFetchResult_decode(_buffer, _offset)
 {
@@ -1241,7 +1241,7 @@ function __GameCenterSavedGamesFetchResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesSaveResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1277,8 +1277,8 @@ function __GameCenterSavedGamesSaveResult_encode(_inst, _buffer, _offset, _where
  * @func __GameCenterSavedGamesSaveResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesSaveResult} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesSaveResult}
+ * @ignore
  */
 function __GameCenterSavedGamesSaveResult_decode(_buffer, _offset)
 {
@@ -1315,7 +1315,7 @@ function __GameCenterSavedGamesSaveResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesResolveResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1356,8 +1356,8 @@ function __GameCenterSavedGamesResolveResult_encode(_inst, _buffer, _offset, _wh
  * @func __GameCenterSavedGamesResolveResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesResolveResult} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesResolveResult}
+ * @ignore
  */
 function __GameCenterSavedGamesResolveResult_decode(_buffer, _offset)
 {
@@ -1398,7 +1398,7 @@ function __GameCenterSavedGamesResolveResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterSavedGamesEvent_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1439,8 +1439,8 @@ function __GameCenterSavedGamesEvent_encode(_inst, _buffer, _offset, _where = _G
  * @func __GameCenterSavedGamesEvent_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterSavedGamesEvent} 
- * @ignore 
+ * @returns {Struct.GameCenterSavedGamesEvent}
+ * @ignore
  */
 function __GameCenterSavedGamesEvent_decode(_buffer, _offset)
 {
@@ -1481,7 +1481,7 @@ function __GameCenterSavedGamesEvent_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterLeaderboardLoadResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1573,8 +1573,8 @@ function __GameCenterLeaderboardLoadResult_encode(_inst, _buffer, _offset, _wher
  * @func __GameCenterLeaderboardLoadResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterLeaderboardLoadResult} 
- * @ignore 
+ * @returns {Struct.GameCenterLeaderboardLoadResult}
+ * @ignore
  */
 function __GameCenterLeaderboardLoadResult_decode(_buffer, _offset)
 {
@@ -1654,7 +1654,7 @@ function __GameCenterLeaderboardLoadResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
  * @param {String} _where
- * @ignore 
+ * @ignore
  */
 function __GameCenterAchievementsResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
 {
@@ -1691,8 +1691,8 @@ function __GameCenterAchievementsResult_encode(_inst, _buffer, _offset, _where =
  * @func __GameCenterAchievementsResult_decode(_buffer, _offset)
  * @param {Id.Buffer} _buffer
  * @param {Real} _offset
- * @returns {Struct.GameCenterAchievementsResult} 
- * @ignore 
+ * @returns {Struct.GameCenterAchievementsResult}
+ * @ignore
  */
 function __GameCenterAchievementsResult_decode(_buffer, _offset)
 {
@@ -1763,7 +1763,7 @@ function gamecenter_view_callback_subscribe(_callback)
  * @param {String} _leaderboard_id
  * @param {Enum.GameCenterLeaderboardTimeScope} _time_scope
  * @param {Enum.GameCenterLeaderboardPlayerScope} _player_scope
- * @returns {Bool} 
+ * @returns {Bool}
  */
 function gamecenter_present_view_leaderboard(_leaderboard_id, _time_scope, _player_scope)
 {
@@ -1821,7 +1821,7 @@ function gamecenter_local_player_authenticate(_callback)
 
 
 /**
- * @returns {Struct.GameCenterPlayer} 
+ * @returns {Struct.GameCenterPlayer}
  */
 function gamecenter_local_player_get_info()
 {
@@ -1955,7 +1955,7 @@ function gamecenter_saved_games_get_data(_name, _callback)
 /**
  * @param {Real} _handle_id
  * @param {Id.Buffer} _data
- * @returns {Bool} 
+ * @returns {Bool}
  */
 function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
 {
@@ -2020,13 +2020,13 @@ function gamecenter_leaderboard_submit(_leaderboard_id, _score, _context, _callb
     buffer_write(__args_buffer, buffer_u32, string_byte_length(_leaderboard_id));
     buffer_write(__args_buffer, buffer_string, _leaderboard_id);
 
-    // param: _score, type: Float64
+    // param: _score, type: Int32
     if (!is_numeric(_score)) show_error($"{_GMFUNCTION_} :: _score expected number", true);
-    buffer_write(__args_buffer, buffer_f64, _score);
+    buffer_write(__args_buffer, buffer_s32, _score);
 
-    // param: _context, type: Float64
+    // param: _context, type: Int32
     if (!is_numeric(_context)) show_error($"{_GMFUNCTION_} :: _context expected number", true);
-    buffer_write(__args_buffer, buffer_f64, _context);
+    buffer_write(__args_buffer, buffer_s32, _context);
 
     // param: _callback, type: Function
     if (!is_callable(_callback)) show_error($"{_GMFUNCTION_} :: _callback expected callable type", true);
@@ -2166,7 +2166,7 @@ function gamecenter_achievement_load(_callback)
 
 /**
  * @param {Enum.GameCenterAccessPointLocation} _location
- * @returns {Bool} 
+ * @returns {Bool}
  */
 function gamecenter_access_point_set_location(_location)
 {
@@ -2199,7 +2199,7 @@ function gamecenter_access_point_set_location(_location)
 
 /**
  * @param {Enum.GameCenterAccessPointCoordinate} _coordinate
- * @returns {Real} 
+ * @returns {Real}
  */
 function gamecenter_access_point_get_coordinate(_coordinate)
 {
@@ -2218,7 +2218,7 @@ function gamecenter_access_point_get_coordinate(_coordinate)
 /**
  * @param {Enum.GameCenterViewState} _state
  * @param {Function} _callback
- * @returns {Bool} 
+ * @returns {Bool}
  */
 function gamecenter_access_point_present_with_state(_state, _callback)
 {
@@ -2243,7 +2243,7 @@ function gamecenter_access_point_present_with_state(_state, _callback)
 
 /**
  * @param {Function} _callback
- * @returns {Bool} 
+ * @returns {Bool}
  */
 function gamecenter_access_point_present(_callback)
 {

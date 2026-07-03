@@ -329,11 +329,11 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     // field: leaderboard_id, type: String
     std::string_view leaderboard_id = gm::wire::codec::readValue<std::string_view>(__br);
 
-    // field: score, type: Float64
-    double score = gm::wire::codec::readValue<double>(__br);
+    // field: score, type: Int32
+    std::int32_t score = gm::wire::codec::readValue<std::int32_t>(__br);
 
-    // field: context, type: Float64
-    double context = gm::wire::codec::readValue<double>(__br);
+    // field: context, type: Int32
+    std::int32_t context = gm::wire::codec::readValue<std::int32_t>(__br);
 
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);

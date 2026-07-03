@@ -122,8 +122,8 @@ namespace gm_structs
         std::int32_t error_code;
         std::string error_message;
         std::string leaderboard_id;
-        double score;
-        double context;
+        std::int32_t score;
+        std::int32_t context;
     };
 
     struct GameCenterAchievementReportResult
@@ -355,8 +355,8 @@ namespace gm::wire::codec
         obj.error_code = gm::wire::codec::readValue<std::int32_t>(_buf);
         obj.error_message = gm::wire::codec::readValue<std::string>(_buf);
         obj.leaderboard_id = gm::wire::codec::readValue<std::string>(_buf);
-        obj.score = gm::wire::codec::readValue<double>(_buf);
-        obj.context = gm::wire::codec::readValue<double>(_buf);
+        obj.score = gm::wire::codec::readValue<std::int32_t>(_buf);
+        obj.context = gm::wire::codec::readValue<std::int32_t>(_buf);
         return obj;
     }
 
@@ -768,7 +768,7 @@ void gamecenter_saved_games_delete(std::string_view name, const gm::wire::GMFunc
 void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFunction& callback);
 bool gamecenter_saved_games_get_data_fetch(double handle_id, gm::wire::GMBuffer data);
 void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback);
-void gamecenter_leaderboard_submit(std::string_view leaderboard_id, double score, double context, const gm::wire::GMFunction& callback);
+void gamecenter_leaderboard_submit(std::string_view leaderboard_id, std::int32_t score, std::int32_t context, const gm::wire::GMFunction& callback);
 void gamecenter_leaderboard_load(std::string_view leaderboard_id, gm_enums::GameCenterLeaderboardTimeScope time_scope, double range_start, double range_count, gm_enums::GameCenterLeaderboardPlayerScope player_scope, const gm::wire::GMFunction& callback);
 void gamecenter_achievement_report(std::string_view identifier, double percent_complete, bool show_completion_banner, const gm::wire::GMFunction& callback);
 void gamecenter_achievement_reset_all(const gm::wire::GMFunction& callback);

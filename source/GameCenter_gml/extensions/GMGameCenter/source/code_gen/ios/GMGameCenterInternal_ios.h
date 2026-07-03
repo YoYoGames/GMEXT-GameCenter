@@ -124,8 +124,8 @@ namespace gm_structs
         std::int32_t error_code;
         std::string error_message;
         std::string leaderboard_id;
-        double score;
-        double context;
+        std::int32_t score;
+        std::int32_t context;
     };
 
     struct GameCenterAchievementReportResult
@@ -357,8 +357,8 @@ namespace gm::wire::codec
         obj.error_code = gm::wire::codec::readValue<std::int32_t>(_buf);
         obj.error_message = gm::wire::codec::readValue<std::string>(_buf);
         obj.leaderboard_id = gm::wire::codec::readValue<std::string>(_buf);
-        obj.score = gm::wire::codec::readValue<double>(_buf);
-        obj.context = gm::wire::codec::readValue<double>(_buf);
+        obj.score = gm::wire::codec::readValue<std::int32_t>(_buf);
+        obj.context = gm::wire::codec::readValue<std::int32_t>(_buf);
         return obj;
     }
 
@@ -771,7 +771,7 @@ namespace gm::wire::details
 - (void)gamecenter_saved_games_get_data:(std::string_view)name callback:(gm::wire::GMFunction)callback;
 - (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)data;
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(gm::wire::GMBuffer)data callback:(gm::wire::GMFunction)callback;
-- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(double)score context:(double)context callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(std::int32_t)score context:(std::int32_t)context callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope range_start:(double)range_start range_count:(double)range_count player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_achievement_report:(std::string_view)identifier percent_complete:(double)percent_complete show_completion_banner:(bool)show_completion_banner callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_achievement_reset_all:(gm::wire::GMFunction)callback;

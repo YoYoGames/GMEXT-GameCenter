@@ -54,7 +54,7 @@ function gamecenter_saved_games_resolve_conflict(conflict_id: real, [type_hint=b
 
 // Leaderboards
 [global, bind = typed_gml]
-function gamecenter_leaderboard_submit(leaderboard_id: string, score: real, context: real, callback: func): unit;
+function gamecenter_leaderboard_submit(leaderboard_id: string, score: int32, context: int32, callback: func): unit;
 [global, bind = typed_gml]
 function gamecenter_leaderboard_load(
     leaderboard_id: string,
@@ -297,8 +297,8 @@ class `[[GameCenterLeaderboardSubmitResult]]` prototype Object
     [field] property error_code : int32 { get; set; }
     [field] property error_message : string { get; set; }
     [field] property leaderboard_id : string { get; set; }
-    [field] property score : real { get; set; }
-    [field] property context : real { get; set; }
+    [field] property score : int32 { get; set; }
+    [field] property context : int32 { get; set; }
 }
 
 // Result of gamecenter_leaderboard_load().
