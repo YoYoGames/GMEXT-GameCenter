@@ -19,6 +19,7 @@
 
 #include <cstdint>
 #include <mutex>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -97,10 +98,11 @@ static void GCFillError(T &out, NSError *error)
 // Saved games
 - (void)gamecenter_saved_games_callback_subscribe:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback;
-- (void)gamecenter_saved_games_save:(std::string_view)name data:(std::string_view)data callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_saved_games_save:(std::string_view)name data:(gm::wire::GMBuffer)buffer callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_delete:(std::string_view)name callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_get_data:(std::string_view)name callback:(gm::wire::GMFunction)callback;
-- (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(std::string_view)data callback:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)buffer;
+- (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(gm::wire::GMBuffer)buffer callback:(gm::wire::GMFunction)callback;
 
 // Leaderboards
 - (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(double)score context:(double)context callback:(gm::wire::GMFunction)callback;
@@ -318,7 +320,6 @@ static void GCFillError(T &out, NSError *error)
     }
     if (viewCallback) {
         gm_structs::GameCenterViewResult result{};
-        result.success = success;
         viewCallback.call(result);
     }
 }
@@ -389,11 +390,31 @@ static void GCFillError(T &out, NSError *error)
 }
 
 - (void)gamecenter_saved_games_save:(std::string_view)name
-                               data:(std::string_view)data
-                           callback:(gm::wire::GMFunction)callback
+                            data:(gm::wire::GMBuffer)buffer
+                        callback:(gm::wire::GMFunction)callback
 {
     NSString *saveName = NSStringFromStringView(name);
-    NSData *saveData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+
+    // Read the exact number of bytes backing the GML buffer.
+    std::size_t len = static_cast<std::size_t>(buffer.length());
+    std::vector<char> raw(len);
+
+    try {
+        auto reader = buffer.getReader();
+        if (len > 0) {
+            reader.readBytes(raw.data(), len);
+        }
+    } catch (const std::exception &ex) {
+        gm_structs::GameCenterSavedGamesSaveResult result{};
+        result.success = false;
+        result.error_code = 0;
+        result.error_message = "Failed to read buffer data.";
+        result.name = StringFromNSString(saveName);
+        callback.call(result);
+        return;
+    }
+
+    NSData *saveData = [NSData dataWithBytes:raw.data() length:len];
 
     [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
@@ -425,7 +446,8 @@ static void GCFillError(T &out, NSError *error)
             gm_structs::GameCenterSavedGamesDataResult result{};
             GCFillError(result, fetchError);
             result.name = StringFromNSString(saveName);
-            result.data = std::string();
+            result.handle_id = -1;
+            result.required_size = 0;
             callback.call(result);
             return;
         }
@@ -433,8 +455,6 @@ static void GCFillError(T &out, NSError *error)
         GKSavedGame *match = nil;
         for (GKSavedGame *savedGame in savedGames ?: @[]) {
             if (![savedGame.name isEqualToString:saveName]) continue;
-            // A name with unresolved conflicts can have several saves; pick the most recently
-            // modified one rather than an arbitrary first match.
             if (match == nil ||
                 [savedGame.modificationDate compare:match.modificationDate] == NSOrderedDescending) {
                 match = savedGame;
@@ -445,7 +465,8 @@ static void GCFillError(T &out, NSError *error)
             gm_structs::GameCenterSavedGamesDataResult result{};
             result.success = false;
             result.name = StringFromNSString(saveName);
-            result.data = std::string();
+            result.handle_id = -1;
+            result.required_size = 0;
             result.error_code = 0;
             result.error_message = "Saved game was not found.";
             callback.call(result);
@@ -458,21 +479,17 @@ static void GCFillError(T &out, NSError *error)
             result.name = StringFromNSString(saveName);
 
             if (loadError == nil && loadedData != nil) {
-                NSString *text = [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding];
-                if (text == nil) {
-                    // Saved data exists but is not valid UTF-8 (e.g. a binary/blob payload or a
-                    // save written by another device/version). The current contract only supports
-                    // UTF-8 text, so report failure rather than silently returning empty data with
-                    // success == true.
-                    result.success = false;
-                    result.error_code = 0;
-                    result.error_message = "Saved game data is not valid UTF-8 text and cannot be returned as a string.";
-                    result.data = std::string();
-                } else {
-                    result.data = StringFromNSString(text);
+                NSInteger handleId = 0;
+                {
+                    std::lock_guard<std::mutex> lock(_stateMutex);
+                    handleId = _nextDataHandleId++;
+                    self.heldSavedGameData[@(handleId)] = loadedData;
                 }
+                result.handle_id = static_cast<std::int32_t>(handleId);
+                result.required_size = static_cast<double>(loadedData.length);
             } else {
-                result.data = std::string();
+                result.handle_id = -1;
+                result.required_size = 0;
             }
 
             callback.call(result);
@@ -480,8 +497,35 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
+- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id
+                                         data:(gm::wire::GMBuffer)buffer
+{
+    NSInteger hId = static_cast<NSInteger>(handle_id);
+    NSData *data = nil;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        data = self.heldSavedGameData[@(hId)];
+        if (data != nil) {
+            [self.heldSavedGameData removeObjectForKey:@(hId)];
+        }
+    }
+
+    if (data == nil) return false;
+    if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
+
+    // Write the saved data into the provided buffer
+    try {
+        auto writer = buffer.getWriter();
+        writer.writeBytes(data.bytes, static_cast<std::size_t>(data.length));
+    } catch (const std::exception &ex) {
+        return false;
+    }
+
+    return true;
+}
+
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id
-                                           data:(std::string_view)data
+                                           data:(gm::wire::GMBuffer)buffer
                                        callback:(gm::wire::GMFunction)callback
 {
     NSInteger conflictId = (NSInteger)conflict_id;
@@ -501,7 +545,26 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    NSData *resolvedData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+    // Read the exact number of bytes backing the GML buffer.
+    std::size_t len = static_cast<std::size_t>(buffer.length());
+    std::vector<char> raw(len);
+
+    try {
+        auto reader = buffer.getReader();
+        if (len > 0) {
+            reader.readBytes(raw.data(), len);
+        }
+    } catch (const std::exception &ex) {
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        result.success = false;
+        result.conflict_id = static_cast<std::int32_t>(conflictId);
+        result.error_code = 0;
+        result.error_message = "Failed to read buffer data.";
+        callback.call(result);
+        return;
+    }
+
+    NSData *resolvedData = [NSData dataWithBytes:raw.data() length:len];
 
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData
@@ -753,7 +816,6 @@ static void GCFillError(T &out, NSError *error)
 {
     [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
         gm_structs::GameCenterViewResult result{};
-        result.success = true;
         callback.call(result);
     }];
     return true;
@@ -847,7 +909,7 @@ void gamecenter_saved_games_fetch(const gm::wire::GMFunction& callback)
     [[GMGameCenterMac shared] gamecenter_saved_games_fetch:callback];
 }
 
-void gamecenter_saved_games_save(std::string_view name, std::string_view data, const gm::wire::GMFunction& callback)
+void gamecenter_saved_games_save(std::string_view name, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback)
 {
     [[GMGameCenterMac shared] gamecenter_saved_games_save:name data:data callback:callback];
 }
@@ -862,7 +924,12 @@ void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFu
     [[GMGameCenterMac shared] gamecenter_saved_games_get_data:name callback:callback];
 }
 
-void gamecenter_saved_games_resolve_conflict(double conflict_id, std::string_view data, const gm::wire::GMFunction& callback)
+bool gamecenter_saved_games_get_data_fetch(double handle_id, gm::wire::GMBuffer data)
+{
+    return [[GMGameCenterMac shared] gamecenter_saved_games_get_data_fetch:handle_id data:data];
+}
+
+void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback)
 {
     [[GMGameCenterMac shared] gamecenter_saved_games_resolve_conflict:conflict_id data:data callback:callback];
 }
