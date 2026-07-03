@@ -61,6 +61,7 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
 @interface GMGameCenterInternal ()
 {
     gm::runtime::DispatchQueue __dispatch_queue;
+    std::queue<gm::wire::GMBuffer> __buffer_queue;
     id<GMGameCenterInterface> __impl;
 }@end
 
@@ -244,8 +245,9 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     // field: name, type: String
     std::string_view name = gm::wire::codec::readValue<std::string_view>(__br);
 
-    // field: data, type: String
-    std::string_view data = gm::wire::codec::readValue<std::string_view>(__br);
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
 
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
@@ -285,6 +287,22 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     return 0;
 }
 
+- (double)__EXT_NATIVE__gamecenter_saved_games_get_data_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length
+{
+    gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
+
+    // field: handle_id, type: Float64
+    double handle_id = gm::wire::codec::readValue<double>(__br);
+
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
+
+    bool __result = [__impl gamecenter_saved_games_get_data_fetch:handle_id data:data];
+
+    return static_cast<double>(__result);
+}
+
 - (double)__EXT_NATIVE__gamecenter_saved_games_resolve_conflict:(char*)__arg_buffer arg1:(double)__arg_buffer_length
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
@@ -292,8 +310,9 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     // field: conflict_id, type: Float64
     double conflict_id = gm::wire::codec::readValue<double>(__br);
 
-    // field: data, type: String
-    std::string_view data = gm::wire::codec::readValue<std::string_view>(__br);
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
 
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
@@ -501,6 +520,14 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
 {
     gm::byteio::BufferWriter __bw{ __ret_buffer, static_cast<size_t>(__ret_buffer_length) };
     return __dispatch_queue.fetch(__bw);
+}
+
+// Internal function used for queueing buffers to native code
+- (double)__EXT_NATIVE__GMGameCenter_queue_buffer:(char*)__arg_buffer arg1:(double)__arg_buffer_length
+{
+    gm::wire::GMBuffer __buff{ __arg_buffer, static_cast<uint64_t>(__arg_buffer_length) };
+    __buffer_queue.push(__buff);
+    return 1.0;
 }
 
 @end

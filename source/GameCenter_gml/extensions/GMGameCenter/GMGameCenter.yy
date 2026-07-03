@@ -310,6 +310,24 @@
         },
         {
           "$GMExtensionFunction": "",
+          "%Name": "__gamecenter_saved_games_get_data_fetch",
+          "argCount": 2,
+          "args": [
+            1,
+            2
+          ],
+          "documentation": "@param {Pointer} _arg_buffer\r\n@param {Real} _arg_buffer_length\r\n@returns {Real}",
+          "externalName": "__EXT_NATIVE__gamecenter_saved_games_get_data_fetch",
+          "help": "",
+          "hidden": true,
+          "kind": 4,
+          "name": "__gamecenter_saved_games_get_data_fetch",
+          "resourceType": "GMExtensionFunction",
+          "resourceVersion": "2.0",
+          "returnType": 2
+        },
+        {
+          "$GMExtensionFunction": "",
           "%Name": "__gamecenter_saved_games_resolve_conflict",
           "argCount": 2,
           "args": [
@@ -611,6 +629,24 @@
           "hidden": true,
           "kind": 4,
           "name": "__GMGameCenter_invocation_handler",
+          "resourceType": "GMExtensionFunction",
+          "resourceVersion": "2.0",
+          "returnType": 2
+        },
+        {
+          "$GMExtensionFunction": "",
+          "%Name": "__GMGameCenter_queue_buffer",
+          "argCount": 2,
+          "args": [
+            1,
+            2
+          ],
+          "documentation": "@param {Pointer} _buffer_ptr\r\n@param {Real} _buffer_size",
+          "externalName": "__EXT_NATIVE__GMGameCenter_queue_buffer",
+          "help": "",
+          "hidden": true,
+          "kind": 4,
+          "name": "__GMGameCenter_queue_buffer",
           "resourceType": "GMExtensionFunction",
           "resourceVersion": "2.0",
           "returnType": 2

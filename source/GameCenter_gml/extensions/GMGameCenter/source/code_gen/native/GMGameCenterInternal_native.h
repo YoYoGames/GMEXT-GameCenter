@@ -96,7 +96,6 @@ namespace gm_structs
 
     struct GameCenterViewResult
     {
-        bool success;
     };
 
     struct GameCenterSavedGamesDeleteResult
@@ -113,7 +112,8 @@ namespace gm_structs
         std::int32_t error_code;
         std::string error_message;
         std::string name;
-        std::string data;
+        std::int32_t handle_id;
+        double required_size;
     };
 
     struct GameCenterLeaderboardSubmitResult
@@ -283,14 +283,12 @@ namespace gm::wire::codec
     template<>
     inline void writeValue<gm_structs::GameCenterViewResult>(gm::byteio::IByteWriter& _buf, const gm_structs::GameCenterViewResult& obj)
     {
-        gm::wire::codec::writeValue(_buf, obj.success);
     }
 
     template<>
     inline gm_structs::GameCenterViewResult readValue<gm_structs::GameCenterViewResult>(gm::byteio::BufferReader& _buf)
     {
         gm_structs::GameCenterViewResult obj;
-        obj.success = gm::wire::codec::readValue<bool>(_buf);
         return obj;
     }
 
@@ -321,7 +319,8 @@ namespace gm::wire::codec
         gm::wire::codec::writeValue(_buf, obj.error_code);
         gm::wire::codec::writeValue(_buf, obj.error_message);
         gm::wire::codec::writeValue(_buf, obj.name);
-        gm::wire::codec::writeValue(_buf, obj.data);
+        gm::wire::codec::writeValue(_buf, obj.handle_id);
+        gm::wire::codec::writeValue(_buf, obj.required_size);
     }
 
     template<>
@@ -332,7 +331,8 @@ namespace gm::wire::codec
         obj.error_code = gm::wire::codec::readValue<std::int32_t>(_buf);
         obj.error_message = gm::wire::codec::readValue<std::string>(_buf);
         obj.name = gm::wire::codec::readValue<std::string>(_buf);
-        obj.data = gm::wire::codec::readValue<std::string>(_buf);
+        obj.handle_id = gm::wire::codec::readValue<std::int32_t>(_buf);
+        obj.required_size = gm::wire::codec::readValue<double>(_buf);
         return obj;
     }
 
@@ -763,10 +763,11 @@ bool gamecenter_local_player_is_personalized_communication_restricted();
 gm_structs::GameCenterPlayer gamecenter_local_player_get_info();
 void gamecenter_saved_games_callback_subscribe(const gm::wire::GMFunction& callback);
 void gamecenter_saved_games_fetch(const gm::wire::GMFunction& callback);
-void gamecenter_saved_games_save(std::string_view name, std::string_view data, const gm::wire::GMFunction& callback);
+void gamecenter_saved_games_save(std::string_view name, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback);
 void gamecenter_saved_games_delete(std::string_view name, const gm::wire::GMFunction& callback);
 void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFunction& callback);
-void gamecenter_saved_games_resolve_conflict(double conflict_id, std::string_view data, const gm::wire::GMFunction& callback);
+bool gamecenter_saved_games_get_data_fetch(double handle_id, gm::wire::GMBuffer data);
+void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback);
 void gamecenter_leaderboard_submit(std::string_view leaderboard_id, double score, double context, const gm::wire::GMFunction& callback);
 void gamecenter_leaderboard_load(std::string_view leaderboard_id, gm_enums::GameCenterLeaderboardTimeScope time_scope, double range_start, double range_count, gm_enums::GameCenterLeaderboardPlayerScope player_scope, const gm::wire::GMFunction& callback);
 void gamecenter_achievement_report(std::string_view identifier, double percent_complete, bool show_completion_banner, const gm::wire::GMFunction& callback);

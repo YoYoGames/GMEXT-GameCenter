@@ -42,13 +42,15 @@ function gamecenter_saved_games_callback_subscribe(callback: func): unit;
 [global, bind = typed_gml]
 function gamecenter_saved_games_fetch(callback: func): unit;
 [global, bind = typed_gml]
-function gamecenter_saved_games_save(name: string, data: string, callback: func): unit;
+function gamecenter_saved_games_save(name: string, [type_hint=buffer] data: gmval, callback: func): unit;
 [global, bind = typed_gml]
 function gamecenter_saved_games_delete(name: string, callback: func): unit;
 [global, bind = typed_gml]
 function gamecenter_saved_games_get_data(name: string, callback: func): unit;
 [global, bind = typed_gml]
-function gamecenter_saved_games_resolve_conflict(conflict_id: real, data: string, callback: func): unit;
+function gamecenter_saved_games_get_data_fetch(handle_id: real, [type_hint=buffer] data: gmval): bool;
+[global, bind = typed_gml]
+function gamecenter_saved_games_resolve_conflict(conflict_id: real, [type_hint=buffer] data: gmval, callback: func): unit;
 
 // Leaderboards
 [global, bind = typed_gml]
@@ -213,7 +215,6 @@ class `[[GameCenterAuthResult]]` prototype Object
 [global]
 class `[[GameCenterViewResult]]` prototype Object
 {
-    [field] property success : bool { get; set; }
 }
 
 // Result of gamecenter_saved_games_fetch().
@@ -257,7 +258,8 @@ class `[[GameCenterSavedGamesDataResult]]` prototype Object
     [field] property error_code : int32 { get; set; }
     [field] property error_message : string { get; set; }
     [field] property name : string { get; set; }
-    [field] property data : string { get; set; }
+    [field] property handle_id : int32 { get; set; }
+    [field] property required_size : real { get; set; }
 }
 
 // Result of gamecenter_saved_games_resolve_conflict().

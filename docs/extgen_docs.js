@@ -89,7 +89,7 @@
 /**
  * @function_partial gamecenter_saved_games_save
  * @param {String} name
- * @param {String} data
+ * @param {Buffer} data
  * @param {Function} callback
  * @function_end 
  */
@@ -109,9 +109,17 @@
  */
 
 /**
+ * @function_partial gamecenter_saved_games_get_data_fetch
+ * @param {Real} handle_id
+ * @param {Buffer} data
+ * @returns {Bool} 
+ * @function_end 
+ */
+
+/**
  * @function_partial gamecenter_saved_games_resolve_conflict
  * @param {Real} conflict_id
- * @param {String} data
+ * @param {Buffer} data
  * @param {Function} callback
  * @function_end 
  */
@@ -250,7 +258,6 @@
 
 /**
  * @struct_partial GameCenterViewResult
- * @member {Bool} success
  * @struct_end 
  */
 
@@ -269,7 +276,8 @@
  * @member {Real} error_code
  * @member {String} error_message
  * @member {String} name
- * @member {String} data
+ * @member {Real} handle_id
+ * @member {Real} required_size
  * @struct_end 
  */
 

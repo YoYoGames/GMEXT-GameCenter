@@ -6,6 +6,9 @@
 // Internal function used for fetching dispatched function calls to GML
 GMEXPORT double __EXT_NATIVE__GMGameCenter_invocation_handler(char* __ret_buffer, double __ret_buffer_length);
 
+// Internal function used for queueing buffers to native code
+GMEXPORT double __EXT_NATIVE__GMGameCenter_queue_buffer(char* __arg_buffer, double __arg_buffer_length);
+
 GMEXPORT double __EXT_NATIVE__gamecenter_view_callback_subscribe(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_present_view_default();
 GMEXPORT double __EXT_NATIVE__gamecenter_present_view_achievements();
@@ -23,6 +26,7 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_fetch(char* __arg_buffer, d
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_save(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_delete(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data(char* __arg_buffer, double __arg_buffer_length);
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_resolve_conflict(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_leaderboard_submit(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_leaderboard_load(char* __arg_buffer, double __arg_buffer_length);

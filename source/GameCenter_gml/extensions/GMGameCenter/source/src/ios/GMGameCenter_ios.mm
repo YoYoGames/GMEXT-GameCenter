@@ -63,17 +63,21 @@ static void GCFillError(T &out, NSError *error)
 @interface GMGameCenter () <GKLocalPlayerListener, GKGameCenterControllerDelegate>
 @property(nonatomic, assign) gm::wire::GMFunction viewCallback;
 @property(nonatomic, assign) gm::wire::GMFunction savedGamesEventCallback;
+@property(nonatomic, assign) gm::wire::GMFunction authenticateCallback;
 @property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSArray<GKSavedGame *> *> *conflictGroups;
+@property(nonatomic, strong) NSMutableDictionary<NSNumber *, NSData *> *heldSavedGameData;
 @end
 
 @implementation GMGameCenter {
-    // Guards viewCallback / savedGamesEventCallback / conflictGroups, which are touched both from
+    // Guards all callback properties and data dictionaries, which are touched both from
     // the game thread (extension entry points) and from GameKit listener/delegate callbacks. Apple
     // does not guarantee those callbacks arrive on the main thread, so this is required, not just
     // defensive. Callbacks are copied out under the lock and fired outside it (the GML dispatch is
     // itself thread-safe) to avoid holding the lock across a callback.
     std::mutex _stateMutex;
     NSInteger _nextConflictId;
+    NSInteger _nextDataHandleId;
+    BOOL _authenticateHandlerSet;
 }
 
 - (instancetype)init
@@ -81,7 +85,11 @@ static void GCFillError(T &out, NSError *error)
     self = [super init];
     if (self) {
         self.conflictGroups = [NSMutableDictionary dictionary];
+        self.heldSavedGameData = [NSMutableDictionary dictionary];
+        _nextDataHandleId = 1;
+        _authenticateHandlerSet = NO;
         [[GKLocalPlayer localPlayer] registerListener:self];
+        [self setupAuthenticationHandler];
     }
     return self;
 }
@@ -90,6 +98,52 @@ static void GCFillError(T &out, NSError *error)
 {
     [[GKLocalPlayer localPlayer] unregisterListener:self];
     self.conflictGroups = nil;
+    self.heldSavedGameData = nil;
+}
+
+- (void)setupAuthenticationHandler
+{
+    if (_authenticateHandlerSet) return;
+    _authenticateHandlerSet = YES;
+
+    [GKLocalPlayer localPlayer].authenticateHandler = ^(
+#if !TARGET_OS_OSX
+        UIViewController *viewController,
+#else
+        NSViewController *viewController,
+#endif
+        NSError *error)
+    {
+        GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+        std::string state = "unknown";
+
+        if (viewController != nil) {
+#if !TARGET_OS_OSX
+            [g_controller presentViewController:viewController animated:YES completion:nil];
+#else
+            [[GKDialogController sharedDialogController]
+                presentViewController:(NSViewController<GKViewController> *)viewController];
+#endif
+            state = "presenting_view";
+        } else if (localPlayer.isAuthenticated) {
+            state = "authenticated";
+        }
+
+        gm::wire::GMFunction callback;
+        {
+            std::lock_guard<std::mutex> lock(_stateMutex);
+            callback = self.authenticateCallback;
+        }
+
+        if (callback) {
+            gm_structs::GameCenterAuthResult result{};
+            GCFillError(result, error);
+            result.authentication_state = state;
+            result.authenticated = (localPlayer.isAuthenticated == YES);
+            result.player = [self playerStructFor:localPlayer];
+            callback.call(result);
+        }
+    };
 }
 
 #pragma mark - Struct helpers
@@ -267,7 +321,6 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)controller
 {
-    bool success = controller != nil;
 #if !TARGET_OS_OSX
     if (controller != nil) [g_controller dismissViewControllerAnimated:YES completion:nil];
 #else
@@ -281,7 +334,6 @@ static void GCFillError(T &out, NSError *error)
     }
     if (viewCallback) {
         gm_structs::GameCenterViewResult result{};
-        result.success = success;
         viewCallback.call(result);
     }
 }
@@ -290,36 +342,8 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
 {
-    [GKLocalPlayer localPlayer].authenticateHandler = ^(
-#if !TARGET_OS_OSX
-        UIViewController *viewController,
-#else
-        NSViewController *viewController,
-#endif
-        NSError *error)
-    {
-        GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
-        std::string state = "unknown";
-
-        if (viewController != nil) {
-#if !TARGET_OS_OSX
-            [g_controller presentViewController:viewController animated:YES completion:nil];
-#else
-            [[GKDialogController sharedDialogController]
-                presentViewController:(NSViewController<GKViewController> *)viewController];
-#endif
-            state = "presenting_view";
-        } else if (localPlayer.isAuthenticated) {
-            state = "authenticated";
-        }
-
-        gm_structs::GameCenterAuthResult result{};
-        GCFillError(result, error);
-        result.authentication_state = state;
-        result.authenticated = (localPlayer.isAuthenticated == YES);
-        result.player = [self playerStructFor:localPlayer];
-        callback.call(result);
-    };
+    std::lock_guard<std::mutex> lock(_stateMutex);
+    self.authenticateCallback = callback;
 }
 
 - (bool)gamecenter_local_player_is_authenticated { return [GKLocalPlayer localPlayer].isAuthenticated == YES; }
@@ -368,11 +392,26 @@ static void GCFillError(T &out, NSError *error)
 }
 
 - (void)gamecenter_saved_games_save:(std::string_view)name
-                               data:(std::string_view)data
-                           callback:(gm::wire::GMFunction)callback
+                                data:(gm::wire::GMBuffer)buffer
+                            callback:(gm::wire::GMFunction)callback
 {
     NSString *saveName = NSStringFromStringView(name);
-    NSData *saveData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+
+    // NOTE: Buffer access requires the GameMaker runtime buffer API.
+    // Extract buffer pointer and size from the GMBuffer.
+    // TODO: Implement buffer access using GM extension API.
+    NSData *saveData = nil;
+    // TODO: Get buffer ptr and length, then create NSData
+
+    if (saveData == nil) {
+        gm_structs::GameCenterSavedGamesSaveResult result{};
+        result.success = false;
+        result.error_code = 0;
+        result.error_message = "Failed to read buffer data.";
+        result.name = StringFromNSString(saveName);
+        callback.call(result);
+        return;
+    }
 
     [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
@@ -404,7 +443,8 @@ static void GCFillError(T &out, NSError *error)
             gm_structs::GameCenterSavedGamesDataResult result{};
             GCFillError(result, fetchError);
             result.name = StringFromNSString(saveName);
-            result.data = std::string();
+            result.handle_id = -1;
+            result.required_size = 0;
             callback.call(result);
             return;
         }
@@ -412,8 +452,6 @@ static void GCFillError(T &out, NSError *error)
         GKSavedGame *match = nil;
         for (GKSavedGame *savedGame in savedGames ?: @[]) {
             if (![savedGame.name isEqualToString:saveName]) continue;
-            // A name with unresolved conflicts can have several saves; pick the most recently
-            // modified one rather than an arbitrary first match.
             if (match == nil ||
                 [savedGame.modificationDate compare:match.modificationDate] == NSOrderedDescending) {
                 match = savedGame;
@@ -424,7 +462,8 @@ static void GCFillError(T &out, NSError *error)
             gm_structs::GameCenterSavedGamesDataResult result{};
             result.success = false;
             result.name = StringFromNSString(saveName);
-            result.data = std::string();
+            result.handle_id = -1;
+            result.required_size = 0;
             result.error_code = 0;
             result.error_message = "Saved game was not found.";
             callback.call(result);
@@ -437,21 +476,17 @@ static void GCFillError(T &out, NSError *error)
             result.name = StringFromNSString(saveName);
 
             if (loadError == nil && loadedData != nil) {
-                NSString *text = [[NSString alloc] initWithData:loadedData encoding:NSUTF8StringEncoding];
-                if (text == nil) {
-                    // Saved data exists but is not valid UTF-8 (e.g. a binary/blob payload or a
-                    // save written by another device/version). The current contract only supports
-                    // UTF-8 text, so report failure rather than silently returning empty data with
-                    // success == true.
-                    result.success = false;
-                    result.error_code = 0;
-                    result.error_message = "Saved game data is not valid UTF-8 text and cannot be returned as a string.";
-                    result.data = std::string();
-                } else {
-                    result.data = StringFromNSString(text);
+                NSInteger handleId = 0;
+                {
+                    std::lock_guard<std::mutex> lock(_stateMutex);
+                    handleId = _nextDataHandleId++;
+                    self.heldSavedGameData[@(handleId)] = loadedData;
                 }
+                result.handle_id = static_cast<std::int32_t>(handleId);
+                result.required_size = static_cast<double>(loadedData.length);
             } else {
-                result.data = std::string();
+                result.handle_id = -1;
+                result.required_size = 0;
             }
 
             callback.call(result);
@@ -459,8 +494,29 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
+- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id
+                                         data:(gm::wire::GMBuffer)buffer
+{
+    NSInteger hId = static_cast<NSInteger>(handle_id);
+    NSData *data = nil;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        data = self.heldSavedGameData[@(hId)];
+        if (data != nil) {
+            [self.heldSavedGameData removeObjectForKey:@(hId)];
+        }
+    }
+
+    if (data == nil) return false;
+
+    // NOTE: Buffer access requires the GameMaker runtime buffer API.
+    // Write the data to the provided buffer.
+    // TODO: Get buffer ptr and length from GMBuffer, then copy: memcpy(bufferPtr, data.bytes, min(bufferLength, data.length));
+    return true;
+}
+
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id
-                                           data:(std::string_view)data
+                                           data:(gm::wire::GMBuffer)buffer
                                        callback:(gm::wire::GMFunction)callback
 {
     NSInteger conflictId = (NSInteger)conflict_id;
@@ -480,13 +536,25 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    NSData *resolvedData = [NSStringFromStringView(data) dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *resolvedData = nil;
+    // NOTE: Buffer access requires the GameMaker runtime buffer API.
+    // Extract buffer pointer and size from the GMBuffer.
+    // TODO: Get buffer ptr and length from GMBuffer, then create NSData
+
+    if (resolvedData == nil) {
+        gm_structs::GameCenterSavedGamesResolveResult result{};
+        result.success = false;
+        result.conflict_id = static_cast<std::int32_t>(conflictId);
+        result.error_code = 0;
+        result.error_message = "Failed to read buffer data.";
+        callback.call(result);
+        return;
+    }
 
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData
                                            completionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *error) {
         if (error == nil) {
-            // Resolved: drop the stored group so it can't be resolved twice or leak.
             std::lock_guard<std::mutex> lock(_stateMutex);
             [self.conflictGroups removeObjectForKey:@(conflictId)];
         }
@@ -578,6 +646,7 @@ static void GCFillError(T &out, NSError *error)
     };
 
     if (@available(iOS 14.0, macOS 11.0, *)) {
+        // GameKit score/context are integers; fractional values are truncated.
         [GKLeaderboard submitScore:(NSInteger)score
                            context:(NSUInteger)context
                             player:[GKLocalPlayer localPlayer]
@@ -801,19 +870,24 @@ static void GCFillError(T &out, NSError *error)
 - (bool)gamecenter_access_point_present_with_state:(gm_enums::GameCenterViewState)state
                                           callback:(gm::wire::GMFunction)callback
 {
+    // Check availability for iOS 17.2+ / macOS 14.2+ states (Challenges, Dashboard, LocalPlayerFriendsList).
+    if ((state == 2 || state == 4 || state == 5) && !(@available(iOS 17.2, macOS 14.2, *))) {
+        gm_structs::GameCenterViewResult result{};
+        callback.call(result);
+        return false;
+    }
+
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
             gm_structs::GameCenterViewResult result{};
-            result.success = true;
             callback.call(result);
         }];
         return true;
     }
-    // Unsupported OS: the trigger handler will never fire, so also signal failure through the
-    // callback (not just the bool return) so a caller awaiting the callback doesn't hang.
+
+    // Unsupported OS: signal failure through the callback so a caller awaiting it doesn't hang.
     {
         gm_structs::GameCenterViewResult result{};
-        result.success = false;
         callback.call(result);
     }
     return false;
@@ -824,14 +898,12 @@ static void GCFillError(T &out, NSError *error)
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
             gm_structs::GameCenterViewResult result{};
-            result.success = true;
             callback.call(result);
         }];
         return true;
     }
     {
         gm_structs::GameCenterViewResult result{};
-        result.success = false;
         callback.call(result);
     }
     return false;

@@ -61,15 +61,32 @@ handleSaveOrDelete = function(_result)
 }
 
 // @callback for gamecenter_saved_games_get_data()
-// Unpacks the saved data and enters slot edit mode. Replaces the
-// "GameCenter_SavedGames_GetData" case of the old Social Async event.
+// First step: receives metadata with handle_id and required_size.
+// Fetches the actual data into a buffer, then unpacks it.
+// Replaces the "GameCenter_SavedGames_GetData" case of the old Social Async event.
 handleGetData = function(_result)
 {
 	// Early exit if not successful
 	if (!_result.success) return;
 
+	// Create a buffer to receive the saved data
+	var _buffer = buffer_create(_result.required_size, buffer_fixed, 1);
+
+	// Fetch the actual saved data into the buffer
+	// Note: handle_id becomes invalid after this call
+	if (!gamecenter_saved_games_get_data_fetch(_result.handle_id, _buffer))
+	{
+		buffer_delete(_buffer);
+		return;
+	}
+
+	// Read the JSON string from the buffer
+	buffer_seek(_buffer, buffer_seek_start, 0);
+	var _dataJSON = buffer_read(_buffer, buffer_string);
+	buffer_delete(_buffer);
+
 	// Go through all the saved data and unpack it (load it)
-	var _dataArray = json_parse(_result.data);
+	var _dataArray = json_parse(_dataJSON);
 	var _count = array_length(_dataArray);
 	for (var _i = 0; _i < _count; _i++)
 	{
@@ -90,6 +107,8 @@ handleResolveConflict = function(_result)
 	if (!_result.success) return;
 
 	// _result.conflict_id and _result.slots are available here.
+	// Re-fetch from the Apple GameCenter servers to refresh after resolving.
+	gamecenter_saved_games_fetch(handleFetch);
 }
 
 // @callback for gamecenter_saved_games_callback_subscribe()
@@ -126,8 +145,12 @@ handleSavedGamesEvent = function(_result)
 				// Handle the slotData accordingly
 			}
 
-			// This requires selecting which data you will approve:
-			// gamecenter_saved_games_resolve_conflict(_conflictId, "<the data that you choose>", handleResolveConflict);
+			// This requires selecting which data you will approve.
+			// First, create a buffer with the chosen data:
+			// var _buff = buffer_create(string_length(_dataToResolve), buffer_fixed, 1);
+			// buffer_write(_buff, buffer_string, _dataToResolve);
+			// gamecenter_saved_games_resolve_conflict(_conflictId, _buff, handleResolveConflict);
+			// buffer_delete(_buff);
 			break;
 	}
 }

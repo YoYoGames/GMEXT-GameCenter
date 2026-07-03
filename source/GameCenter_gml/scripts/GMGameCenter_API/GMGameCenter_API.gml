@@ -99,7 +99,6 @@ function GameCenterViewResult() constructor
      */
     static __uid = 4191388138;
 
-    self.success = undefined;
 
 }
 
@@ -136,7 +135,8 @@ function GameCenterSavedGamesDataResult() constructor
     self.error_code = undefined;
     self.error_message = undefined;
     self.name = undefined;
-    self.data = undefined;
+    self.handle_id = undefined;
+    self.required_size = undefined;
 
 }
 
@@ -537,10 +537,6 @@ function __GameCenterViewResult_encode(_inst, _buffer, _offset, _where = _GMFUNC
     buffer_seek(_buffer, buffer_seek_start, _offset);
     with (_inst)
     {
-        // field: success, type: Bool
-        if (!is_bool(self.success)) show_error($"{_where} :: self.success expected bool", true);
-        buffer_write(_buffer, buffer_bool, self.success);
-
     }
 }
 
@@ -558,9 +554,6 @@ function __GameCenterViewResult_decode(_buffer, _offset)
     _inst = new GameCenterViewResult();
     with (_inst)
     {
-        // field: success, type: Bool
-        self.success = buffer_read(_buffer, buffer_bool);
-
     }
 
     return _inst;
@@ -664,10 +657,13 @@ function __GameCenterSavedGamesDataResult_encode(_inst, _buffer, _offset, _where
         buffer_write(_buffer, buffer_u32, string_byte_length(self.name));
         buffer_write(_buffer, buffer_string, self.name);
 
-        // field: data, type: String
-        if (!is_string(self.data)) show_error($"{_where} :: self.data expected string", true);
-        buffer_write(_buffer, buffer_u32, string_byte_length(self.data));
-        buffer_write(_buffer, buffer_string, self.data);
+        // field: handle_id, type: Int32
+        if (!is_numeric(self.handle_id)) show_error($"{_where} :: self.handle_id expected number", true);
+        buffer_write(_buffer, buffer_s32, self.handle_id);
+
+        // field: required_size, type: Float64
+        if (!is_numeric(self.required_size)) show_error($"{_where} :: self.required_size expected number", true);
+        buffer_write(_buffer, buffer_f64, self.required_size);
 
     }
 }
@@ -700,9 +696,11 @@ function __GameCenterSavedGamesDataResult_decode(_buffer, _offset)
         buffer_read(_buffer, buffer_u32);
         self.name = buffer_read(_buffer, buffer_string);
 
-        // field: data, type: String
-        buffer_read(_buffer, buffer_u32);
-        self.data = buffer_read(_buffer, buffer_string);
+        // field: handle_id, type: Int32
+        self.handle_id = buffer_read(_buffer, buffer_s32);
+
+        // field: required_size, type: Float64
+        self.required_size = buffer_read(_buffer, buffer_f64);
 
     }
 
@@ -1876,7 +1874,7 @@ function gamecenter_saved_games_fetch(_callback)
 
 /**
  * @param {String} _name
- * @param {String} _data
+ * @param {Id.Buffer} _data
  * @param {Function} _callback
  */
 function gamecenter_saved_games_save(_name, _data, _callback)
@@ -1890,10 +1888,9 @@ function gamecenter_saved_games_save(_name, _data, _callback)
     buffer_write(__args_buffer, buffer_u32, string_byte_length(_name));
     buffer_write(__args_buffer, buffer_string, _name);
 
-    // param: _data, type: String
-    if (!is_string(_data)) show_error($"{_GMFUNCTION_} :: _data expected string", true);
-    buffer_write(__args_buffer, buffer_u32, string_byte_length(_data));
-    buffer_write(__args_buffer, buffer_string, _data);
+    // param: _data, type: Buffer
+    if (!buffer_exists(_data)) show_error($"{_GMFUNCTION_} :: _data expected Id.Buffer", true);
+    __GMGameCenter_queue_buffer(buffer_get_address(_data), buffer_get_size(_data));
 
     // param: _callback, type: Function
     if (!is_callable(_callback)) show_error($"{_GMFUNCTION_} :: _callback expected callable type", true);
@@ -1956,8 +1953,30 @@ function gamecenter_saved_games_get_data(_name, _callback)
 }
 
 /**
+ * @param {Real} _handle_id
+ * @param {Id.Buffer} _data
+ * @returns {Bool} 
+ */
+function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
+{
+    var __args_buffer = __ext_core_get_args_buffer();
+
+    // param: _handle_id, type: Float64
+    if (!is_numeric(_handle_id)) show_error($"{_GMFUNCTION_} :: _handle_id expected number", true);
+    buffer_write(__args_buffer, buffer_f64, _handle_id);
+
+    // param: _data, type: Buffer
+    if (!buffer_exists(_data)) show_error($"{_GMFUNCTION_} :: _data expected Id.Buffer", true);
+    __GMGameCenter_queue_buffer(buffer_get_address(_data), buffer_get_size(_data));
+
+    var _return_value = __gamecenter_saved_games_get_data_fetch(buffer_get_address(__args_buffer), buffer_tell(__args_buffer));
+
+    return _return_value;
+}
+
+/**
  * @param {Real} _conflict_id
- * @param {String} _data
+ * @param {Id.Buffer} _data
  * @param {Function} _callback
  */
 function gamecenter_saved_games_resolve_conflict(_conflict_id, _data, _callback)
@@ -1970,10 +1989,9 @@ function gamecenter_saved_games_resolve_conflict(_conflict_id, _data, _callback)
     if (!is_numeric(_conflict_id)) show_error($"{_GMFUNCTION_} :: _conflict_id expected number", true);
     buffer_write(__args_buffer, buffer_f64, _conflict_id);
 
-    // param: _data, type: String
-    if (!is_string(_data)) show_error($"{_GMFUNCTION_} :: _data expected string", true);
-    buffer_write(__args_buffer, buffer_u32, string_byte_length(_data));
-    buffer_write(__args_buffer, buffer_string, _data);
+    // param: _data, type: Buffer
+    if (!buffer_exists(_data)) show_error($"{_GMFUNCTION_} :: _data expected Id.Buffer", true);
+    __GMGameCenter_queue_buffer(buffer_get_address(_data), buffer_get_size(_data));
 
     // param: _callback, type: Function
     if (!is_callable(_callback)) show_error($"{_GMFUNCTION_} :: _callback expected callable type", true);

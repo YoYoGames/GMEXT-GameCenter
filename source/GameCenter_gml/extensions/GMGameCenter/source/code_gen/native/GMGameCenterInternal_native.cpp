@@ -15,6 +15,17 @@ GMEXPORT double __EXT_NATIVE__GMGameCenter_invocation_handler(char* __ret_buffer
     return __dispatch_queue.fetch(__bw);
 }
 
+static std::queue<gm::wire::GMBuffer> __buffer_queue;
+
+// Internal function used for queueing buffers to native code
+GMEXPORT double __EXT_NATIVE__GMGameCenter_queue_buffer(char* __arg_buffer, double __arg_buffer_length)
+{
+    gm::wire::GMBuffer __buff{__arg_buffer, static_cast<uint64_t>(__arg_buffer_length)};
+    __buffer_queue.push(__buff);
+
+    return 1.0;
+}
+
 GMEXPORT double __EXT_NATIVE__gamecenter_view_callback_subscribe(char* __arg_buffer, double __arg_buffer_length)
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
@@ -141,8 +152,9 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_save(char* __arg_buffer, do
     // field: name, type: String
     std::string_view name = gm::wire::codec::readValue<std::string_view>(__br);
 
-    // field: data, type: String
-    std::string_view data = gm::wire::codec::readValue<std::string_view>(__br);
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
 
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
@@ -179,6 +191,21 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data(char* __arg_buffer
     return 0;
 }
 
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_buffer, double __arg_buffer_length)
+{
+    gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
+
+    // field: handle_id, type: Float64
+    double handle_id = gm::wire::codec::readValue<double>(__br);
+
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
+
+    auto&& __result = gamecenter_saved_games_get_data_fetch(handle_id, data);
+    return static_cast<double>(__result);
+}
+
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_resolve_conflict(char* __arg_buffer, double __arg_buffer_length)
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
@@ -186,8 +213,9 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_resolve_conflict(char* __ar
     // field: conflict_id, type: Float64
     double conflict_id = gm::wire::codec::readValue<double>(__br);
 
-    // field: data, type: String
-    std::string_view data = gm::wire::codec::readValue<std::string_view>(__br);
+    // field: data, type: Buffer
+    gm::wire::GMBuffer data = __buffer_queue.front();
+    __buffer_queue.pop();
 
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
