@@ -397,13 +397,13 @@ static void GCFillError(T &out, NSError *error)
 {
     NSString *saveName = NSStringFromStringView(name);
 
-    // NOTE: Buffer access requires the GameMaker runtime buffer API.
-    // Extract buffer pointer and size from the GMBuffer.
-    // TODO: Implement buffer access using GM extension API.
-    NSData *saveData = nil;
-    // TODO: Get buffer ptr and length, then create NSData
+    // Read binary data from the GMBuffer
+    const std::size_t max_size = 10 * 1024 * 1024; // 10MB limit for saved games
+    std::vector<char> raw(max_size);
+    auto reader = buffer.getReader();
+    int bytes_read = reader.readBytes(raw.data(), static_cast<int>(max_size));
 
-    if (saveData == nil) {
+    if (bytes_read < 0) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
         result.success = false;
         result.error_code = 0;
@@ -412,6 +412,8 @@ static void GCFillError(T &out, NSError *error)
         callback.call(result);
         return;
     }
+
+    NSData *saveData = [NSData dataWithBytes:raw.data() length:bytes_read];
 
     [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
@@ -509,10 +511,11 @@ static void GCFillError(T &out, NSError *error)
 
     if (data == nil) return false;
 
-    // NOTE: Buffer access requires the GameMaker runtime buffer API.
-    // Write the data to the provided buffer.
-    // TODO: Get buffer ptr and length from GMBuffer, then copy: memcpy(bufferPtr, data.bytes, min(bufferLength, data.length));
-    return true;
+    // Write the saved data into the provided buffer
+    auto writer = buffer.getWriter();
+    int bytes_written = writer.writeBytes(reinterpret_cast<const char*>(data.bytes), static_cast<int>(data.length));
+
+    return bytes_written == static_cast<int>(data.length);
 }
 
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id
@@ -536,12 +539,13 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    NSData *resolvedData = nil;
-    // NOTE: Buffer access requires the GameMaker runtime buffer API.
-    // Extract buffer pointer and size from the GMBuffer.
-    // TODO: Get buffer ptr and length from GMBuffer, then create NSData
+    // Read binary data from the GMBuffer
+    const std::size_t max_size = 10 * 1024 * 1024; // 10MB limit for saved games
+    std::vector<char> raw(max_size);
+    auto reader = buffer.getReader();
+    int bytes_read = reader.readBytes(raw.data(), static_cast<int>(max_size));
 
-    if (resolvedData == nil) {
+    if (bytes_read < 0) {
         gm_structs::GameCenterSavedGamesResolveResult result{};
         result.success = false;
         result.conflict_id = static_cast<std::int32_t>(conflictId);
@@ -550,6 +554,8 @@ static void GCFillError(T &out, NSError *error)
         callback.call(result);
         return;
     }
+
+    NSData *resolvedData = [NSData dataWithBytes:raw.data() length:bytes_read];
 
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData
