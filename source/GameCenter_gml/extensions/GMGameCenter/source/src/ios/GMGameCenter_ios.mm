@@ -647,10 +647,7 @@ static void GCFillError(T &out, NSError *error)
 
 #pragma mark - Leaderboards
 
-- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id
-                                score:(double)score
-                              context:(double)context
-                             callback:(gm::wire::GMFunction)callback
+void gamecenter_leaderboard_submit(std::string_view leaderboard_id, std::int32_t score, std::int32_t context, const gm::wire::GMFunction& callback)
 {
     NSString *identifier = NSStringFromStringView(leaderboard_id);
 
