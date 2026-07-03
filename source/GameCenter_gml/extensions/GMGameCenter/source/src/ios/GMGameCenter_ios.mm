@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <mutex>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -397,13 +398,16 @@ static void GCFillError(T &out, NSError *error)
 {
     NSString *saveName = NSStringFromStringView(name);
 
-    // Read binary data from the GMBuffer
-    const std::size_t max_size = 10 * 1024 * 1024; // 10MB limit for saved games
-    std::vector<char> raw(max_size);
-    auto reader = buffer.getReader();
-    int bytes_read = reader.readBytes(raw.data(), static_cast<int>(max_size));
+    // Read the exact number of bytes backing the GML buffer.
+    std::size_t len = static_cast<std::size_t>(buffer.length());
+    std::vector<char> raw(len);
 
-    if (bytes_read < 0) {
+    try {
+        auto reader = buffer.getReader();
+        if (len > 0) {
+            reader.readBytes(raw.data(), len);
+        }
+    } catch (const std::exception &ex) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
         result.success = false;
         result.error_code = 0;
@@ -413,7 +417,7 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    NSData *saveData = [NSData dataWithBytes:raw.data() length:bytes_read];
+    NSData *saveData = [NSData dataWithBytes:raw.data() length:len];
 
     [[GKLocalPlayer localPlayer] saveGameData:saveData withName:saveName completionHandler:^(GKSavedGame *savedGame, NSError *error) {
         gm_structs::GameCenterSavedGamesSaveResult result{};
@@ -510,12 +514,17 @@ static void GCFillError(T &out, NSError *error)
     }
 
     if (data == nil) return false;
+    if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
 
     // Write the saved data into the provided buffer
-    auto writer = buffer.getWriter();
-    int bytes_written = writer.writeBytes(reinterpret_cast<const char*>(data.bytes), static_cast<int>(data.length));
+    try {
+        auto writer = buffer.getWriter();
+        writer.writeBytes(data.bytes, static_cast<std::size_t>(data.length));
+    } catch (const std::exception &ex) {
+        return false;
+    }
 
-    return bytes_written == static_cast<int>(data.length);
+    return true;
 }
 
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id
@@ -539,13 +548,16 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    // Read binary data from the GMBuffer
-    const std::size_t max_size = 10 * 1024 * 1024; // 10MB limit for saved games
-    std::vector<char> raw(max_size);
-    auto reader = buffer.getReader();
-    int bytes_read = reader.readBytes(raw.data(), static_cast<int>(max_size));
+    // Read the exact number of bytes backing the GML buffer.
+    std::size_t len = static_cast<std::size_t>(buffer.length());
+    std::vector<char> raw(len);
 
-    if (bytes_read < 0) {
+    try {
+        auto reader = buffer.getReader();
+        if (len > 0) {
+            reader.readBytes(raw.data(), len);
+        }
+    } catch (const std::exception &ex) {
         gm_structs::GameCenterSavedGamesResolveResult result{};
         result.success = false;
         result.conflict_id = static_cast<std::int32_t>(conflictId);
@@ -555,7 +567,7 @@ static void GCFillError(T &out, NSError *error)
         return;
     }
 
-    NSData *resolvedData = [NSData dataWithBytes:raw.data() length:bytes_read];
+    NSData *resolvedData = [NSData dataWithBytes:raw.data() length:len];
 
     [[GKLocalPlayer localPlayer] resolveConflictingSavedGames:conflicts
                                                     withData:resolvedData

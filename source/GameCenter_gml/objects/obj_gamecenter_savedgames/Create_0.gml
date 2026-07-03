@@ -146,8 +146,9 @@ handleSavedGamesEvent = function(_result)
 			}
 
 			// This requires selecting which data you will approve.
-			// First, create a buffer with the chosen data:
-			// var _buff = buffer_create(string_length(_dataToResolve), buffer_fixed, 1);
+			// First, create a buffer with the chosen data (+1 for the NUL
+			// terminator that buffer_string writes):
+			// var _buff = buffer_create(string_length(_dataToResolve) + 1, buffer_fixed, 1);
 			// buffer_write(_buff, buffer_string, _dataToResolve);
 			// gamecenter_saved_games_resolve_conflict(_conflictId, _buff, handleResolveConflict);
 			// buffer_delete(_buff);
