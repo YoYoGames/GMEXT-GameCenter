@@ -106,7 +106,7 @@ static void GCFillError(T &out, NSError *error)
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(gm::wire::GMBuffer)buffer callback:(gm::wire::GMFunction)callback;
 
 // Leaderboards
-- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(double)score context:(double)context callback:(gm::wire::GMFunction)callback;
+- (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(std::int32_t)score context:(std::int32_t)context callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id
                          time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
                         range_start:(double)range_start
@@ -137,12 +137,15 @@ static void GCFillError(T &out, NSError *error)
 @implementation GMGameCenterMac {
     gm::wire::GMFunction _viewCallback;
     gm::wire::GMFunction _savedGamesEventCallback;
-    // Guards _viewCallback / _savedGamesEventCallback / conflictGroups / heldSavedGameData against concurrent access
-    // from GameKit listener/delegate callbacks (not guaranteed to be on the main thread) and the
-    // game-thread entry points. Callbacks are copied under the lock and fired outside it.
+    gm::wire::GMFunction _authenticateCallback;
+    // Guards _viewCallback / _savedGamesEventCallback / _authenticateCallback / conflictGroups /
+    // heldSavedGameData against concurrent access from GameKit listener/delegate callbacks (not
+    // guaranteed to be on the main thread) and the game-thread entry points. Callbacks are copied
+    // under the lock and fired outside it.
     std::mutex _stateMutex;
     NSInteger _nextConflictId;
     NSInteger _nextDataHandleId;
+    BOOL _authenticateHandlerSet;
 }
 
 + (instancetype)shared
@@ -160,6 +163,7 @@ static void GCFillError(T &out, NSError *error)
         self.conflictGroups = [NSMutableDictionary dictionary];
         self.heldSavedGameData = [NSMutableDictionary dictionary];
         _nextDataHandleId = 1;
+        _authenticateHandlerSet = NO;
         [[GKLocalPlayer localPlayer] registerListener:self];
     }
     return self;
@@ -315,7 +319,6 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)controller
 {
-    bool success = controller != nil;
     [[GKDialogController sharedDialogController] dismiss:self];
 
     gm::wire::GMFunction viewCallback;
@@ -331,8 +334,11 @@ static void GCFillError(T &out, NSError *error)
 
 #pragma mark - Local player
 
-- (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
+- (void)setupAuthenticationHandler
 {
+    if (_authenticateHandlerSet) return;
+    _authenticateHandlerSet = YES;
+
     [GKLocalPlayer localPlayer].authenticateHandler = ^(NSViewController *viewController, NSError *error) {
         GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
         std::string state = "unknown";
@@ -346,13 +352,34 @@ static void GCFillError(T &out, NSError *error)
             state = "authenticated";
         }
 
-        gm_structs::GameCenterAuthResult result{};
-        GCFillError(result, error);
-        result.authentication_state = state;
-        result.authenticated = (localPlayer.isAuthenticated == YES);
-        result.player = [self playerStructFor:localPlayer];
-        callback.call(result);
+        gm::wire::GMFunction callback;
+        {
+            std::lock_guard<std::mutex> lock(_stateMutex);
+            callback = _authenticateCallback;
+        }
+
+        if (callback) {
+            gm_structs::GameCenterAuthResult result{};
+            GCFillError(result, error);
+            result.authentication_state = state;
+            result.authenticated = (localPlayer.isAuthenticated == YES);
+            result.player = [self playerStructFor:localPlayer];
+            callback.call(result);
+        }
     };
+}
+
+- (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
+{
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        _authenticateCallback = callback;
+    }
+    // Install the persistent GameKit handler only after a callback is registered, so the initial
+    // authentication result can never fire before GML is listening. GameKit retains this handler and
+    // re-invokes it on every auth-state change (sign in/out, foregrounding); we keep the single
+    // handler and just swap the stored callback, so it is installed exactly once.
+    [self setupAuthenticationHandler];
 }
 
 - (bool)gamecenter_local_player_is_authenticated { return [GKLocalPlayer localPlayer].isAuthenticated == YES; }
@@ -510,12 +537,11 @@ static void GCFillError(T &out, NSError *error)
     {
         std::lock_guard<std::mutex> lock(_stateMutex);
         data = self.heldSavedGameData[@(hId)];
-        if (data != nil) {
-            [self.heldSavedGameData removeObjectForKey:@(hId)];
-        }
     }
 
     if (data == nil) return false;
+    // Keep the hold if the copy can't complete, so the caller can retry with a correctly-sized
+    // buffer instead of losing the data (required_size was reported precisely so it can be sized).
     if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
 
     // Write the saved data into the provided buffer
@@ -526,6 +552,11 @@ static void GCFillError(T &out, NSError *error)
         return false;
     }
 
+    // Copy succeeded: release the native-side hold.
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        [self.heldSavedGameData removeObjectForKey:@(hId)];
+    }
     return true;
 }
 
@@ -651,12 +682,13 @@ static void GCFillError(T &out, NSError *error)
 #pragma mark - Leaderboards
 
 - (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id
-                                score:(double)score
-                              context:(double)context
+                                score:(std::int32_t)score
+                              context:(std::int32_t)context
                              callback:(gm::wire::GMFunction)callback
 {
     NSString *identifier = NSStringFromStringView(leaderboard_id);
 
+    // GameKit score/context are integers; fractional values are truncated.
     [GKLeaderboard submitScore:(NSInteger)score
                        context:(NSUInteger)context
                         player:[GKLocalPlayer localPlayer]
@@ -819,6 +851,17 @@ static void GCFillError(T &out, NSError *error)
 - (bool)gamecenter_access_point_present_with_state:(gm_enums::GameCenterViewState)state
                                           callback:(gm::wire::GMFunction)callback
 {
+    // Challenges (2), Dashboard (4) and LocalPlayerFriendsList (5) require iOS 17.2 / macOS 14.2;
+    // on older systems reject rather than present an empty/unexpected dashboard.
+    auto stateInt = static_cast<int>(state);
+    if (!(@available(iOS 17.2, macOS 14.2, *))) {
+        if (stateInt == 2 || stateInt == 4 || stateInt == 5) {
+            gm_structs::GameCenterViewResult result{};
+            callback.call(result);
+            return false;
+        }
+    }
+
     [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
         gm_structs::GameCenterViewResult result{};
         callback.call(result);
@@ -938,7 +981,7 @@ void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuf
     [[GMGameCenterMac shared] gamecenter_saved_games_resolve_conflict:conflict_id data:data callback:callback];
 }
 
-void gamecenter_leaderboard_submit(std::string_view leaderboard_id, double score, double context, const gm::wire::GMFunction& callback)
+void gamecenter_leaderboard_submit(std::string_view leaderboard_id, std::int32_t score, std::int32_t context, const gm::wire::GMFunction& callback)
 {
     [[GMGameCenterMac shared] gamecenter_leaderboard_submit:leaderboard_id score:score context:context callback:callback];
 }
