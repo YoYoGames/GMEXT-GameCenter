@@ -90,7 +90,6 @@ static void GCFillError(T &out, NSError *error)
         _nextDataHandleId = 1;
         _authenticateHandlerSet = NO;
         [[GKLocalPlayer localPlayer] registerListener:self];
-        [self setupAuthenticationHandler];
     }
     return self;
 }
@@ -343,8 +342,15 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
 {
-    std::lock_guard<std::mutex> lock(_stateMutex);
-    self.authenticateCallback = callback;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        self.authenticateCallback = callback;
+    }
+    // Install the persistent GameKit handler only after a callback is registered, so the initial
+    // authentication result can never fire before GML is listening. GameKit retains this handler and
+    // re-invokes it on every auth-state change (sign in/out, foregrounding); we keep the single
+    // handler and just swap the stored callback, so it is installed exactly once.
+    [self setupAuthenticationHandler];
 }
 
 - (bool)gamecenter_local_player_is_authenticated { return [GKLocalPlayer localPlayer].isAuthenticated == YES; }
@@ -508,12 +514,11 @@ static void GCFillError(T &out, NSError *error)
     {
         std::lock_guard<std::mutex> lock(_stateMutex);
         data = self.heldSavedGameData[@(hId)];
-        if (data != nil) {
-            [self.heldSavedGameData removeObjectForKey:@(hId)];
-        }
     }
 
     if (data == nil) return false;
+    // Keep the hold if the copy can't complete, so the caller can retry with a correctly-sized
+    // buffer instead of losing the data (required_size was reported precisely so it can be sized).
     if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
 
     // Write the saved data into the provided buffer
@@ -524,6 +529,11 @@ static void GCFillError(T &out, NSError *error)
         return false;
     }
 
+    // Copy succeeded: release the native-side hold.
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        [self.heldSavedGameData removeObjectForKey:@(hId)];
+    }
     return true;
 }
 
