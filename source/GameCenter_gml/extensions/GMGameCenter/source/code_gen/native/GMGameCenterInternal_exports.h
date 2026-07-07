@@ -27,6 +27,7 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_save(char* __arg_buffer, do
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_delete(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_buffer, double __arg_buffer_length);
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_release(double handle_id);
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_resolve_conflict(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_leaderboard_submit(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_leaderboard_load(char* __arg_buffer, double __arg_buffer_length);

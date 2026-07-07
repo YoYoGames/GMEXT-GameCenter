@@ -1733,6 +1733,9 @@ function __GameCenterAchievementsResult_decode(_buffer, _offset)
  */
 function gamecenter_view_callback_subscribe(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1767,6 +1770,9 @@ function gamecenter_view_callback_subscribe(_callback)
  */
 function gamecenter_present_view_leaderboard(_leaderboard_id, _time_scope, _player_scope)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     var __args_buffer = __ext_core_get_args_buffer();
 
     // param: _leaderboard_id, type: String
@@ -1794,6 +1800,9 @@ function gamecenter_present_view_leaderboard(_leaderboard_id, _time_scope, _play
  */
 function gamecenter_local_player_authenticate(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1825,6 +1834,9 @@ function gamecenter_local_player_authenticate(_callback)
  */
 function gamecenter_local_player_get_info()
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     var __ret_buffer = __ext_core_get_ret_buffer();
 
     var _return_value = __gamecenter_local_player_get_info(buffer_get_address(__ret_buffer), buffer_get_size(__ret_buffer));
@@ -1839,6 +1851,9 @@ function gamecenter_local_player_get_info()
  */
 function gamecenter_saved_games_callback_subscribe(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1858,6 +1873,9 @@ function gamecenter_saved_games_callback_subscribe(_callback)
  */
 function gamecenter_saved_games_fetch(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1879,6 +1897,9 @@ function gamecenter_saved_games_fetch(_callback)
  */
 function gamecenter_saved_games_save(_name, _data, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1908,6 +1929,9 @@ function gamecenter_saved_games_save(_name, _data, _callback)
  */
 function gamecenter_saved_games_delete(_name, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1933,6 +1957,9 @@ function gamecenter_saved_games_delete(_name, _callback)
  */
 function gamecenter_saved_games_get_data(_name, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -1959,6 +1986,9 @@ function gamecenter_saved_games_get_data(_name, _callback)
  */
 function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     var __args_buffer = __ext_core_get_args_buffer();
 
     // param: _handle_id, type: Float64
@@ -1974,6 +2004,9 @@ function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
     return _return_value;
 }
 
+// Skipping function gamecenter_saved_games_release (no wrapper is required)
+
+
 /**
  * @param {Real} _conflict_id
  * @param {Id.Buffer} _data
@@ -1981,6 +2014,9 @@ function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
  */
 function gamecenter_saved_games_resolve_conflict(_conflict_id, _data, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2011,6 +2047,9 @@ function gamecenter_saved_games_resolve_conflict(_conflict_id, _data, _callback)
  */
 function gamecenter_leaderboard_submit(_leaderboard_id, _score, _context, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2048,6 +2087,9 @@ function gamecenter_leaderboard_submit(_leaderboard_id, _score, _context, _callb
  */
 function gamecenter_leaderboard_load(_leaderboard_id, _time_scope, _range_start, _range_count, _player_scope, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2093,6 +2135,9 @@ function gamecenter_leaderboard_load(_leaderboard_id, _time_scope, _range_start,
  */
 function gamecenter_achievement_report(_identifier, _percent_complete, _show_completion_banner, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2125,6 +2170,9 @@ function gamecenter_achievement_report(_identifier, _percent_complete, _show_com
  */
 function gamecenter_achievement_reset_all(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2144,6 +2192,9 @@ function gamecenter_achievement_reset_all(_callback)
  */
 function gamecenter_achievement_load(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2170,6 +2221,9 @@ function gamecenter_achievement_load(_callback)
  */
 function gamecenter_access_point_set_location(_location)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     var __args_buffer = __ext_core_get_args_buffer();
 
     // param: _location, type: enum GameCenterAccessPointLocation
@@ -2203,6 +2257,9 @@ function gamecenter_access_point_set_location(_location)
  */
 function gamecenter_access_point_get_coordinate(_coordinate)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     var __args_buffer = __ext_core_get_args_buffer();
 
     // param: _coordinate, type: enum GameCenterAccessPointCoordinate
@@ -2222,6 +2279,9 @@ function gamecenter_access_point_get_coordinate(_coordinate)
  */
 function gamecenter_access_point_present_with_state(_state, _callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2247,6 +2307,9 @@ function gamecenter_access_point_present_with_state(_state, _callback)
  */
 function gamecenter_access_point_present(_callback)
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = __GMGameCenter_get_dispatcher();
 
     var __args_buffer = __ext_core_get_args_buffer();
@@ -2288,6 +2351,15 @@ function __GMGameCenter_get_decoders()
 /// @ignore
 function __GMGameCenter_get_dispatcher()
 {
+    static __available = __GMGameCenter_is_available();
+    if (!__available) return;
+
     static __dispatcher = new __GMNativeFunctionDispatcher(__GMGameCenter_invocation_handler, __GMGameCenter_get_decoders());
     return __dispatcher;
+}
+/// @ignore
+function __GMGameCenter_is_available()
+{
+    static __available = extension_exists("GMGameCenter");
+    return __available;
 }

@@ -61,43 +61,82 @@ handleSaveOrDelete = function(_result)
 }
 
 // @callback for gamecenter_saved_games_get_data()
-// First step: receives metadata with handle_id and required_size.
+// First step: receives metadata containing handle_id and required_size.
 // Fetches the actual data into a buffer, then unpacks it.
 // Replaces the "GameCenter_SavedGames_GetData" case of the old Social Async event.
 handleGetData = function(_result)
 {
-	// Early exit if not successful
-	if (!_result.success) return;
-
-	// Create a buffer to receive the saved data
-	var _buffer = buffer_create(_result.required_size, buffer_fixed, 1);
-
-	// Fetch the actual saved data into the buffer
-	// Note: handle_id becomes invalid after this call
-	if (!gamecenter_saved_games_get_data_fetch(_result.handle_id, _buffer))
+	// No native data handle exists when the asynchronous request fails.
+	if (!_result.success)
 	{
+		return;
+	}
+
+	var _handle = _result.handle_id;
+
+	// Validate the returned metadata before allocating the buffer.
+	if (_handle < 0 || _result.required_size < 0)
+	{
+		if (_handle >= 0)
+		{
+			gamecenter_saved_games_release(_handle);
+		}
+
+		return;
+	}
+
+	// Create a buffer large enough to receive the complete saved-game payload.
+	var _buffer = buffer_create(
+		_result.required_size,
+		buffer_fixed,
+		1
+	);
+
+	if (_buffer < 0)
+	{
+		// The payload is still held by the native extension.
+		gamecenter_saved_games_release(_handle);
+		return;
+	}
+
+	// A successful fetch consumes the native handle.
+	// A failed fetch leaves it valid, so it must be explicitly released.
+	if (!gamecenter_saved_games_get_data_fetch(_handle, _buffer))
+	{
+		gamecenter_saved_games_release(_handle);
 		buffer_delete(_buffer);
 		return;
 	}
 
-	// Read the JSON string from the buffer
+	// The handle has now been consumed successfully.
+	_handle = -1;
+
+	// Read the JSON string from the buffer.
 	buffer_seek(_buffer, buffer_seek_start, 0);
 	var _dataJSON = buffer_read(_buffer, buffer_string);
 	buffer_delete(_buffer);
 
-	// Go through all the saved data and unpack it (load it)
+	// Parse and restore all saved instances.
 	var _dataArray = json_parse(_dataJSON);
 	var _count = array_length(_dataArray);
+
 	for (var _i = 0; _i < _count; _i++)
 	{
 		var _objData = _dataArray[_i];
-		var _ins = instance_create_depth(_objData.x, _objData.y, depth, Obj_GameCenter_SavedGames_Point);
+
+		var _ins = instance_create_depth(
+			_objData.x,
+			_objData.y,
+			depth,
+			Obj_GameCenter_SavedGames_Point
+		);
+
 		_ins.image_index = _objData.image_index;
 	}
 
-	// Enter the slot edit mode
+	// Enter the slot edit mode.
 	setSlotEditMode(true);
-}
+};
 
 // @callback for gamecenter_saved_games_resolve_conflict()
 // Replaces the "GameCenter_SavedGames_ResolveConflict" case of the old event.

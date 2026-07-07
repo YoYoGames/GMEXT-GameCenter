@@ -90,6 +90,7 @@ static void GCFillError(T &out, NSError *error)
         _nextDataHandleId = 1;
         _authenticateHandlerSet = NO;
         [[GKLocalPlayer localPlayer] registerListener:self];
+        [self setupAuthenticationHandler];
     }
     return self;
 }
@@ -342,15 +343,8 @@ static void GCFillError(T &out, NSError *error)
 
 - (void)gamecenter_local_player_authenticate:(gm::wire::GMFunction)callback
 {
-    {
-        std::lock_guard<std::mutex> lock(_stateMutex);
-        self.authenticateCallback = callback;
-    }
-    // Install the persistent GameKit handler only after a callback is registered, so the initial
-    // authentication result can never fire before GML is listening. GameKit retains this handler and
-    // re-invokes it on every auth-state change (sign in/out, foregrounding); we keep the single
-    // handler and just swap the stored callback, so it is installed exactly once.
-    [self setupAuthenticationHandler];
+    std::lock_guard<std::mutex> lock(_stateMutex);
+    self.authenticateCallback = callback;
 }
 
 - (bool)gamecenter_local_player_is_authenticated { return [GKLocalPlayer localPlayer].isAuthenticated == YES; }
@@ -510,30 +504,37 @@ static void GCFillError(T &out, NSError *error)
                                          data:(gm::wire::GMBuffer)buffer
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
-    NSData *data = nil;
-    {
-        std::lock_guard<std::mutex> lock(_stateMutex);
-        data = self.heldSavedGameData[@(hId)];
-    }
+    NSNumber *key = @(hId);
+
+    // Keep the entry alive until the copy succeeds. Holding the state lock makes
+    // handle consumption atomic, so two callers cannot fetch the same payload.
+    std::lock_guard<std::mutex> lock(_stateMutex);
+    NSData *data = self.heldSavedGameData[key];
 
     if (data == nil) return false;
-    // Keep the hold if the copy can't complete, so the caller can retry with a correctly-sized
-    // buffer instead of losing the data (required_size was reported precisely so it can be sized).
     if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
 
-    // Write the saved data into the provided buffer
     try {
         auto writer = buffer.getWriter();
         writer.writeBytes(data.bytes, static_cast<std::size_t>(data.length));
-    } catch (const std::exception &ex) {
+    } catch (const std::exception &) {
         return false;
     }
 
-    // Copy succeeded: release the native-side hold.
-    {
-        std::lock_guard<std::mutex> lock(_stateMutex);
-        [self.heldSavedGameData removeObjectForKey:@(hId)];
-    }
+    // Only a successful copy consumes the handle.
+    [self.heldSavedGameData removeObjectForKey:key];
+    return true;
+}
+
+- (bool)gamecenter_saved_games_release:(double)handle_id
+{
+    NSInteger hId = static_cast<NSInteger>(handle_id);
+    NSNumber *key = @(hId);
+
+    std::lock_guard<std::mutex> lock(_stateMutex);
+    if (self.heldSavedGameData[key] == nil) return false;
+
+    [self.heldSavedGameData removeObjectForKey:key];
     return true;
 }
 

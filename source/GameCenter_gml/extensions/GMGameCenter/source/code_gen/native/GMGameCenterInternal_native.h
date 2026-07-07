@@ -767,6 +767,7 @@ void gamecenter_saved_games_save(std::string_view name, gm::wire::GMBuffer data,
 void gamecenter_saved_games_delete(std::string_view name, const gm::wire::GMFunction& callback);
 void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFunction& callback);
 bool gamecenter_saved_games_get_data_fetch(double handle_id, gm::wire::GMBuffer data);
+bool gamecenter_saved_games_release(double handle_id);
 void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback);
 void gamecenter_leaderboard_submit(std::string_view leaderboard_id, std::int32_t score, std::int32_t context, const gm::wire::GMFunction& callback);
 void gamecenter_leaderboard_load(std::string_view leaderboard_id, gm_enums::GameCenterLeaderboardTimeScope time_scope, double range_start, double range_count, gm_enums::GameCenterLeaderboardPlayerScope player_scope, const gm::wire::GMFunction& callback);

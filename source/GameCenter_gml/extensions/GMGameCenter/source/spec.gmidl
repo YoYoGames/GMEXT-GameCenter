@@ -50,6 +50,8 @@ function gamecenter_saved_games_get_data(name: string, callback: func): unit;
 [global, bind = typed_gml]
 function gamecenter_saved_games_get_data_fetch(handle_id: real, [type_hint=buffer] data: gmval): bool;
 [global, bind = typed_gml]
+function gamecenter_saved_games_release(handle_id: real): bool;
+[global, bind = typed_gml]
 function gamecenter_saved_games_resolve_conflict(conflict_id: real, [type_hint=buffer] data: gmval, callback: func): unit;
 
 // Leaderboards

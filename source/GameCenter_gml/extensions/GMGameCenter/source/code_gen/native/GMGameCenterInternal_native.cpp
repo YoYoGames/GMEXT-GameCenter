@@ -206,6 +206,12 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_
     return static_cast<double>(__result);
 }
 
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_release(double handle_id)
+{
+    auto&& __result = gamecenter_saved_games_release(static_cast<double>(handle_id));
+    return static_cast<double>(__result);
+}
+
 GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_resolve_conflict(char* __arg_buffer, double __arg_buffer_length)
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};

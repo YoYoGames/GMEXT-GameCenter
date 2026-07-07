@@ -117,6 +117,13 @@
  */
 
 /**
+ * @function_partial gamecenter_saved_games_release
+ * @param {Real} handle_id
+ * @returns {Bool}
+ * @function_end
+ */
+
+/**
  * @function_partial gamecenter_saved_games_resolve_conflict
  * @param {Real} conflict_id
  * @param {Buffer} data
