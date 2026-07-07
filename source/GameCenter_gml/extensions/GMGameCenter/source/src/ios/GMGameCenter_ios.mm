@@ -504,25 +504,30 @@ static void GCFillError(T &out, NSError *error)
                                          data:(gm::wire::GMBuffer)buffer
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
-    NSNumber *key = @(hId);
-
-    // Keep the entry alive until the copy succeeds. Holding the state lock makes
-    // handle consumption atomic, so two callers cannot fetch the same payload.
-    std::lock_guard<std::mutex> lock(_stateMutex);
-    NSData *data = self.heldSavedGameData[key];
+    NSData *data = nil;
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        data = self.heldSavedGameData[@(hId)];
+    }
 
     if (data == nil) return false;
+    // Keep the hold if the copy can't complete, so the caller can retry with a correctly-sized
+    // buffer instead of losing the data (required_size was reported precisely so it can be sized).
     if (buffer.length() < static_cast<std::uint64_t>(data.length)) return false;
 
+    // Write the saved data into the provided buffer
     try {
         auto writer = buffer.getWriter();
         writer.writeBytes(data.bytes, static_cast<std::size_t>(data.length));
-    } catch (const std::exception &) {
+    } catch (const std::exception &ex) {
         return false;
     }
 
-    // Only a successful copy consumes the handle.
-    [self.heldSavedGameData removeObjectForKey:key];
+    // Copy succeeded: release the native-side hold.
+    {
+        std::lock_guard<std::mutex> lock(_stateMutex);
+        [self.heldSavedGameData removeObjectForKey:@(hId)];
+    }
     return true;
 }
 
