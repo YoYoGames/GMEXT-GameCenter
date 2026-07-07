@@ -534,12 +534,10 @@ static void GCFillError(T &out, NSError *error)
 - (bool)gamecenter_saved_games_release:(double)handle_id
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
-    NSNumber *key = @(hId);
-
     std::lock_guard<std::mutex> lock(_stateMutex);
-    if (self.heldSavedGameData[key] == nil) return false;
+    if (self.heldSavedGameData[@(hId)] == nil) return false;
 
-    [self.heldSavedGameData removeObjectForKey:key];
+    [self.heldSavedGameData removeObjectForKey:@(hId)];
     return true;
 }
 
