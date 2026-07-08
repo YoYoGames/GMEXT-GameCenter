@@ -30,11 +30,19 @@ on_authenticate = function(_result)
 
 // @callback for gamecenter_view_callback_subscribe()
 // Replaces the "GameCenter_PresentView_DidFinish" case of the old Social Async
-// event. It is triggered whenever a GameCenter overlay view (default,
-// achievements or leaderboards) is dismissed. The result struct is empty and
-// just serves as a notification of dismissal (no success/error fields).
-on_view_finished = function(_result)
+// event. It is triggered whenever the achievement/leaderboard per-ID overlay
+// (gamecenter_present_view_achievement/_leaderboard) is dismissed. This is a
+// pure notification with no data, so the callback takes no arguments.
+on_view_finished = function()
 {
 	// At this point we just dismissed a GameCenter's overlay view.
 	show_debug_message("View DidFinish");
+}
+
+// @callback for gamecenter_access_point_present_with_state() / gamecenter_access_point_present()
+// Triggered when the access-point-presented dashboard is dismissed. Same
+// no-argument shape as on_view_finished above.
+on_access_point_dismissed = function()
+{
+	show_debug_message("Access point view dismissed");
 }
