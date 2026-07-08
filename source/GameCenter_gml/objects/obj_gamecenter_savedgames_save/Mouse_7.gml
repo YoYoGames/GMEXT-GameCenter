@@ -22,7 +22,7 @@ var dataJSON = json_stringify(data);
 
 // Create a buffer from the JSON string for binary-safe storage.
 // +1 accounts for the NUL terminator that buffer_string writes.
-var buff = buffer_create(string_length(dataJSON) + 1, buffer_fixed, 1);
+var buff = buffer_create(string_byte_length(dataJSON) + 1, buffer_fixed, 1);
 buffer_write(buff, buffer_string, dataJSON);
 
 // Save the new data into the target save slot.
