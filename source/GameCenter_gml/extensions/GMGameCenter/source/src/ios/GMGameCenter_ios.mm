@@ -61,7 +61,13 @@ static void GCFillError(T &out, NSError *error)
     out.error_message = ErrorMessage(error);
 }
 
+// GKGameCenterControllerDelegate is deprecated as of iOS/macOS 26.0 (whole protocol, alongside
+// GKGameCenterViewController). Kept because gamecenter_present_view_achievement/_leaderboard (per-ID
+// deep-links) have no GKAccessPoint equivalent as of iOS 26; revisit if Apple ships one.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @interface GMGameCenter () <GKLocalPlayerListener, GKGameCenterControllerDelegate>
+#pragma clang diagnostic pop
 @property(nonatomic, assign) gm::wire::GMFunction viewCallback;
 @property(nonatomic, assign) gm::wire::GMFunction savedGamesEventCallback;
 @property(nonatomic, assign) gm::wire::GMFunction authenticateCallback;
@@ -156,19 +162,9 @@ static void GCFillError(T &out, NSError *error)
 
     out.alias = StringFromNSString(player.alias);
     out.display_name = StringFromNSString(player.displayName);
-
-    if (@available(iOS 12.4, macOS 10.14.6, *)) {
-        out.player_id = StringFromNSString(player.gamePlayerID);
-        out.game_player_id = StringFromNSString(player.gamePlayerID);
-        out.team_player_id = StringFromNSString(player.teamPlayerID);
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        out.player_id = StringFromNSString(player.playerID);
-        out.game_player_id = StringFromNSString(player.playerID);
-#pragma clang diagnostic pop
-        out.team_player_id = std::string();
-    }
+    out.player_id = StringFromNSString(player.gamePlayerID);
+    out.game_player_id = StringFromNSString(player.gamePlayerID);
+    out.team_player_id = StringFromNSString(player.teamPlayerID);
 
     return out;
 }
@@ -201,23 +197,6 @@ static void GCFillError(T &out, NSError *error)
     return out;
 }
 
-- (gm_structs::GameCenterLeaderboardEntry)legacyScoreStructFor:(GKScore *)score
-{
-    gm_structs::GameCenterLeaderboardEntry out{};
-    if (score == nil) {
-        out.rank = -1; // sentinel: this player has no entry in the requested range
-        return out;
-    }
-
-    out.context = static_cast<double>(score.context);
-    out.date = DateToGMDate(score.date);
-    out.rank = static_cast<double>(score.rank);
-    out.score = static_cast<double>(score.value);
-    out.formatted_score = StringFromNSString(score.formattedValue);
-    out.player = [self playerStructFor:score.player];
-    return out;
-}
-
 - (gm_structs::GameCenterAchievement)achievementStructFor:(GKAchievement *)achievement
 {
     gm_structs::GameCenterAchievement out{};
@@ -240,6 +219,12 @@ static void GCFillError(T &out, NSError *error)
     self.viewCallback = callback;
 }
 
+// GKGameCenterViewController is deprecated as of iOS/macOS 26.0 (whole class). presentController:,
+// gamecenter_present_view_achievement/_leaderboard, and the dismiss delegate below all still need it:
+// GKAccessPoint has no equivalent for presenting a specific achievement/leaderboard by ID, so those two
+// functions are kept deprecated-but-functional; revisit if Apple ships a replacement.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (bool)presentController:(GKGameCenterViewController *)controller
 {
     if (controller == nil) return false;
@@ -252,30 +237,6 @@ static void GCFillError(T &out, NSError *error)
     return true;
 }
 
-- (bool)gamecenter_present_view_default
-{
-    GKGameCenterViewController *controller = nil;
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateDefault];
-    } else {
-        controller = [[GKGameCenterViewController alloc] init];
-        controller.viewState = GKGameCenterViewControllerStateDefault;
-    }
-    return [self presentController:controller];
-}
-
-- (bool)gamecenter_present_view_achievements
-{
-    GKGameCenterViewController *controller = nil;
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements];
-    } else {
-        controller = [[GKGameCenterViewController alloc] init];
-        controller.viewState = GKGameCenterViewControllerStateAchievements;
-    }
-    return [self presentController:controller];
-}
-
 - (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
@@ -286,18 +247,6 @@ static void GCFillError(T &out, NSError *error)
     return false;
 }
 
-- (bool)gamecenter_present_view_leaderboards
-{
-    GKGameCenterViewController *controller = nil;
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards];
-    } else {
-        controller = [[GKGameCenterViewController alloc] init];
-        controller.viewState = GKGameCenterViewControllerStateLeaderboards;
-    }
-    return [self presentController:controller];
-}
-
 - (bool)gamecenter_present_view_leaderboard:(std::string_view)leaderboard_id
                                   time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
                                 player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope
@@ -305,18 +254,10 @@ static void GCFillError(T &out, NSError *error)
     GKLeaderboardTimeScope ts = static_cast<GKLeaderboardTimeScope>(time_scope);
     GKLeaderboardPlayerScope ps = static_cast<GKLeaderboardPlayerScope>(player_scope);
 
-    GKGameCenterViewController *controller = nil;
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        controller = [[GKGameCenterViewController alloc]
-            initWithLeaderboardID:NSStringFromStringView(leaderboard_id)
-                       playerScope:ps
-                         timeScope:ts];
-    } else {
-        controller = [[GKGameCenterViewController alloc] init];
-        controller.viewState = GKGameCenterViewControllerStateLeaderboards;
-        controller.leaderboardIdentifier = NSStringFromStringView(leaderboard_id);
-        controller.leaderboardTimeScope = ts;
-    }
+    GKGameCenterViewController *controller = [[GKGameCenterViewController alloc]
+        initWithLeaderboardID:NSStringFromStringView(leaderboard_id)
+                   playerScope:ps
+                     timeScope:ts];
     return [self presentController:controller];
 }
 
@@ -334,10 +275,10 @@ static void GCFillError(T &out, NSError *error)
         viewCallback = self.viewCallback;
     }
     if (viewCallback) {
-        gm_structs::GameCenterViewResult result{};
-        viewCallback.call(result);
+        viewCallback.call();
     }
 }
+#pragma clang diagnostic pop
 
 #pragma mark - Local player
 
@@ -674,22 +615,12 @@ static void GCFillError(T &out, NSError *error)
         callback.call(result);
     };
 
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        // GameKit score/context are integers; fractional values are truncated.
-        [GKLeaderboard submitScore:(NSInteger)score
-                           context:(NSUInteger)context
-                            player:[GKLocalPlayer localPlayer]
-                    leaderboardIDs:@[identifier]
-                 completionHandler:completion];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        GKScore *legacyScore = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
-        legacyScore.value = (int64_t)score;
-        legacyScore.context = (uint64_t)context;
-        [GKScore reportScores:@[legacyScore] withCompletionHandler:completion];
-#pragma clang diagnostic pop
-    }
+    // GameKit score/context are integers; fractional values are truncated.
+    [GKLeaderboard submitScore:(NSInteger)score
+                       context:(NSUInteger)context
+                        player:[GKLocalPlayer localPlayer]
+                leaderboardIDs:@[identifier]
+             completionHandler:completion];
 }
 
 - (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id
@@ -711,54 +642,21 @@ static void GCFillError(T &out, NSError *error)
     if (range_count > 100.0) range_count = 100.0;
     NSRange range = NSMakeRange((NSUInteger)range_start, (NSUInteger)range_count);
 
-    if (@available(iOS 14.0, macOS 11.0, *)) {
-        [GKLeaderboard loadLeaderboardsWithIDs:@[identifier] completionHandler:^(NSArray<GKLeaderboard *> *leaderboards, NSError *loadError) {
-            GKLeaderboard *leaderboard = leaderboards.firstObject;
-            if (loadError != nil || leaderboard == nil) {
-                gm_structs::GameCenterLeaderboardLoadResult result{};
-                GCFillError(result, loadError);
-                result.success = false;
-                result.leaderboard_id = StringFromNSString(identifier);
-                result.local_entry = [self leaderboardEntryStructFor:nil];
-                callback.call(result);
-                return;
-            }
+    [GKLeaderboard loadLeaderboardsWithIDs:@[identifier] completionHandler:^(NSArray<GKLeaderboard *> *leaderboards, NSError *loadError) {
+        GKLeaderboard *leaderboard = leaderboards.firstObject;
+        if (loadError != nil || leaderboard == nil) {
+            gm_structs::GameCenterLeaderboardLoadResult result{};
+            GCFillError(result, loadError);
+            result.success = false;
+            result.leaderboard_id = StringFromNSString(identifier);
+            result.local_entry = [self leaderboardEntryStructFor:nil];
+            callback.call(result);
+            return;
+        }
 
-            [leaderboard loadEntriesForPlayerScope:ps timeScope:ts range:range completionHandler:^(GKLeaderboardEntry *localEntry, NSArray<GKLeaderboardEntry *> *entries, NSInteger totalPlayerCount, NSError *error) {
-                std::vector<gm_structs::GameCenterLeaderboardEntry> entryArray;
-                for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push_back([self leaderboardEntryStructFor:entry]);
-
-                gm_structs::GameCenterLeaderboardLoadResult result{};
-                GCFillError(result, error);
-                result.leaderboard_id = StringFromNSString(identifier);
-                result.time_scope = static_cast<std::int32_t>(time_scope);
-                result.range_start = range_start;
-                result.range_count = range_count;
-                result.player_scope = static_cast<std::int32_t>(player_scope);
-                result.leaderboard_title = StringFromNSString(leaderboard.title);
-                result.leaderboard_group = StringFromNSString(leaderboard.groupIdentifier);
-                result.leaderboard_type = static_cast<std::int32_t>(leaderboard.type);
-                result.leaderboard_start_date = DateToGMDate(leaderboard.startDate);
-                result.leaderboard_next_start_date = DateToGMDate(leaderboard.nextStartDate);
-                result.leaderboard_duration = leaderboard.duration;
-                result.total_players_count = static_cast<double>(totalPlayerCount);
-                result.local_entry = [self leaderboardEntryStructFor:localEntry];
-                result.entries = std::move(entryArray);
-                callback.call(result);
-            }];
-        }];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        GKLeaderboard *request = [[GKLeaderboard alloc] init];
-        request.identifier = identifier;
-        request.timeScope = ts;
-        request.playerScope = ps;
-        request.range = range;
-
-        [request loadScoresWithCompletionHandler:^(NSArray<GKScore *> *scores, NSError *error) {
+        [leaderboard loadEntriesForPlayerScope:ps timeScope:ts range:range completionHandler:^(GKLeaderboardEntry *localEntry, NSArray<GKLeaderboardEntry *> *entries, NSInteger totalPlayerCount, NSError *error) {
             std::vector<gm_structs::GameCenterLeaderboardEntry> entryArray;
-            for (GKScore *entry in scores ?: @[]) entryArray.push_back([self legacyScoreStructFor:entry]);
+            for (GKLeaderboardEntry *entry in entries ?: @[]) entryArray.push_back([self leaderboardEntryStructFor:entry]);
 
             gm_structs::GameCenterLeaderboardLoadResult result{};
             GCFillError(result, error);
@@ -767,19 +665,18 @@ static void GCFillError(T &out, NSError *error)
             result.range_start = range_start;
             result.range_count = range_count;
             result.player_scope = static_cast<std::int32_t>(player_scope);
-            result.leaderboard_title = StringFromNSString(request.title);
-            result.leaderboard_group = StringFromNSString(request.groupIdentifier);
-            result.leaderboard_type = static_cast<std::int32_t>(-1);
-            result.leaderboard_start_date = -1.0;
-            result.leaderboard_next_start_date = -1.0;
-            result.leaderboard_duration = -1.0;
-            result.total_players_count = static_cast<double>(scores.count);
-            result.local_entry = [self legacyScoreStructFor:request.localPlayerScore];
+            result.leaderboard_title = StringFromNSString(leaderboard.title);
+            result.leaderboard_group = StringFromNSString(leaderboard.groupIdentifier);
+            result.leaderboard_type = static_cast<std::int32_t>(leaderboard.type);
+            result.leaderboard_start_date = DateToGMDate(leaderboard.startDate);
+            result.leaderboard_next_start_date = DateToGMDate(leaderboard.nextStartDate);
+            result.leaderboard_duration = leaderboard.duration;
+            result.total_players_count = static_cast<double>(totalPlayerCount);
+            result.local_entry = [self leaderboardEntryStructFor:localEntry];
             result.entries = std::move(entryArray);
             callback.call(result);
         }];
-#pragma clang diagnostic pop
-    }
+    }];
 }
 
 #pragma mark - Achievements
@@ -903,25 +800,20 @@ static void GCFillError(T &out, NSError *error)
     auto stateInt = static_cast<int>(state);
     if (!(@available(iOS 17.2, macOS 14.2, *))) {
         if (stateInt == 2 || stateInt == 4 || stateInt == 5) {
-            gm_structs::GameCenterViewResult result{};
-            callback.call(result);
+            callback.call();
             return false;
         }
     }
 
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
-            gm_structs::GameCenterViewResult result{};
-            callback.call(result);
+            callback.call();
         }];
         return true;
     }
 
     // Unsupported OS: signal failure through the callback so a caller awaiting it doesn't hang.
-    {
-        gm_structs::GameCenterViewResult result{};
-        callback.call(result);
-    }
+    callback.call();
     return false;
 }
 
@@ -929,15 +821,11 @@ static void GCFillError(T &out, NSError *error)
 {
     if (@available(iOS 14.0, macOS 11.0, *)) {
         [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
-            gm_structs::GameCenterViewResult result{};
-            callback.call(result);
+            callback.call();
         }];
         return true;
     }
-    {
-        gm_structs::GameCenterViewResult result{};
-        callback.call(result);
-    }
+    callback.call();
     return false;
 }
 

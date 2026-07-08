@@ -71,7 +71,13 @@ static void GCFillError(T &out, NSError *error)
 
 #pragma mark - Internal state holder / GameKit delegate
 
+// GKGameCenterControllerDelegate is deprecated as of iOS/macOS 26.0 (whole protocol, alongside
+// GKGameCenterViewController). Kept because gamecenter_present_view_achievement/_leaderboard (per-ID
+// deep-links) have no GKAccessPoint equivalent as of iOS 26; revisit if Apple ships one.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @interface GMGameCenterMac : NSObject <GKLocalPlayerListener, GKGameCenterControllerDelegate>
+#pragma clang diagnostic pop
 
 + (instancetype)shared;
 
@@ -80,10 +86,7 @@ static void GCFillError(T &out, NSError *error)
 
 // View presentation
 - (void)gamecenter_view_callback_subscribe:(gm::wire::GMFunction)callback;
-- (bool)gamecenter_present_view_default;
-- (bool)gamecenter_present_view_achievements;
 - (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id;
-- (bool)gamecenter_present_view_leaderboards;
 - (bool)gamecenter_present_view_leaderboard:(std::string_view)leaderboard_id
                                  time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope
                                player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope;
@@ -186,19 +189,9 @@ static void GCFillError(T &out, NSError *error)
 
     out.alias = StringFromNSString(player.alias);
     out.display_name = StringFromNSString(player.displayName);
-
-    if (@available(iOS 12.4, macOS 10.14.6, *)) {
-        out.player_id = StringFromNSString(player.gamePlayerID);
-        out.game_player_id = StringFromNSString(player.gamePlayerID);
-        out.team_player_id = StringFromNSString(player.teamPlayerID);
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        out.player_id = StringFromNSString(player.playerID);
-        out.game_player_id = StringFromNSString(player.playerID);
-#pragma clang diagnostic pop
-        out.team_player_id = std::string();
-    }
+    out.player_id = StringFromNSString(player.gamePlayerID);
+    out.game_player_id = StringFromNSString(player.gamePlayerID);
+    out.team_player_id = StringFromNSString(player.teamPlayerID);
 
     return out;
 }
@@ -258,6 +251,12 @@ static void GCFillError(T &out, NSError *error)
     return window;
 }
 
+// GKGameCenterViewController is deprecated as of iOS/macOS 26.0 (whole class). presentController:,
+// gamecenter_present_view_achievement/_leaderboard, and the dismiss delegate below all still need it:
+// GKAccessPoint has no equivalent for presenting a specific achievement/leaderboard by ID, so those two
+// functions are kept deprecated-but-functional; revisit if Apple ships a replacement.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (bool)presentController:(GKGameCenterViewController *)controller
 {
     if (controller == nil) return false;
@@ -276,31 +275,10 @@ static void GCFillError(T &out, NSError *error)
     _viewCallback = callback;
 }
 
-- (bool)gamecenter_present_view_default
-{
-    GKGameCenterViewController *controller =
-        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateDefault];
-    return [self presentController:controller];
-}
-
-- (bool)gamecenter_present_view_achievements
-{
-    GKGameCenterViewController *controller =
-        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateAchievements];
-    return [self presentController:controller];
-}
-
 - (bool)gamecenter_present_view_achievement:(std::string_view)achievement_id
 {
     GKGameCenterViewController *controller =
         [[GKGameCenterViewController alloc] initWithAchievementID:NSStringFromStringView(achievement_id)];
-    return [self presentController:controller];
-}
-
-- (bool)gamecenter_present_view_leaderboards
-{
-    GKGameCenterViewController *controller =
-        [[GKGameCenterViewController alloc] initWithState:GKGameCenterViewControllerStateLeaderboards];
     return [self presentController:controller];
 }
 
@@ -328,10 +306,10 @@ static void GCFillError(T &out, NSError *error)
         viewCallback = _viewCallback;
     }
     if (viewCallback) {
-        gm_structs::GameCenterViewResult result{};
-        viewCallback.call(result);
+        viewCallback.call();
     }
 }
+#pragma clang diagnostic pop
 
 #pragma mark - Local player
 
@@ -867,15 +845,13 @@ static void GCFillError(T &out, NSError *error)
     auto stateInt = static_cast<int>(state);
     if (!(@available(iOS 17.2, macOS 14.2, *))) {
         if (stateInt == 2 || stateInt == 4 || stateInt == 5) {
-            gm_structs::GameCenterViewResult result{};
-            callback.call(result);
+            callback.call();
             return false;
         }
     }
 
     [[GKAccessPoint shared] triggerAccessPointWithState:static_cast<GKGameCenterViewControllerState>(state) handler:^{
-        gm_structs::GameCenterViewResult result{};
-        callback.call(result);
+        callback.call();
     }];
     return true;
 }
@@ -883,8 +859,7 @@ static void GCFillError(T &out, NSError *error)
 - (bool)gamecenter_access_point_present:(gm::wire::GMFunction)callback
 {
     [[GKAccessPoint shared] triggerAccessPointWithHandler:^{
-        gm_structs::GameCenterViewResult result{};
-        callback.call(result);
+        callback.call();
     }];
     return true;
 }
@@ -898,24 +873,9 @@ void gamecenter_view_callback_subscribe(const gm::wire::GMFunction& callback)
     [[GMGameCenterMac shared] gamecenter_view_callback_subscribe:callback];
 }
 
-bool gamecenter_present_view_default()
-{
-    return [[GMGameCenterMac shared] gamecenter_present_view_default];
-}
-
-bool gamecenter_present_view_achievements()
-{
-    return [[GMGameCenterMac shared] gamecenter_present_view_achievements];
-}
-
 bool gamecenter_present_view_achievement(std::string_view achievement_id)
 {
     return [[GMGameCenterMac shared] gamecenter_present_view_achievement:achievement_id];
-}
-
-bool gamecenter_present_view_leaderboards()
-{
-    return [[GMGameCenterMac shared] gamecenter_present_view_leaderboards];
 }
 
 bool gamecenter_present_view_leaderboard(std::string_view leaderboard_id,
