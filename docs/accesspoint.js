@@ -161,24 +161,23 @@
 
 /**
  * @function gamecenter_access_point_present_with_state
- * @desc This function triggers the access point to open a specific Game Center view, given by a ${constant.GameCenterViewState} value. The `callback` is fired with a ${struct.GameCenterViewResult} when the view is dismissed.
+ * @desc This function triggers the access point to open a specific Game Center view, given by a ${constant.GameCenterViewState} value. The `callback` fires once the view is dismissed.
  *
- * [[Note: The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns `false` and invokes the callback once with `success` set to `false`, so a caller awaiting the callback does not hang.]]
+ * [[Note: The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns `false` and still invokes the callback once, so a caller awaiting it does not hang.]]
  * [[Note: The ${constant.GameCenterViewState} values `Challenges` and `LocalPlayerFriendsList` require newer OS versions (iOS 17.2 / macOS 14.2); selecting them on an older OS may show an empty or unexpected screen.]]
  *
  * @param {Constant.GameCenterViewState} state The Game Center view to open
  * @param {Function} callback The function to call when the presented view is dismissed
  *
  * @event callback
- * @desc This callback is triggered when the presented Game Center view is dismissed.
- * @member {Struct.GameCenterViewResult} result The result struct describing the dismissed view
+ * @desc This callback is triggered when the presented Game Center view is dismissed. It carries no data, so it is called with no arguments.
  * @event_end
  *
  * @returns {Bool} Whether the view was successfully triggered
  *
  * @example
  * ```gml
- * gamecenter_access_point_present_with_state(GameCenterViewState.Leaderboards, function(_result)
+ * gamecenter_access_point_present_with_state(GameCenterViewState.Leaderboards, function()
  * {
  *     show_debug_message("Game Center view dismissed.");
  * });
@@ -189,22 +188,21 @@
 
 /**
  * @function gamecenter_access_point_present
- * @desc This function triggers the access point to open the default Game Center dashboard. The `callback` is fired with a ${struct.GameCenterViewResult} when the dashboard is dismissed.
+ * @desc This function triggers the access point to open the default Game Center dashboard. The `callback` fires once the dashboard is dismissed.
  *
- * [[Note: The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns `false` and invokes the callback once with `success` set to `false`, so a caller awaiting the callback does not hang.]]
+ * [[Note: The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns `false` and still invokes the callback once, so a caller awaiting it does not hang.]]
  *
  * @param {Function} callback The function to call when the presented view is dismissed
  *
  * @event callback
- * @desc This callback is triggered when the presented Game Center dashboard is dismissed.
- * @member {Struct.GameCenterViewResult} result The result struct describing the dismissed view
+ * @desc This callback is triggered when the presented Game Center dashboard is dismissed. It carries no data, so it is called with no arguments.
  * @event_end
  *
  * @returns {Bool} Whether the dashboard was successfully triggered
  *
  * @example
  * ```gml
- * gamecenter_access_point_present(function(_result)
+ * gamecenter_access_point_present(function()
  * {
  *     show_debug_message("Game Center dashboard dismissed.");
  * });

@@ -3,58 +3,27 @@
 
 /**
  * @function gamecenter_view_callback_subscribe
- * @desc This function registers the callback that is triggered whenever a presented Game Center view is dismissed. The callback receives a single ${struct.GameCenterViewResult} struct as its only argument.
+ * @desc This function registers the callback that is triggered whenever a presented Game Center view is dismissed. The callback is called with no arguments — it is a pure dismissal notification.
  *
- * You typically subscribe once (for example at startup) and then call the various present functions (such as ${function.gamecenter_present_view_default}) to bring up the native Game Center overlay UI.
+ * You subscribe once (for example at startup) and then call ${function.gamecenter_present_view_achievement} / ${function.gamecenter_present_view_leaderboard} to bring up the native Game Center overlay UI for a specific achievement or leaderboard.
+ *
+ * [[Note: For the general (non-per-ID) Game Center dashboard/achievements/leaderboards views, use ${module.accesspoint}'s ${function.gamecenter_access_point_present_with_state} instead, which takes its own per-call callback and does not use this subscription.]]
  *
  * @param {Function} callback The function to call each time a presented Game Center view is dismissed
  *
  * @event callback
- * @desc This callback is triggered when a presented Game Center view is dismissed.
- * @member {Struct.GameCenterViewResult} result A ${struct.GameCenterViewResult} struct describing the dismissal
+ * @desc This callback is triggered when a presented Game Center view is dismissed. It carries no data, so it is called with no arguments.
  * @event_end
  *
  * @example
  * ```gml
- * gamecenter_view_callback_subscribe(function(_result) {
- *     show_debug_message($"Game Center view closed: {_result.success}");
+ * gamecenter_view_callback_subscribe(function() {
+ *     show_debug_message("Game Center view closed.");
  * });
  *
- * gamecenter_present_view_default();
+ * gamecenter_present_view_achievement("com.company.game.achievement.first_win");
  * ```
- * This code subscribes to the Game Center view callback and then presents the default Game Center view.
- * @function_end
- */
-
-/**
- * @function gamecenter_present_view_default
- * @desc This function presents the default native Game Center overlay UI, showing general information on achievements and leaderboards.
- *
- * The result of dismissing the view is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe} as a ${struct.GameCenterViewResult}.
- *
- * @returns {Bool} Returns `true` if the view was presented, or `false` if it could not be (for example, the OS is too old for the requested view).
- *
- * @example
- * ```gml
- * gamecenter_present_view_default();
- * ```
- * This code presents the default Game Center view.
- * @function_end
- */
-
-/**
- * @function gamecenter_present_view_achievements
- * @desc This function presents the native Game Center achievements overlay UI.
- *
- * The result of dismissing the view is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe} as a ${struct.GameCenterViewResult}.
- *
- * @returns {Bool} Returns `true` if the view was presented, or `false` if it could not be (for example, the OS is too old for the requested view).
- *
- * @example
- * ```gml
- * gamecenter_present_view_achievements();
- * ```
- * This code presents the Game Center achievements view.
+ * This code subscribes to the Game Center view callback and then presents the detail view for a specific achievement.
  * @function_end
  */
 
@@ -62,7 +31,9 @@
  * @function gamecenter_present_view_achievement
  * @desc This function presents the native Game Center detail view for a single achievement, identified by the given achievement identifier string.
  *
- * The result of dismissing the view is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe} as a ${struct.GameCenterViewResult}.
+ * The dismissal is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe}.
+ *
+ * [[Important: This function relies on `GKGameCenterViewController`, which Apple deprecated as a whole class in iOS/macOS 26.0. It is kept because `GKAccessPoint` (the non-deprecated replacement used elsewhere in this module) has no equivalent for deep-linking a specific achievement by ID — this is the only way Apple currently documents for that. Revisit if Apple ships a replacement.]]
  *
  * @param {String} achievement_id The identifier of the achievement whose detail view should be opened
  *
@@ -77,26 +48,12 @@
  */
 
 /**
- * @function gamecenter_present_view_leaderboards
- * @desc This function presents the native Game Center leaderboards overlay UI.
- *
- * The result of dismissing the view is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe} as a ${struct.GameCenterViewResult}.
- *
- * @returns {Bool} Returns `true` if the view was presented, or `false` if it could not be (for example, the OS is too old for the requested view).
- *
- * @example
- * ```gml
- * gamecenter_present_view_leaderboards();
- * ```
- * This code presents the Game Center leaderboards view.
- * @function_end
- */
-
-/**
  * @function gamecenter_present_view_leaderboard
  * @desc This function presents the native Game Center detail view for a single leaderboard, identified by the given leaderboard identifier string, filtered by the given time and player scopes.
  *
- * The result of dismissing the view is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe} as a ${struct.GameCenterViewResult}.
+ * The dismissal is delivered to the callback registered with ${function.gamecenter_view_callback_subscribe}.
+ *
+ * [[Important: This function relies on `GKGameCenterViewController`, which Apple deprecated as a whole class in iOS/macOS 26.0. It is kept because `GKAccessPoint` (the non-deprecated replacement used elsewhere in this module) has no equivalent for deep-linking a specific leaderboard + time/player scope by ID — this is the only way Apple currently documents for that. Revisit if Apple ships a replacement.]]
  *
  * [[Note: The ${constant.GameCenterLeaderboardTimeScope} and ${constant.GameCenterLeaderboardPlayerScope} enumerations are defined in the Leaderboard module.]]
  *
@@ -114,42 +71,24 @@
  * @function_end
  */
 
-// STRUCTS
-
-/**
- * @struct GameCenterViewResult
- * @desc This struct is passed to the callback registered with ${function.gamecenter_view_callback_subscribe} when a presented Game Center view is dismissed.
- *
- * [[Note: GameCenterViewResult.success is currently always `true` on dismissal. It signals that the view closed, not a meaningful success/failure status.]]
- *
- * @member {Bool} success Whether the view was dismissed successfully (currently always `true`)
- * @struct_end
- */
-
 // MODULES
 
 /**
  * @module presentview
  * @title Present View
- * @desc This module provides functions to present the native Game Center overlay UI. This is an Apple-only extension, supported on **iOS** and **macOS**.
+ * @desc This module provides functions to present the native Game Center detail view for a specific achievement or leaderboard, identified by ID. This is an Apple-only extension, supported on **iOS** and **macOS**.
  *
- * You subscribe to the dismissal callback once with ${function.gamecenter_view_callback_subscribe}, then call any of the present functions to bring up a Game Center view. When the view is dismissed, the callback receives a ${struct.GameCenterViewResult}.
+ * You subscribe to the dismissal callback once with ${function.gamecenter_view_callback_subscribe}, then call ${function.gamecenter_present_view_achievement} or ${function.gamecenter_present_view_leaderboard} to bring up a Game Center detail view for a specific ID.
  *
- * [[Note: The state-based Game Center view controllers used by these functions require iOS 14 / macOS 11. On older systems the present functions return `false`.]]
+ * [[Note: The general (non-per-ID) Game Center dashboard/achievements/leaderboards views are presented via ${module.accesspoint} instead — see ${function.gamecenter_access_point_present_with_state}.]]
+ *
+ * [[Note: These functions require iOS 14 / macOS 11 and rely on a Game Center API Apple deprecated in iOS/macOS 26.0 (`GKGameCenterViewController`) — kept because there is no per-ID replacement on `GKAccessPoint`. On unsupported OS versions the present functions return `false`.]]
  *
  * @section_func
- * @desc The following functions are provided to present Game Center views:
+ * @desc The following functions are provided to present Game Center detail views:
  * @ref gamecenter_view_callback_subscribe
- * @ref gamecenter_present_view_default
- * @ref gamecenter_present_view_achievements
  * @ref gamecenter_present_view_achievement
- * @ref gamecenter_present_view_leaderboards
  * @ref gamecenter_present_view_leaderboard
- * @section_end
- *
- * @section_struct
- * @desc The following struct is used by this module:
- * @ref GameCenterViewResult
  * @section_end
  *
  * @module_end
