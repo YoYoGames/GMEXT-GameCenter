@@ -102,14 +102,14 @@
  */
 
 /**
- * @function_partial gamecenter_saved_games_get_data
+ * @function_partial gamecenter_saved_games_data_request
  * @param {String} name
  * @param {Function} callback
  * @function_end
  */
 
 /**
- * @function_partial gamecenter_saved_games_get_data_fetch
+ * @function_partial gamecenter_saved_games_data_fetch
  * @param {Real} handle_id
  * @param {Buffer} data
  * @returns {Bool}
@@ -117,7 +117,7 @@
  */
 
 /**
- * @function_partial gamecenter_saved_games_release
+ * @function_partial gamecenter_saved_games_data_release
  * @param {Real} handle_id
  * @returns {Bool}
  * @function_end

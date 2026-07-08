@@ -129,7 +129,11 @@ Save, fetch and read slots:
 
 ```gml
 // Save (creates the slot if it doesn't exist, overwrites if it does)
-gamecenter_saved_games_save("slot1", json_stringify({ level: 5, hp: 80 }), function(_result) {
+var _dataJSON = json_stringify({ level: 5, hp: 80 });
+var _saveBuff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+buffer_write(_saveBuff, buffer_string, _dataJSON);
+
+gamecenter_saved_games_save("slot1", _saveBuff, function(_result) {
     if (_result.success) {
         // Fetch the list of all slots
         gamecenter_saved_games_fetch(function(_fetch) {
@@ -138,12 +142,20 @@ gamecenter_saved_games_save("slot1", json_stringify({ level: 5, hp: 80 }), funct
     }
 });
 
-// Read a slot's data back
-gamecenter_saved_games_get_data("slot1", function(_result) {
-    if (_result.success) {
-        var _data = json_parse(_result.data);
+buffer_delete(_saveBuff);
+
+// Read a slot's data back: the callback carries metadata only, so fetch the
+// bytes into a correctly-sized buffer once you know required_size.
+gamecenter_saved_games_data_request("slot1", function(_result) {
+    if (!_result.success) return;
+
+    var _readBuff = buffer_create(_result.required_size, buffer_fixed, 1);
+    if (gamecenter_saved_games_data_fetch(_result.handle_id, _readBuff)) {
+        buffer_seek(_readBuff, buffer_seek_start, 0);
+        var _data = json_parse(buffer_read(_readBuff, buffer_string));
         show_debug_message($"Loaded level {_data.level}");
     }
+    buffer_delete(_readBuff);
 });
 ```
 

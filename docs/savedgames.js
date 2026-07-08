@@ -57,10 +57,10 @@
  * @function gamecenter_saved_games_save
  * @desc This function saves data to a saved game with the given name. If a slot with `name` already exists it is overwritten, otherwise a new one is created. The result is delivered to the callback.
  *
- * [[Note: The `data` you save is a plain UTF-8 text string. Binary / non-UTF-8 data is not supported by this string-based API.]]
+ * [[Note: `data` is a ${type.buffer}, so any binary payload is supported (not just UTF-8 text).]]
  *
  * @param {String} name The name of the saved game to write
- * @param {String} data The UTF-8 text string to store in the saved game
+ * @param {Buffer} data The ${type.buffer} holding the bytes to store in the saved game
  * @param {Function} callback The function to call with the result of the operation
  *
  * @event callback
@@ -70,13 +70,19 @@
  *
  * @example
  * ```gml
- * gamecenter_saved_games_save("slot1", "level=5,gold=100", function(_result) {
+ * var _dataJSON = json_stringify(["level=5", "gold=100"]);
+ * var _buff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+ * buffer_write(_buff, buffer_string, _dataJSON);
+ *
+ * gamecenter_saved_games_save("slot1", _buff, function(_result) {
  *     if (_result.success) {
  *         show_debug_message($"Saved: {_result.name}");
  *     }
  * });
+ *
+ * buffer_delete(_buff);
  * ```
- * This code saves a string of game data to a saved game named "slot1".
+ * This code writes a JSON string into a buffer and saves it to a saved game named "slot1".
  * @function_end
  */
 
@@ -105,30 +111,91 @@
  */
 
 /**
- * @function gamecenter_saved_games_get_data
- * @desc This function retrieves the data stored in the saved game with the given name. The result is delivered to the callback.
+ * @function gamecenter_saved_games_data_request
+ * @desc This function starts retrieving the data stored in the saved game with the given name. The result delivered to the callback carries **metadata only** (`handle_id` and `required_size`) — the native side holds the fetched bytes until you call ${function.gamecenter_saved_games_data_fetch} with a correctly-sized buffer to copy them out.
  *
  * When several saves share the same name (an unresolved conflict), the most-recently-modified one is returned.
  *
- * [[Note: The returned `data` is a plain UTF-8 text string. If a slot's stored bytes are not valid UTF-8, the result has `success` set to `false` along with an `error_message`.]]
+ * [[Important: A successful result holds the data on the native side until you call ${function.gamecenter_saved_games_data_fetch}. If you decide not to fetch it (e.g. you no longer need the slot), call ${function.gamecenter_saved_games_data_release} with the same `handle_id` to free it — otherwise it is held for the rest of the process lifetime.]]
  *
  * @param {String} name The name of the saved game to read
  * @param {Function} callback The function to call with the result of the operation
  *
  * @event callback
- * @desc This callback is triggered when the data has been retrieved.
- * @member {Struct.GameCenterSavedGamesDataResult} result A ${struct.GameCenterSavedGamesDataResult} struct containing the saved game data
+ * @desc This callback is triggered once the saved game's metadata is available.
+ * @member {Struct.GameCenterSavedGamesDataResult} result A ${struct.GameCenterSavedGamesDataResult} struct containing the `handle_id`/`required_size` needed to fetch the data
  * @event_end
  *
  * @example
  * ```gml
- * gamecenter_saved_games_get_data("slot1", function(_result) {
- *     if (_result.success) {
- *         show_debug_message($"Data: {_result.data}");
+ * gamecenter_saved_games_data_request("slot1", function(_result) {
+ *     if (!_result.success) return;
+ *
+ *     var _buff = buffer_create(_result.required_size, buffer_fixed, 1);
+ *     if (!gamecenter_saved_games_data_fetch(_result.handle_id, _buff)) {
+ *         gamecenter_saved_games_data_release(_result.handle_id);
+ *         buffer_delete(_buff);
+ *         return;
  *     }
+ *
+ *     buffer_seek(_buff, buffer_seek_start, 0);
+ *     var _dataJSON = buffer_read(_buff, buffer_string);
+ *     buffer_delete(_buff);
+ *
+ *     show_debug_message($"Data: {_dataJSON}");
  * });
  * ```
- * This code reads the data stored in the saved game named "slot1".
+ * This code requests the data for "slot1", then fetches it into a correctly-sized buffer once the metadata arrives.
+ * @function_end
+ */
+
+/**
+ * @function gamecenter_saved_games_data_fetch
+ * @desc This function copies the data held by a prior ${function.gamecenter_saved_games_data_request} call into `data`, a caller-provided ${type.buffer}. This is a synchronous call — no callback is involved.
+ *
+ * [[Note: Size `data` to at least the `required_size` reported by ${function.gamecenter_saved_games_data_request}'s result. If `data` is too small the function returns `false` and the native-side hold is kept, so you can retry with a bigger buffer using the same `handle_id`. A successful fetch consumes the handle — it becomes invalid afterwards.]]
+ *
+ * @param {Real} handle_id The handle id from a ${struct.GameCenterSavedGamesDataResult}
+ * @param {Buffer} data A ${type.buffer} sized to at least `required_size`, to receive the saved game's bytes
+ *
+ * @returns {Bool} Whether the data was copied into `data` successfully
+ *
+ * @example
+ * ```gml
+ * var _buff = buffer_create(_result.required_size, buffer_fixed, 1);
+ * if (gamecenter_saved_games_data_fetch(_result.handle_id, _buff)) {
+ *     // Use the data in _buff
+ * }
+ * buffer_delete(_buff);
+ * ```
+ * This code fetches a saved game's data into a buffer sized from a previous ${function.gamecenter_saved_games_data_request} result.
+ * @function_end
+ */
+
+/**
+ * @function gamecenter_saved_games_data_release
+ * @desc This function releases the native-side hold on a saved game's data started by ${function.gamecenter_saved_games_data_request}, without fetching it. Call this if a `handle_id` from a successful result is never going to be passed to ${function.gamecenter_saved_games_data_fetch} (for example, you decided you no longer need that slot's data), so the extension does not keep the bytes in memory indefinitely.
+ *
+ * [[Note: This is a no-op error, not a crash, if `handle_id` is invalid or was already consumed (by a successful fetch, or a previous release) — it simply returns `false`.]]
+ *
+ * @param {Real} handle_id The handle id from a ${struct.GameCenterSavedGamesDataResult}
+ *
+ * @returns {Bool} Whether a held data entry for `handle_id` was found and released
+ *
+ * @example
+ * ```gml
+ * gamecenter_saved_games_data_request("slot1", function(_result) {
+ *     if (!_result.success) return;
+ *
+ *     if (!shouldLoadThisSlot(_result)) {
+ *         gamecenter_saved_games_data_release(_result.handle_id);
+ *         return;
+ *     }
+ *
+ *     // ... fetch and use the data
+ * });
+ * ```
+ * This code releases the held data for a saved game without fetching it, based on some condition.
  * @function_end
  */
 
@@ -136,10 +203,10 @@
  * @function gamecenter_saved_games_resolve_conflict
  * @desc This function resolves a saved game conflict. Pass the `conflict_id` from a "conflict" ${struct.GameCenterSavedGamesEvent} and the `data` you want to keep for that save name. The result is delivered to the callback.
  *
- * [[Note: The `data` is a plain UTF-8 text string. Binary / non-UTF-8 data is not supported by this string-based API.]]
+ * [[Note: `data` is a ${type.buffer}, so any binary payload is supported (not just UTF-8 text).]]
  *
  * @param {Real} conflict_id The conflict id taken from a "conflict" saved-games event
- * @param {String} data The UTF-8 text string to keep as the resolved saved game
+ * @param {Buffer} data The ${type.buffer} holding the bytes to keep as the resolved saved game
  * @param {Function} callback The function to call with the result of the operation
  *
  * @event callback
@@ -149,11 +216,17 @@
  *
  * @example
  * ```gml
- * gamecenter_saved_games_resolve_conflict(_conflict_id, "level=5,gold=100", function(_result) {
+ * var _dataJSON = "level=5,gold=100";
+ * var _buff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+ * buffer_write(_buff, buffer_string, _dataJSON);
+ *
+ * gamecenter_saved_games_resolve_conflict(_conflict_id, _buff, function(_result) {
  *     if (_result.success) {
  *         show_debug_message($"Resolved conflict: {_result.conflict_id}");
  *     }
  * });
+ *
+ * buffer_delete(_buff);
  * ```
  * This code resolves a save conflict, keeping the supplied data for the conflicting save name.
  * @function_end
@@ -203,12 +276,13 @@
 
 /**
  * @struct GameCenterSavedGamesDataResult
- * @desc This struct is passed to the callback of ${function.gamecenter_saved_games_get_data}.
+ * @desc This struct is passed to the callback of ${function.gamecenter_saved_games_data_request}. It carries metadata only — pass `handle_id` to ${function.gamecenter_saved_games_data_fetch} (or ${function.gamecenter_saved_games_data_release}) to obtain (or discard) the actual bytes.
  * @member {Bool} success Whether the operation succeeded
  * @member {Real} error_code The error code (only meaningful when `success` is `false`)
  * @member {String} error_message A human-readable error description (only meaningful when `success` is `false`)
  * @member {String} name The name of the saved game that was read
- * @member {String} data The UTF-8 text string stored in the saved game
+ * @member {Real} handle_id The handle id identifying the held data, to pass to ${function.gamecenter_saved_games_data_fetch} or ${function.gamecenter_saved_games_data_release} (only meaningful when `success` is `true`)
+ * @member {Real} required_size The size, in bytes, the buffer passed to ${function.gamecenter_saved_games_data_fetch} must be at least (only meaningful when `success` is `true`)
  * @struct_end
  */
 
@@ -252,7 +326,9 @@
  * @ref gamecenter_saved_games_fetch
  * @ref gamecenter_saved_games_save
  * @ref gamecenter_saved_games_delete
- * @ref gamecenter_saved_games_get_data
+ * @ref gamecenter_saved_games_data_request
+ * @ref gamecenter_saved_games_data_fetch
+ * @ref gamecenter_saved_games_data_release
  * @ref gamecenter_saved_games_resolve_conflict
  * @section_end
  *
