@@ -8,13 +8,7 @@ module GMGameCenter;
 [global, bind = typed_gml]
 function gamecenter_view_callback_subscribe(callback: func): unit;
 [global, bind = typed_gml]
-function gamecenter_present_view_default(): bool;
-[global, bind = typed_gml]
-function gamecenter_present_view_achievements(): bool;
-[global, bind = typed_gml]
 function gamecenter_present_view_achievement(achievement_id: string): bool;
-[global, bind = typed_gml]
-function gamecenter_present_view_leaderboards(): bool;
 [global, bind = typed_gml]
 function gamecenter_present_view_leaderboard(
     leaderboard_id: string,
@@ -211,12 +205,6 @@ class `[[GameCenterAuthResult]]` prototype Object
     [field] property authenticated : bool { get; set; }
     [field, type_hint = `GameCenterPlayer`]
     property player : gmval { get; set; }
-}
-
-// Result of presenting/dismissing a Game Center overlay view.
-[global]
-class `[[GameCenterViewResult]]` prototype Object
-{
 }
 
 // Result of gamecenter_saved_games_fetch().

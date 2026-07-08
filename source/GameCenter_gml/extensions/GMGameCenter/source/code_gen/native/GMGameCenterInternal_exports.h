@@ -10,10 +10,7 @@ GMEXPORT double __EXT_NATIVE__GMGameCenter_invocation_handler(char* __ret_buffer
 GMEXPORT double __EXT_NATIVE__GMGameCenter_queue_buffer(char* __arg_buffer, double __arg_buffer_length);
 
 GMEXPORT double __EXT_NATIVE__gamecenter_view_callback_subscribe(char* __arg_buffer, double __arg_buffer_length);
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_default();
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_achievements();
 GMEXPORT double __EXT_NATIVE__gamecenter_present_view_achievement(char* achievement_id);
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_leaderboards();
 GMEXPORT double __EXT_NATIVE__gamecenter_present_view_leaderboard(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_local_player_authenticate(char* __arg_buffer, double __arg_buffer_length);
 GMEXPORT double __EXT_NATIVE__gamecenter_local_player_is_authenticated();

@@ -44,36 +44,6 @@
         },
         {
           "$GMExtensionFunction": "",
-          "%Name": "gamecenter_present_view_default",
-          "argCount": 0,
-          "args": [],
-          "documentation": "@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_present_view_default",
-          "help": "",
-          "hidden": false,
-          "kind": 4,
-          "name": "gamecenter_present_view_default",
-          "resourceType": "GMExtensionFunction",
-          "resourceVersion": "2.0",
-          "returnType": 2
-        },
-        {
-          "$GMExtensionFunction": "",
-          "%Name": "gamecenter_present_view_achievements",
-          "argCount": 0,
-          "args": [],
-          "documentation": "@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_present_view_achievements",
-          "help": "",
-          "hidden": false,
-          "kind": 4,
-          "name": "gamecenter_present_view_achievements",
-          "resourceType": "GMExtensionFunction",
-          "resourceVersion": "2.0",
-          "returnType": 2
-        },
-        {
-          "$GMExtensionFunction": "",
           "%Name": "gamecenter_present_view_achievement",
           "argCount": 1,
           "args": [
@@ -85,21 +55,6 @@
           "hidden": false,
           "kind": 4,
           "name": "gamecenter_present_view_achievement",
-          "resourceType": "GMExtensionFunction",
-          "resourceVersion": "2.0",
-          "returnType": 2
-        },
-        {
-          "$GMExtensionFunction": "",
-          "%Name": "gamecenter_present_view_leaderboards",
-          "argCount": 0,
-          "args": [],
-          "documentation": "@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_present_view_leaderboards",
-          "help": "",
-          "hidden": false,
-          "kind": 4,
-          "name": "gamecenter_present_view_leaderboards",
           "resourceType": "GMExtensionFunction",
           "resourceVersion": "2.0",
           "returnType": 2

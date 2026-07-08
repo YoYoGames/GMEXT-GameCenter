@@ -89,20 +89,6 @@ function GameCenterSavedGame() constructor
 }
 
 /**
- * @returns {Struct.GameCenterViewResult}
- */
-function GameCenterViewResult() constructor
-{
-    /**
-     * Internally generated hash for quick validation
-     * @ignore
-     */
-    static __uid = 4191388138;
-
-
-}
-
-/**
  * @returns {Struct.GameCenterSavedGamesDeleteResult}
  */
 function GameCenterSavedGamesDeleteResult() constructor
@@ -519,41 +505,6 @@ function __GameCenterSavedGame_decode(_buffer, _offset)
         buffer_read(_buffer, buffer_u32);
         self.name = buffer_read(_buffer, buffer_string);
 
-    }
-
-    return _inst;
-}
-
-/**
- * @func __GameCenterViewResult_encode(_inst, _buffer, _offset, _where)
- * @param {Struct.GameCenterViewResult} _inst
- * @param {Id.Buffer} _buffer
- * @param {Real} _offset
- * @param {String} _where
- * @ignore
- */
-function __GameCenterViewResult_encode(_inst, _buffer, _offset, _where = _GMFUNCTION_)
-{
-    buffer_seek(_buffer, buffer_seek_start, _offset);
-    with (_inst)
-    {
-    }
-}
-
-/**
- * @func __GameCenterViewResult_decode(_buffer, _offset)
- * @param {Id.Buffer} _buffer
- * @param {Real} _offset
- * @returns {Struct.GameCenterViewResult}
- * @ignore
- */
-function __GameCenterViewResult_decode(_buffer, _offset)
-{
-    buffer_seek(_buffer, buffer_seek_start, _offset);
-
-    _inst = new GameCenterViewResult();
-    with (_inst)
-    {
     }
 
     return _inst;
@@ -1750,16 +1701,7 @@ function gamecenter_view_callback_subscribe(_callback)
     return _return_value;
 }
 
-// Skipping function gamecenter_present_view_default (no wrapper is required)
-
-
-// Skipping function gamecenter_present_view_achievements (no wrapper is required)
-
-
 // Skipping function gamecenter_present_view_achievement (no wrapper is required)
-
-
-// Skipping function gamecenter_present_view_leaderboards (no wrapper is required)
 
 
 /**
@@ -2330,7 +2272,6 @@ function __GMGameCenter_get_decoders()
     static __decoders = [
         __GameCenterPlayer_decode,
         __GameCenterSavedGame_decode,
-        __GameCenterViewResult_decode,
         __GameCenterSavedGamesDeleteResult_decode,
         __GameCenterSavedGamesDataResult_decode,
         __GameCenterLeaderboardSubmitResult_decode,

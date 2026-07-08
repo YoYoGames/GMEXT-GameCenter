@@ -62,7 +62,6 @@ namespace gm_structs
 {
     struct GameCenterPlayer;
     struct GameCenterSavedGame;
-    struct GameCenterViewResult;
     struct GameCenterSavedGamesDeleteResult;
     struct GameCenterSavedGamesDataResult;
     struct GameCenterLeaderboardSubmitResult;
@@ -92,10 +91,6 @@ namespace gm_structs
         std::string device_name;
         double modification_date;
         std::string name;
-    };
-
-    struct GameCenterViewResult
-    {
     };
 
     struct GameCenterSavedGamesDeleteResult
@@ -277,18 +272,6 @@ namespace gm::wire::codec
         obj.device_name = gm::wire::codec::readValue<std::string>(_buf);
         obj.modification_date = gm::wire::codec::readValue<double>(_buf);
         obj.name = gm::wire::codec::readValue<std::string>(_buf);
-        return obj;
-    }
-
-    template<>
-    inline void writeValue<gm_structs::GameCenterViewResult>(gm::byteio::IByteWriter& _buf, const gm_structs::GameCenterViewResult& obj)
-    {
-    }
-
-    template<>
-    inline gm_structs::GameCenterViewResult readValue<gm_structs::GameCenterViewResult>(gm::byteio::BufferReader& _buf)
-    {
-        gm_structs::GameCenterViewResult obj;
         return obj;
     }
 
@@ -643,117 +626,107 @@ namespace gm::wire::details
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterViewResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesDeleteResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 2;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesDeleteResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesDataResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 3;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesDataResult>
+    struct gm_struct_traits<gm_structs::GameCenterLeaderboardSubmitResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 4;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterLeaderboardSubmitResult>
+    struct gm_struct_traits<gm_structs::GameCenterAchievementReportResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 5;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterAchievementReportResult>
+    struct gm_struct_traits<gm_structs::GameCenterAchievementResetResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 6;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterAchievementResetResult>
+    struct gm_struct_traits<gm_structs::GameCenterLeaderboardEntry>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 7;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterLeaderboardEntry>
+    struct gm_struct_traits<gm_structs::GameCenterAchievement>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 8;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterAchievement>
+    struct gm_struct_traits<gm_structs::GameCenterAuthResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 9;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterAuthResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesFetchResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 10;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesFetchResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesSaveResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 11;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesSaveResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesResolveResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 12;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesResolveResult>
+    struct gm_struct_traits<gm_structs::GameCenterSavedGamesEvent>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 13;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterSavedGamesEvent>
+    struct gm_struct_traits<gm_structs::GameCenterLeaderboardLoadResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 14;
     };
 
     template<>
-    struct gm_struct_traits<gm_structs::GameCenterLeaderboardLoadResult>
+    struct gm_struct_traits<gm_structs::GameCenterAchievementsResult>
     {
         static constexpr bool is_gm_struct = true;
         static constexpr std::uint32_t codec_id = 15;
     };
 
-    template<>
-    struct gm_struct_traits<gm_structs::GameCenterAchievementsResult>
-    {
-        static constexpr bool is_gm_struct = true;
-        static constexpr std::uint32_t codec_id = 16;
-    };
-
 }
 
 void gamecenter_view_callback_subscribe(const gm::wire::GMFunction& callback);
-bool gamecenter_present_view_default();
-bool gamecenter_present_view_achievements();
 bool gamecenter_present_view_achievement(std::string_view achievement_id);
-bool gamecenter_present_view_leaderboards();
 bool gamecenter_present_view_leaderboard(std::string_view leaderboard_id, gm_enums::GameCenterLeaderboardTimeScope time_scope, gm_enums::GameCenterLeaderboardPlayerScope player_scope);
 void gamecenter_local_player_authenticate(const gm::wire::GMFunction& callback);
 bool gamecenter_local_player_is_authenticated();

@@ -117,30 +117,9 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     return 0;
 }
 
-- (double)__EXT_NATIVE__gamecenter_present_view_default
-{
-    bool __result = [__impl gamecenter_present_view_default];
-
-    return static_cast<double>(__result);
-}
-
-- (double)__EXT_NATIVE__gamecenter_present_view_achievements
-{
-    bool __result = [__impl gamecenter_present_view_achievements];
-
-    return static_cast<double>(__result);
-}
-
 - (double)__EXT_NATIVE__gamecenter_present_view_achievement:(char*)achievement_id
 {
     bool __result = [__impl gamecenter_present_view_achievement:achievement_id];
-
-    return static_cast<double>(__result);
-}
-
-- (double)__EXT_NATIVE__gamecenter_present_view_leaderboards
-{
-    bool __result = [__impl gamecenter_present_view_leaderboards];
 
     return static_cast<double>(__result);
 }

@@ -37,27 +37,9 @@ GMEXPORT double __EXT_NATIVE__gamecenter_view_callback_subscribe(char* __arg_buf
     return 0;
 }
 
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_default()
-{
-    auto&& __result = gamecenter_present_view_default();
-    return static_cast<double>(__result);
-}
-
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_achievements()
-{
-    auto&& __result = gamecenter_present_view_achievements();
-    return static_cast<double>(__result);
-}
-
 GMEXPORT double __EXT_NATIVE__gamecenter_present_view_achievement(char* achievement_id)
 {
     auto&& __result = gamecenter_present_view_achievement(achievement_id);
-    return static_cast<double>(__result);
-}
-
-GMEXPORT double __EXT_NATIVE__gamecenter_present_view_leaderboards()
-{
-    auto&& __result = gamecenter_present_view_leaderboards();
     return static_cast<double>(__result);
 }
 

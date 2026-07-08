@@ -5,26 +5,8 @@
  */
 
 /**
- * @function_partial gamecenter_present_view_default
- * @returns {Bool}
- * @function_end
- */
-
-/**
- * @function_partial gamecenter_present_view_achievements
- * @returns {Bool}
- * @function_end
- */
-
-/**
  * @function_partial gamecenter_present_view_achievement
  * @param {String} achievement_id
- * @returns {Bool}
- * @function_end
- */
-
-/**
- * @function_partial gamecenter_present_view_leaderboards
  * @returns {Bool}
  * @function_end
  */
@@ -260,11 +242,6 @@
  * @member {String} device_name
  * @member {Real} modification_date
  * @member {String} name
- * @struct_end
- */
-
-/**
- * @struct_partial GameCenterViewResult
  * @struct_end
  */
 
