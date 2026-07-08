@@ -3,17 +3,24 @@ Repository for GameMaker's GameCenter Extension
 
 This repository was created with the intent of presenting users with the latest version available of the extension (even previous to marketplace updates) and also provide a way for the community to contribute with bug fixes and feature implementation.
 
-This extension is compatible with both macOS and iOS platforms.
+This extension will work on iOS and macOS platforms.
 
-IOS SOURCE: `source/GameCenter_gml/extensions/GMGameCenter/source/src/ios/`
-
-MACOS SOURCE: `source/GameCenter_gml/extensions/GMGameCenter/source/src/native/`
+* iOS: `source/GameCenter_gml/extensions/GMGameCenter/source/src/ios/`
+* macOS: `source/GameCenter_gml/extensions/GMGameCenter/source/src/native/`
 
 ---
 
-## Important
+## Requirements
 
-Do not download from the **main branch** this branch is a work in place branch and probably has features that might be broken or not working properly, please download from the releases panel (right side instead).
+This extension wraps Apple's GameKit, so no third-party SDK download is required — GameKit ships as
+part of the iOS/macOS SDKs bundled with Xcode. You will need an Apple Developer account
+([App Store Connect](https://appstoreconnect.apple.com/)) to configure leaderboards and achievements.
+
+> [!IMPORTANT]
+> Enabling the **Game Center** capability (and, if you use saved games, the **iCloud** capability with
+> an iCloud container) requires per-platform project configuration in the IDE/Xcode.
+>
+> Check the [Setup guide](../../wiki/Setup) for the full step-by-step.
 
 ---
 
