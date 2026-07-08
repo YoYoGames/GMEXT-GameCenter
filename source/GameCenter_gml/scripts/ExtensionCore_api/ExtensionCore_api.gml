@@ -105,7 +105,7 @@ function __ext_core_buffer_marshal_value(_buffer, _value)
 		/// feather ignore GM1041
 		// Encode key
         buffer_write(buffer, buffer_u8, buffer_string);
-        buffer_write(buffer, buffer_u32, string_length(_key));
+        buffer_write(buffer, buffer_u32, string_byte_length(_key));
 		buffer_write(buffer, buffer_string, _key);
 		// Encode value
 		__ext_core_buffer_marshal_value(buffer, _value);
@@ -144,7 +144,7 @@ function __ext_core_buffer_marshal_value(_buffer, _value)
 	else if (is_string(_value))
 	{
 		buffer_write(_buffer, buffer_u8, buffer_string);
-        buffer_write(_buffer, buffer_u32, string_length(_value));
+        buffer_write(_buffer, buffer_u32, string_byte_length(_value));
 		buffer_write(_buffer, buffer_string, _value);
 	}
 	else if (is_bool(_value))
