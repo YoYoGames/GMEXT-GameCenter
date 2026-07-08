@@ -177,7 +177,7 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_delete(char* __arg_buffer, 
     return 0;
 }
 
-GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data(char* __arg_buffer, double __arg_buffer_length)
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_data_request(char* __arg_buffer, double __arg_buffer_length)
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
 
@@ -187,11 +187,11 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data(char* __arg_buffer
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
 
-    gamecenter_saved_games_get_data(name, callback);
+    gamecenter_saved_games_data_request(name, callback);
     return 0;
 }
 
-GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_buffer, double __arg_buffer_length)
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_data_fetch(char* __arg_buffer, double __arg_buffer_length)
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
 
@@ -202,13 +202,13 @@ GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_get_data_fetch(char* __arg_
     gm::wire::GMBuffer data = __buffer_queue.front();
     __buffer_queue.pop();
 
-    auto&& __result = gamecenter_saved_games_get_data_fetch(handle_id, data);
+    auto&& __result = gamecenter_saved_games_data_fetch(handle_id, data);
     return static_cast<double>(__result);
 }
 
-GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_release(double handle_id)
+GMEXPORT double __EXT_NATIVE__gamecenter_saved_games_data_release(double handle_id)
 {
-    auto&& __result = gamecenter_saved_games_release(static_cast<double>(handle_id));
+    auto&& __result = gamecenter_saved_games_data_release(static_cast<double>(handle_id));
     return static_cast<double>(__result);
 }
 

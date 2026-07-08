@@ -46,11 +46,11 @@ function gamecenter_saved_games_save(name: string, [type_hint=buffer] data: gmva
 [global, bind = typed_gml]
 function gamecenter_saved_games_delete(name: string, callback: func): unit;
 [global, bind = typed_gml]
-function gamecenter_saved_games_get_data(name: string, callback: func): unit;
+function gamecenter_saved_games_data_request(name: string, callback: func): unit;
 [global, bind = typed_gml]
-function gamecenter_saved_games_get_data_fetch(handle_id: real, [type_hint=buffer] data: gmval): bool;
+function gamecenter_saved_games_data_fetch(handle_id: real, [type_hint=buffer] data: gmval): bool;
 [global, bind = typed_gml]
-function gamecenter_saved_games_release(handle_id: real): bool;
+function gamecenter_saved_games_data_release(handle_id: real): bool;
 [global, bind = typed_gml]
 function gamecenter_saved_games_resolve_conflict(conflict_id: real, [type_hint=buffer] data: gmval, callback: func): unit;
 
@@ -252,7 +252,7 @@ class `[[GameCenterSavedGamesDeleteResult]]` prototype Object
     [field] property name : string { get; set; }
 }
 
-// Result of gamecenter_saved_games_get_data().
+// Result of gamecenter_saved_games_data_request().
 [global]
 class `[[GameCenterSavedGamesDataResult]]` prototype Object
 {

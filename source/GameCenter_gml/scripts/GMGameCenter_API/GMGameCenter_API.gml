@@ -1955,7 +1955,7 @@ function gamecenter_saved_games_delete(_name, _callback)
  * @param {String} _name
  * @param {Function} _callback
  */
-function gamecenter_saved_games_get_data(_name, _callback)
+function gamecenter_saved_games_data_request(_name, _callback)
 {
     var __available = __GMGameCenter_is_available();
     if (!__available) return;
@@ -1974,7 +1974,7 @@ function gamecenter_saved_games_get_data(_name, _callback)
     var _callback_handle = __ext_core_function_register(_callback, __dispatcher);
     buffer_write(__args_buffer, buffer_u64, _callback_handle);
 
-    var _return_value = __gamecenter_saved_games_get_data(buffer_get_address(__args_buffer), buffer_tell(__args_buffer));
+    var _return_value = __gamecenter_saved_games_data_request(buffer_get_address(__args_buffer), buffer_tell(__args_buffer));
 
     return _return_value;
 }
@@ -1984,7 +1984,7 @@ function gamecenter_saved_games_get_data(_name, _callback)
  * @param {Id.Buffer} _data
  * @returns {Bool}
  */
-function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
+function gamecenter_saved_games_data_fetch(_handle_id, _data)
 {
     var __available = __GMGameCenter_is_available();
     if (!__available) return;
@@ -1999,12 +1999,12 @@ function gamecenter_saved_games_get_data_fetch(_handle_id, _data)
     if (!buffer_exists(_data)) show_error($"{_GMFUNCTION_} :: _data expected Id.Buffer", true);
     __GMGameCenter_queue_buffer(buffer_get_address(_data), buffer_get_size(_data));
 
-    var _return_value = __gamecenter_saved_games_get_data_fetch(buffer_get_address(__args_buffer), buffer_tell(__args_buffer));
+    var _return_value = __gamecenter_saved_games_data_fetch(buffer_get_address(__args_buffer), buffer_tell(__args_buffer));
 
     return _return_value;
 }
 
-// Skipping function gamecenter_saved_games_release (no wrapper is required)
+// Skipping function gamecenter_saved_games_data_release (no wrapper is required)
 
 
 /**

@@ -101,9 +101,9 @@ static void GCFillError(T &out, NSError *error)
 - (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_save:(std::string_view)name data:(gm::wire::GMBuffer)buffer callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_delete:(std::string_view)name callback:(gm::wire::GMFunction)callback;
-- (void)gamecenter_saved_games_get_data:(std::string_view)name callback:(gm::wire::GMFunction)callback;
-- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)buffer;
-- (bool)gamecenter_saved_games_release:(double)handle_id;
+- (void)gamecenter_saved_games_data_request:(std::string_view)name callback:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_saved_games_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)buffer;
+- (bool)gamecenter_saved_games_data_release:(double)handle_id;
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(gm::wire::GMBuffer)buffer callback:(gm::wire::GMFunction)callback;
 
 // Leaderboards
@@ -470,8 +470,8 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
-- (void)gamecenter_saved_games_get_data:(std::string_view)name
-                               callback:(gm::wire::GMFunction)callback
+- (void)gamecenter_saved_games_data_request:(std::string_view)name
+                                    callback:(gm::wire::GMFunction)callback
 {
     NSString *saveName = NSStringFromStringView(name);
     [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *fetchError) {
@@ -530,8 +530,8 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
-- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id
-                                         data:(gm::wire::GMBuffer)buffer
+- (bool)gamecenter_saved_games_data_fetch:(double)handle_id
+                                      data:(gm::wire::GMBuffer)buffer
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
     NSData *data = nil;
@@ -561,7 +561,7 @@ static void GCFillError(T &out, NSError *error)
     return true;
 }
 
-- (bool)gamecenter_saved_games_release:(double)handle_id
+- (bool)gamecenter_saved_games_data_release:(double)handle_id
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
     std::lock_guard<std::mutex> lock(_stateMutex);
@@ -977,19 +977,19 @@ void gamecenter_saved_games_delete(std::string_view name, const gm::wire::GMFunc
     [[GMGameCenterMac shared] gamecenter_saved_games_delete:name callback:callback];
 }
 
-void gamecenter_saved_games_get_data(std::string_view name, const gm::wire::GMFunction& callback)
+void gamecenter_saved_games_data_request(std::string_view name, const gm::wire::GMFunction& callback)
 {
-    [[GMGameCenterMac shared] gamecenter_saved_games_get_data:name callback:callback];
+    [[GMGameCenterMac shared] gamecenter_saved_games_data_request:name callback:callback];
 }
 
-bool gamecenter_saved_games_get_data_fetch(double handle_id, gm::wire::GMBuffer data)
+bool gamecenter_saved_games_data_fetch(double handle_id, gm::wire::GMBuffer data)
 {
-    return [[GMGameCenterMac shared] gamecenter_saved_games_get_data_fetch:handle_id data:data];
+    return [[GMGameCenterMac shared] gamecenter_saved_games_data_fetch:handle_id data:data];
 }
 
-bool gamecenter_saved_games_release(double handle_id)
+bool gamecenter_saved_games_data_release(double handle_id)
 {
-    return [[GMGameCenterMac shared] gamecenter_saved_games_release:handle_id];
+    return [[GMGameCenterMac shared] gamecenter_saved_games_data_release:handle_id];
 }
 
 void gamecenter_saved_games_resolve_conflict(double conflict_id, gm::wire::GMBuffer data, const gm::wire::GMFunction& callback)

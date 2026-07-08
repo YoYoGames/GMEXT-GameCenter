@@ -440,8 +440,8 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
-- (void)gamecenter_saved_games_get_data:(std::string_view)name
-                               callback:(gm::wire::GMFunction)callback
+- (void)gamecenter_saved_games_data_request:(std::string_view)name
+                                    callback:(gm::wire::GMFunction)callback
 {
     NSString *saveName = NSStringFromStringView(name);
     [[GKLocalPlayer localPlayer] fetchSavedGamesWithCompletionHandler:^(NSArray<GKSavedGame *> *savedGames, NSError *fetchError) {
@@ -500,8 +500,8 @@ static void GCFillError(T &out, NSError *error)
     }];
 }
 
-- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id
-                                         data:(gm::wire::GMBuffer)buffer
+- (bool)gamecenter_saved_games_data_fetch:(double)handle_id
+                                      data:(gm::wire::GMBuffer)buffer
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
     NSData *data = nil;
@@ -531,7 +531,7 @@ static void GCFillError(T &out, NSError *error)
     return true;
 }
 
-- (bool)gamecenter_saved_games_release:(double)handle_id
+- (bool)gamecenter_saved_games_data_release:(double)handle_id
 {
     NSInteger hId = static_cast<NSInteger>(handle_id);
     std::lock_guard<std::mutex> lock(_stateMutex);

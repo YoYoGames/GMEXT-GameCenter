@@ -272,7 +272,7 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     return 0;
 }
 
-- (double)__EXT_NATIVE__gamecenter_saved_games_get_data:(char*)__arg_buffer arg1:(double)__arg_buffer_length
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_request:(char*)__arg_buffer arg1:(double)__arg_buffer_length
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
 
@@ -282,12 +282,12 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     // field: callback, type: Function
     gm::wire::GMFunction callback = gm::wire::codec::readFunction(__br, &__dispatch_queue);
 
-    [__impl gamecenter_saved_games_get_data:name callback:callback];
+    [__impl gamecenter_saved_games_data_request:name callback:callback];
 
     return 0;
 }
 
-- (double)__EXT_NATIVE__gamecenter_saved_games_get_data_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length
 {
     gm::byteio::BufferReader __br{__arg_buffer, static_cast<size_t>(__arg_buffer_length)};
 
@@ -298,14 +298,14 @@ static void GMInjectSelectorsIntoSubclass(Class subclass, Class base)
     gm::wire::GMBuffer data = __buffer_queue.front();
     __buffer_queue.pop();
 
-    bool __result = [__impl gamecenter_saved_games_get_data_fetch:handle_id data:data];
+    bool __result = [__impl gamecenter_saved_games_data_fetch:handle_id data:data];
 
     return static_cast<double>(__result);
 }
 
-- (double)__EXT_NATIVE__gamecenter_saved_games_release:(double)handle_id
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_release:(double)handle_id
 {
-    bool __result = [__impl gamecenter_saved_games_release:handle_id];
+    bool __result = [__impl gamecenter_saved_games_data_release:handle_id];
 
     return static_cast<double>(__result);
 }

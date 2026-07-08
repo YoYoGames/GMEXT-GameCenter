@@ -768,9 +768,9 @@ namespace gm::wire::details
 - (void)gamecenter_saved_games_fetch:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_save:(std::string_view)name data:(gm::wire::GMBuffer)data callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_saved_games_delete:(std::string_view)name callback:(gm::wire::GMFunction)callback;
-- (void)gamecenter_saved_games_get_data:(std::string_view)name callback:(gm::wire::GMFunction)callback;
-- (bool)gamecenter_saved_games_get_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)data;
-- (bool)gamecenter_saved_games_release:(double)handle_id;
+- (void)gamecenter_saved_games_data_request:(std::string_view)name callback:(gm::wire::GMFunction)callback;
+- (bool)gamecenter_saved_games_data_fetch:(double)handle_id data:(gm::wire::GMBuffer)data;
+- (bool)gamecenter_saved_games_data_release:(double)handle_id;
 - (void)gamecenter_saved_games_resolve_conflict:(double)conflict_id data:(gm::wire::GMBuffer)data callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_leaderboard_submit:(std::string_view)leaderboard_id score:(std::int32_t)score context:(std::int32_t)context callback:(gm::wire::GMFunction)callback;
 - (void)gamecenter_leaderboard_load:(std::string_view)leaderboard_id time_scope:(gm_enums::GameCenterLeaderboardTimeScope)time_scope range_start:(double)range_start range_count:(double)range_count player_scope:(gm_enums::GameCenterLeaderboardPlayerScope)player_scope callback:(gm::wire::GMFunction)callback;
@@ -808,9 +808,9 @@ namespace gm::wire::details
 - (double)__EXT_NATIVE__gamecenter_saved_games_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
 - (double)__EXT_NATIVE__gamecenter_saved_games_save:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
 - (double)__EXT_NATIVE__gamecenter_saved_games_delete:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
-- (double)__EXT_NATIVE__gamecenter_saved_games_get_data:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
-- (double)__EXT_NATIVE__gamecenter_saved_games_get_data_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
-- (double)__EXT_NATIVE__gamecenter_saved_games_release:(double)handle_id;
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_request:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_fetch:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
+- (double)__EXT_NATIVE__gamecenter_saved_games_data_release:(double)handle_id;
 - (double)__EXT_NATIVE__gamecenter_saved_games_resolve_conflict:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
 - (double)__EXT_NATIVE__gamecenter_leaderboard_submit:(char*)__arg_buffer arg1:(double)__arg_buffer_length;
 - (double)__EXT_NATIVE__gamecenter_leaderboard_load:(char*)__arg_buffer arg1:(double)__arg_buffer_length;

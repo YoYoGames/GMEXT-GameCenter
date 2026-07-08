@@ -60,7 +60,7 @@ handleSaveOrDelete = function(_result)
 	gamecenter_saved_games_fetch(handleFetch);
 }
 
-// @callback for gamecenter_saved_games_get_data()
+// @callback for gamecenter_saved_games_data_request()
 // First step: receives metadata containing handle_id and required_size.
 // Fetches the actual data into a buffer, then unpacks it.
 // Replaces the "GameCenter_SavedGames_GetData" case of the old Social Async event.
@@ -79,7 +79,7 @@ handleGetData = function(_result)
 	{
 		if (_handle >= 0)
 		{
-			gamecenter_saved_games_release(_handle);
+			gamecenter_saved_games_data_release(_handle);
 		}
 
 		return;
@@ -95,15 +95,15 @@ handleGetData = function(_result)
 	if (_buffer < 0)
 	{
 		// The payload is still held by the native extension.
-		gamecenter_saved_games_release(_handle);
+		gamecenter_saved_games_data_release(_handle);
 		return;
 	}
 
 	// A successful fetch consumes the native handle.
 	// A failed fetch leaves it valid, so it must be explicitly released.
-	if (!gamecenter_saved_games_get_data_fetch(_handle, _buffer))
+	if (!gamecenter_saved_games_data_fetch(_handle, _buffer))
 	{
-		gamecenter_saved_games_release(_handle);
+		gamecenter_saved_games_data_release(_handle);
 		buffer_delete(_buffer);
 		return;
 	}
@@ -187,7 +187,7 @@ handleSavedGamesEvent = function(_result)
 			// This requires selecting which data you will approve.
 			// First, create a buffer with the chosen data (+1 for the NUL
 			// terminator that buffer_string writes):
-			// var _buff = buffer_create(string_length(_dataToResolve) + 1, buffer_fixed, 1);
+			// var _buff = buffer_create(string_byte_length(_dataToResolve) + 1, buffer_fixed, 1);
 			// buffer_write(_buff, buffer_string, _dataToResolve);
 			// gamecenter_saved_games_resolve_conflict(_conflictId, _buff, handleResolveConflict);
 			// buffer_delete(_buff);

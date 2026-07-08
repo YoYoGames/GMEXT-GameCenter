@@ -292,53 +292,53 @@
         },
         {
           "$GMExtensionFunction": "",
-          "%Name": "__gamecenter_saved_games_get_data",
+          "%Name": "__gamecenter_saved_games_data_request",
           "argCount": 2,
           "args": [
             1,
             2
           ],
           "documentation": "@param {Pointer} _arg_buffer\r\n@param {Real} _arg_buffer_length\r\n@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_saved_games_get_data",
+          "externalName": "__EXT_NATIVE__gamecenter_saved_games_data_request",
           "help": "",
           "hidden": true,
           "kind": 4,
-          "name": "__gamecenter_saved_games_get_data",
+          "name": "__gamecenter_saved_games_data_request",
           "resourceType": "GMExtensionFunction",
           "resourceVersion": "2.0",
           "returnType": 2
         },
         {
           "$GMExtensionFunction": "",
-          "%Name": "__gamecenter_saved_games_get_data_fetch",
+          "%Name": "__gamecenter_saved_games_data_fetch",
           "argCount": 2,
           "args": [
             1,
             2
           ],
           "documentation": "@param {Pointer} _arg_buffer\r\n@param {Real} _arg_buffer_length\r\n@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_saved_games_get_data_fetch",
+          "externalName": "__EXT_NATIVE__gamecenter_saved_games_data_fetch",
           "help": "",
           "hidden": true,
           "kind": 4,
-          "name": "__gamecenter_saved_games_get_data_fetch",
+          "name": "__gamecenter_saved_games_data_fetch",
           "resourceType": "GMExtensionFunction",
           "resourceVersion": "2.0",
           "returnType": 2
         },
         {
           "$GMExtensionFunction": "",
-          "%Name": "gamecenter_saved_games_release",
+          "%Name": "gamecenter_saved_games_data_release",
           "argCount": 1,
           "args": [
             2
           ],
           "documentation": "@param {Real} handle_id\r\n@returns {Real}",
-          "externalName": "__EXT_NATIVE__gamecenter_saved_games_release",
+          "externalName": "__EXT_NATIVE__gamecenter_saved_games_data_release",
           "help": "",
           "hidden": false,
           "kind": 4,
-          "name": "gamecenter_saved_games_release",
+          "name": "gamecenter_saved_games_data_release",
           "resourceType": "GMExtensionFunction",
           "resourceVersion": "2.0",
           "returnType": 2
