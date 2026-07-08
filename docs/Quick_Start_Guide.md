@@ -30,18 +30,33 @@ You can also query the current state synchronously, for example with ${function.
 
 ## Presenting the Game Center UI
 
-The native overlays (dashboard, achievements, leaderboards) are shown with the ${module.presentview} functions. Subscribe **once** to receive a notification when the player closes an overlay, then present whichever view you need:
+The general overlays (dashboard, achievements list, leaderboards list) are shown through the Game Center **access point** (${module.accesspoint}). Each call takes its own callback, fired with no arguments once the player closes the overlay:
 
 ```gml
-// Subscribe once (e.g. at startup)
-gamecenter_view_callback_subscribe(function(_result) {
+gamecenter_access_point_present_with_state(GameCenterViewState.Default, function() {
     show_debug_message("Game Center overlay was closed");
 });
 
-// Later, present a view
-gamecenter_present_view_default();        // the general dashboard
-gamecenter_present_view_achievements();   // the achievements list
-gamecenter_present_view_leaderboards();   // all leaderboards
+gamecenter_access_point_present_with_state(GameCenterViewState.Achievements, function() {
+    show_debug_message("Achievements overlay was closed");
+});
+
+gamecenter_access_point_present_with_state(GameCenterViewState.Leaderboards, function() {
+    show_debug_message("Leaderboards overlay was closed");
+});
+```
+
+To deep-link a **specific** achievement or leaderboard by ID, use the ${module.presentview} functions instead. These subscribe **once** to a shared dismissal notification (also called with no arguments), then present the detail view you need:
+
+```gml
+// Subscribe once (e.g. at startup)
+gamecenter_view_callback_subscribe(function() {
+    show_debug_message("Game Center overlay was closed");
+});
+
+// Later, present a specific achievement or leaderboard
+gamecenter_present_view_achievement("com.company.game.achievement.first_win");
+gamecenter_present_view_leaderboard("my_leaderboard", GameCenterLeaderboardTimeScope.AllTime, GameCenterLeaderboardPlayerScope.Global);
 ```
 
 ## Leaderboards
