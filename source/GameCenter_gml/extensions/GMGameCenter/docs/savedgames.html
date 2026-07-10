@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Saved Games - GMEXT-GameCenter</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="assets/css/gmext_style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Saved Games";
+        var mkdocs_page_input_path = "savedgames.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/gml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> GMEXT-GameCenter
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Modules</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="presentview.html">Present View</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="localplayer.html">Local Player</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Saved Games</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="leaderboard.html">Leaderboard</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="accesspoint.html">Access Point</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">GMEXT-GameCenter</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Modules</li>
+      <li class="breadcrumb-item active">Saved Games</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter/edit/master/docs/savedgames.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p><a id="top"></a></p>
+<h1 id="saved-games"><strong>Saved Games</strong></h1>
+<h2 id="functions">Functions</h2>
+<p>The following functions are provided for working with saved games:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_callback_subscribe">gamecenter_saved_games_callback_subscribe</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_fetch">gamecenter_saved_games_fetch</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_save">gamecenter_saved_games_save</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_delete">gamecenter_saved_games_delete</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_data_release">gamecenter_saved_games_data_release</a></li>
+<li><a href="savedgames.html#gamecenter_saved_games_resolve_conflict">gamecenter_saved_games_resolve_conflict</a></li>
+</ul>
+<h2 id="structs">Structs</h2>
+<p>The following structs are used by the saved games functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesfetchresult">GameCenterSavedGamesFetchResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamessaveresult">GameCenterSavedGamesSaveResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesdeleteresult">GameCenterSavedGamesDeleteResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesresolveresult">GameCenterSavedGamesResolveResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesevent">GameCenterSavedGamesEvent</a></li>
+</ul>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_callback_subscribe">gamecenter_saved_games_callback_subscribe</h1>
+<p>This function registers a listener for saved-games events. Unlike the other saved-games functions, the callback registered here is not tied to a single call: it fires whenever GameKit reports that a saved game was modified on another device or that a save conflict exists.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Saved games are an <strong>Apple-only</strong> feature (iOS and macOS) and are stored in the player's iCloud account.</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_callback_subscribe(callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call whenever a saved-games event occurs</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered whenever a saved-games event is reported by GameKit.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamesevent">GameCenterSavedGamesEvent</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamesevent">GameCenterSavedGamesEvent</a> struct describing the event</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_saved_games_callback_subscribe(function(_result) {
+    if (_result.type == &quot;modified&quot;) {
+        show_debug_message($&quot;Saved game modified: {_result.slot.name}&quot;);
+    } else if (_result.type == &quot;conflict&quot;) {
+        show_debug_message($&quot;Conflict for id: {_result.conflict_id}&quot;);
+    }
+});
+</code></pre></div>
+This code registers a saved-games event listener that reacts to modification and conflict events.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_fetch">gamecenter_saved_games_fetch</h1>
+<p>This function fetches the list of saved games stored in the player's iCloud account. The result is delivered to the callback.</p>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_fetch(callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call with the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the fetch operation completes.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamesfetchresult">GameCenterSavedGamesFetchResult</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamesfetchresult">GameCenterSavedGamesFetchResult</a> struct containing the fetched saved games</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_saved_games_fetch(function(_result) {
+    if (_result.success) {
+        for (var _i = 0; _i &lt; array_length(_result.slots); _i++) {
+            show_debug_message(_result.slots[_i].name);
+        }
+    }
+});
+</code></pre></div>
+This code fetches all saved games and outputs their names in debug messages.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_save">gamecenter_saved_games_save</h1>
+<p>This function saves data to a saved game with the given name. If a slot with <code>name</code> already exists it is overwritten, otherwise a new one is created. The result is delivered to the callback.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>data</code> is a <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a>, so any binary payload is supported (not just UTF-8 text).</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_save(name, data, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game to write</td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a></td>
+<td>The <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a> holding the bytes to store in the saved game</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call with the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the save operation completes.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamessaveresult">GameCenterSavedGamesSaveResult</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamessaveresult">GameCenterSavedGamesSaveResult</a> struct describing the saved slot</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _dataJSON = json_stringify([&quot;level=5&quot;, &quot;gold=100&quot;]);
+var _buff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+buffer_write(_buff, buffer_string, _dataJSON);
+
+gamecenter_saved_games_save(&quot;slot1&quot;, _buff, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Saved: {_result.name}&quot;);
+    }
+});
+
+buffer_delete(_buff);
+</code></pre></div>
+This code writes a JSON string into a buffer and saves it to a saved game named "slot1".</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_delete">gamecenter_saved_games_delete</h1>
+<p>This function deletes the saved game with the given name. The result is delivered to the callback.</p>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_delete(name, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game to delete</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call with the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the delete operation completes.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamesdeleteresult">GameCenterSavedGamesDeleteResult</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamesdeleteresult">GameCenterSavedGamesDeleteResult</a> struct describing the deleted saved game</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_saved_games_delete(&quot;slot1&quot;, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Deleted: {_result.name}&quot;);
+    }
+});
+</code></pre></div>
+This code deletes the saved game named "slot1".</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</h1>
+<p>This function starts retrieving the data stored in the saved game with the given name. The result delivered to the callback carries <strong>metadata only</strong> (<code>handle_id</code> and <code>required_size</code>) — the native side holds the fetched bytes until you call <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a> with a correctly-sized buffer to copy them out.</p>
+<p>When several saves share the same name (an unresolved conflict), the most-recently-modified one is returned.</p>
+<blockquote>
+<p>A successful result holds the data on the native side until you call <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a>. If you decide not to fetch it (e.g. you no longer need the slot), call <a href="savedgames.html#gamecenter_saved_games_data_release">gamecenter_saved_games_data_release</a> with the same <code>handle_id</code> to free it — otherwise it is held for the rest of the process lifetime.</p>
+</blockquote>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_data_request(name, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game to read</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call with the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered once the saved game's metadata is available.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</a> struct containing the <code>handle_id</code>/<code>required_size</code> needed to fetch the data</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_saved_games_data_request(&quot;slot1&quot;, function(_result) {
+    if (!_result.success) return;
+
+    var _buff = buffer_create(_result.required_size, buffer_fixed, 1);
+    if (!gamecenter_saved_games_data_fetch(_result.handle_id, _buff)) {
+        gamecenter_saved_games_data_release(_result.handle_id);
+        buffer_delete(_buff);
+        return;
+    }
+
+    buffer_seek(_buff, buffer_seek_start, 0);
+    var _dataJSON = buffer_read(_buff, buffer_string);
+    buffer_delete(_buff);
+
+    show_debug_message($&quot;Data: {_dataJSON}&quot;);
+});
+</code></pre></div>
+This code requests the data for "slot1", then fetches it into a correctly-sized buffer once the metadata arrives.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</h1>
+<p>This function copies the data held by a prior <a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a> call into <code>data</code>, a caller-provided <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a>. This is a synchronous call — no callback is involved.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Size <code>data</code> to at least the <code>required_size</code> reported by <a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a>'s result. If <code>data</code> is too small the function returns <code>false</code> and the native-side hold is kept, so you can retry with a bigger buffer using the same <code>handle_id</code>. A successful fetch consumes the handle — it becomes invalid afterwards.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_data_fetch(handle_id, data)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>handle_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The handle id from a <a href="savedgames.html#gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</a></td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a></td>
+<td>A <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a> sized to at least <code>required_size</code>, to receive the saved game's bytes</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the data was copied into <code>data</code> successfully</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _buff = buffer_create(_result.required_size, buffer_fixed, 1);
+if (gamecenter_saved_games_data_fetch(_result.handle_id, _buff)) {
+    // Use the data in _buff
+}
+buffer_delete(_buff);
+</code></pre></div>
+This code fetches a saved game's data into a buffer sized from a previous <a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a> result.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_data_release">gamecenter_saved_games_data_release</h1>
+<p>This function releases the native-side hold on a saved game's data started by <a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a>, without fetching it. Call this if a <code>handle_id</code> from a successful result is never going to be passed to <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a> (for example, you decided you no longer need that slot's data), so the extension does not keep the bytes in memory indefinitely.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a no-op error, not a crash, if <code>handle_id</code> is invalid or was already consumed (by a successful fetch, or a previous release) — it simply returns <code>false</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_data_release(handle_id)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>handle_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The handle id from a <a href="savedgames.html#gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</a></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether a held data entry for <code>handle_id</code> was found and released</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_saved_games_data_request(&quot;slot1&quot;, function(_result) {
+    if (!_result.success) return;
+
+    if (!shouldLoadThisSlot(_result)) {
+        gamecenter_saved_games_data_release(_result.handle_id);
+        return;
+    }
+
+    // ... fetch and use the data
+});
+</code></pre></div>
+This code releases the held data for a saved game without fetching it, based on some condition.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_saved_games_resolve_conflict">gamecenter_saved_games_resolve_conflict</h1>
+<p>This function resolves a saved game conflict. Pass the <code>conflict_id</code> from a "conflict" <a href="savedgames.html#gamecentersavedgamesevent">GameCenterSavedGamesEvent</a> and the <code>data</code> you want to keep for that save name. The result is delivered to the callback.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>data</code> is a <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a>, so any binary payload is supported (not just UTF-8 text).</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_resolve_conflict(conflict_id, data, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>conflict_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The conflict id taken from a "conflict" saved-games event</td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a></td>
+<td>The <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Buffers/Buffers.htm">Buffer</a> holding the bytes to keep as the resolved saved game</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call with the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the conflict has been resolved.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="savedgames.html#gamecentersavedgamesresolveresult">GameCenterSavedGamesResolveResult</a></td>
+<td>A <a href="savedgames.html#gamecentersavedgamesresolveresult">GameCenterSavedGamesResolveResult</a> struct describing the resolved saved games</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _dataJSON = &quot;level=5,gold=100&quot;;
+var _buff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+buffer_write(_buff, buffer_string, _dataJSON);
+
+gamecenter_saved_games_resolve_conflict(_conflict_id, _buff, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Resolved conflict: {_result.conflict_id}&quot;);
+    }
+});
+
+buffer_delete(_buff);
+</code></pre></div>
+This code resolves a save conflict, keeping the supplied data for the conflicting save name.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgame">GameCenterSavedGame</h1>
+<p>This struct represents a single saved game slot stored in the player's iCloud account.</p>
+<p>This struct is referenced by the following structs:</p>
+<ul>
+<li><a href="savedgames.html#gamecentersavedgamesfetchresult">GameCenterSavedGamesFetchResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamessaveresult">GameCenterSavedGamesSaveResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesresolveresult">GameCenterSavedGamesResolveResult</a></li>
+<li><a href="savedgames.html#gamecentersavedgamesevent">GameCenterSavedGamesEvent</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>device_name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the device on which the saved game was created or last modified</td>
+</tr>
+<tr>
+<td>modification_date</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The date the saved game was last modified, as a GameMaker datetime</td>
+</tr>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamesdeleteresult">GameCenterSavedGamesDeleteResult</h1>
+<p>This struct is passed to the callback of <a href="savedgames.html#gamecenter_saved_games_delete">gamecenter_saved_games_delete</a>.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_delete">gamecenter_saved_games_delete</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error description (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game that was deleted</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamesdataresult">GameCenterSavedGamesDataResult</h1>
+<p>This struct is passed to the callback of <a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a>. It carries metadata only — pass <code>handle_id</code> to <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a> (or <a href="savedgames.html#gamecenter_saved_games_data_release">gamecenter_saved_games_data_release</a>) to obtain (or discard) the actual bytes.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_data_request">gamecenter_saved_games_data_request</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error description (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game that was read</td>
+</tr>
+<tr>
+<td>handle_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The handle id identifying the held data, to pass to <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a> or <a href="savedgames.html#gamecenter_saved_games_data_release">gamecenter_saved_games_data_release</a> (only meaningful when <code>success</code> is <code>true</code>)</td>
+</tr>
+<tr>
+<td>required_size</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The size, in bytes, the buffer passed to <a href="savedgames.html#gamecenter_saved_games_data_fetch">gamecenter_saved_games_data_fetch</a> must be at least (only meaningful when <code>success</code> is <code>true</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamesfetchresult">GameCenterSavedGamesFetchResult</h1>
+<p>This struct is passed to the callback of <a href="savedgames.html#gamecenter_saved_games_fetch">gamecenter_saved_games_fetch</a>.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_fetch">gamecenter_saved_games_fetch</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error description (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>slots</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Arrays.htm">Array</a> of <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></td>
+<td>An array of <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a> structs, one per fetched saved game</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamessaveresult">GameCenterSavedGamesSaveResult</h1>
+<p>This struct is passed to the callback of <a href="savedgames.html#gamecenter_saved_games_save">gamecenter_saved_games_save</a>.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_save">gamecenter_saved_games_save</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error description (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>name</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The name of the saved game that was written</td>
+</tr>
+<tr>
+<td>slot</td>
+<td><a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></td>
+<td>The <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a> struct describing the written saved game</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamesresolveresult">GameCenterSavedGamesResolveResult</h1>
+<p>This struct is passed to the callback of <a href="savedgames.html#gamecenter_saved_games_resolve_conflict">gamecenter_saved_games_resolve_conflict</a>.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_resolve_conflict">gamecenter_saved_games_resolve_conflict</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the operation succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error description (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>conflict_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The conflict id that was resolved (echoed from the request)</td>
+</tr>
+<tr>
+<td>slots</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Arrays.htm">Array</a> of <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></td>
+<td>An array of <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a> structs describing the resolved saved games</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecentersavedgamesevent">GameCenterSavedGamesEvent</h1>
+<p>This struct is passed to the callback registered with <a href="savedgames.html#gamecenter_saved_games_callback_subscribe">gamecenter_saved_games_callback_subscribe</a>. The <code>type</code> field determines which other fields are set.</p>
+<p>When <code>type</code> is <code>"modified"</code>, the <code>player</code> and <code>slot</code> fields are set (a saved game was changed on another device).</p>
+<p>When <code>type</code> is <code>"conflict"</code>, the <code>conflict_id</code>, <code>player</code> and <code>slots</code> fields are set.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GameKit can report conflicts for several filenames at once; this extension emits one "conflict" event (with its own <code>conflict_id</code>) per filename, so each <code>conflict_id</code> corresponds to a single save name.</p>
+</div>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="savedgames.html#gamecenter_saved_games_callback_subscribe">gamecenter_saved_games_callback_subscribe</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The event type, either <code>"conflict"</code> or <code>"modified"</code></td>
+</tr>
+<tr>
+<td>conflict_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The conflict id (set when <code>type</code> is <code>"conflict"</code>), to be passed to <a href="savedgames.html#gamecenter_saved_games_resolve_conflict">gamecenter_saved_games_resolve_conflict</a></td>
+</tr>
+<tr>
+<td>player</td>
+<td><a href="localplayer.html#gamecenterplayer">GameCenterPlayer</a></td>
+<td>The <a href="localplayer.html#gamecenterplayer">GameCenterPlayer</a> associated with the event</td>
+</tr>
+<tr>
+<td>slot</td>
+<td><a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></td>
+<td>The <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a> that was modified (set when <code>type</code> is <code>"modified"</code>)</td>
+</tr>
+<tr>
+<td>slots</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Arrays.htm">Array</a> of <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a></td>
+<td>An array of conflicting <a href="savedgames.html#gamecentersavedgame">GameCenterSavedGame</a> structs (set when <code>type</code> is <code>"conflict"</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="localplayer.html" class="btn btn-neutral float-left" title="Local Player"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="leaderboard.html" class="btn btn-neutral float-right" title="Leaderboard">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p><p align="center">GameMaker 2026</p></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="localplayer.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="leaderboard.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gml.min.js"></script>
+      <script src="assets/js/gmext_script.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

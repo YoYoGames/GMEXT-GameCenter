@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Home - GMEXT-GameCenter</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="assets/css/gmext_style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "home.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/gml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> GMEXT-GameCenter
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Modules</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="presentview.html">Present View</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="localplayer.html">Local Player</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="savedgames.html">Saved Games</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="leaderboard.html">Leaderboard</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="accesspoint.html">Access Point</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">GMEXT-GameCenter</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter/edit/master/docs/home.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p><a id="top"></a></p>
+<h1 id="gamecenter"><strong>GameCenter</strong></h1>
+<h2 id="extensions-features">Extension's Features</h2>
+<ul>
+<li>Authenticate the local player with Apple Game Center</li>
+<li>Present the native Game Center overlays (dashboard, achievements, leaderboards)</li>
+<li>Submit scores to and load leaderboards</li>
+<li>Report, load and reset achievements</li>
+<li>Create, save, load, delete and resolve conflicts for iCloud saved games</li>
+<li>Show and control the Game Center access point</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>This extension wraps Apple's <a href="https://developer.apple.com/documentation/gamekit">GameKit</a> framework, so it is only supported on <strong>iOS and macOS</strong>. Before using any other feature you must authenticate the local player with <a href="localplayer.html#gamecenter_local_player_authenticate">gamecenter_local_player_authenticate</a>.</p>
+<p>Game Center lets players build an identity across Apple platforms and enables features like leaderboards, achievements, saved games, the access point, and the system dashboard (<a href="https://developer.apple.com/game-center/">Game Center website</a>).</p>
+<p>Leaderboards let players participate in competitions within your game and see how they rank among global players or their Game Center friends. Achievements are milestones that indicate when a player reaches a particular goal; players see them as locked, in progress, or completed. Saved games let players store progress in their iCloud account and sync it across their devices.</p>
+<h2 id="guides">Guides</h2>
+<p>Guides for the GameCenter extension.</p>
+<ul>
+<li><a href="setup.html">Setup</a></li>
+<li><a href="quick_start_guide.html">Quick Start Guide</a></li>
+</ul>
+<h2 id="modules">Modules</h2>
+<p>The following are the available modules for the GameCenter extension:</p>
+<ul>
+<li><a href="localplayer.html">Local Player</a></li>
+<li><a href="presentview.html">Present View</a></li>
+<li><a href="savedgames.html">Saved Games</a></li>
+<li><a href="leaderboard.html">Leaderboard</a></li>
+<li><a href="achievement.html">Achievement</a></li>
+<li><a href="accesspoint.html">Access Point</a></li>
+</ul>
+<p><br></p>
+<hr />
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p><p align="center">GameMaker 2026</p></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gml.min.js"></script>
+      <script src="assets/js/gmext_script.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

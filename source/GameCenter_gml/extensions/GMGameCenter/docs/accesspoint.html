@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Access Point - GMEXT-GameCenter</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="assets/css/gmext_style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Access Point";
+        var mkdocs_page_input_path = "accesspoint.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/gml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> GMEXT-GameCenter
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Modules</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="presentview.html">Present View</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="localplayer.html">Local Player</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="savedgames.html">Saved Games</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="leaderboard.html">Leaderboard</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Access Point</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#constants">Constants</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">GMEXT-GameCenter</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Modules</li>
+      <li class="breadcrumb-item active">Access Point</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter/edit/master/docs/accesspoint.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p><a id="top"></a></p>
+<h1 id="access-point"><strong>Access Point</strong></h1>
+<h2 id="functions">Functions</h2>
+<p>The following functions are provided to control the Game Center access point:</p>
+<ul>
+<li><a href="accesspoint.html#gamecenter_access_point_set_active">gamecenter_access_point_set_active</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_get_active">gamecenter_access_point_get_active</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_set_location">gamecenter_access_point_set_location</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_get_location">gamecenter_access_point_get_location</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_is_presenting_game_center">gamecenter_access_point_is_presenting_game_center</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_is_visible">gamecenter_access_point_is_visible</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_set_show_highlights">gamecenter_access_point_set_show_highlights</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_get_show_highlights">gamecenter_access_point_get_show_highlights</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_get_coordinate">gamecenter_access_point_get_coordinate</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_present_with_state">gamecenter_access_point_present_with_state</a></li>
+<li><a href="accesspoint.html#gamecenter_access_point_present">gamecenter_access_point_present</a></li>
+</ul>
+<h2 id="constants">Constants</h2>
+<p>The following enumerations are provided to configure the Game Center access point:</p>
+<ul>
+<li><a href="accesspoint.html#gamecenteraccesspointlocation">GameCenterAccessPointLocation</a></li>
+<li><a href="accesspoint.html#gamecenteraccesspointcoordinate">GameCenterAccessPointCoordinate</a></li>
+<li><a href="accesspoint.html#gamecenterviewstate">GameCenterViewState</a></li>
+</ul>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_set_active">gamecenter_access_point_set_active</h1>
+<p>This function shows or hides the Game Center access point, the floating Game Center badge (<code>GKAccessPoint</code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code> and does nothing.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_set_active(active)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>active</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the access point should be active (shown) or not</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the access point's active state was successfully set</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_access_point_set_active(true);
+</code></pre></div>
+This code shows the Game Center access point.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_get_active">gamecenter_access_point_get_active</h1>
+<p>This function returns whether the Game Center access point is currently active.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_get_active()
+</code></pre></div>
+</blockquote>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the access point is active</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _active = gamecenter_access_point_get_active();
+show_debug_message($&quot;Access point active: {_active}&quot;);
+</code></pre></div>
+This code gets whether the access point is active and outputs it in a debug message.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_set_location">gamecenter_access_point_set_location</h1>
+<p>This function sets the screen corner in which the Game Center access point is displayed, using a <a href="accesspoint.html#gamecenteraccesspointlocation">GameCenterAccessPointLocation</a> value.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code> and does nothing.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_set_location(location)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>location</td>
+<td><a href="accesspoint.html#gamecenteraccesspointlocation">GameCenterAccessPointLocation</a></td>
+<td>The screen corner in which to display the access point</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the location was successfully set</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_access_point_set_location(GameCenterAccessPointLocation.TopTrailing);
+</code></pre></div>
+This code positions the access point in the top trailing corner of the screen.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_get_location">gamecenter_access_point_get_location</h1>
+<p>This function returns the screen corner in which the Game Center access point is displayed, as the <a href="accesspoint.html#gamecenteraccesspointlocation">GameCenterAccessPointLocation</a> value cast to a {Real}.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>-1</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_get_location()
+</code></pre></div>
+</blockquote>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></p>
+</blockquote>
+<p>The location as the enum value, or <code>-1</code> if unavailable</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _location = gamecenter_access_point_get_location();
+if (_location == GameCenterAccessPointLocation.TopLeading)
+{
+    show_debug_message(&quot;Access point is in the top leading corner.&quot;);
+}
+</code></pre></div>
+This code gets the access point's location and checks whether it is in the top leading corner.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_is_presenting_game_center">gamecenter_access_point_is_presenting_game_center</h1>
+<p>This function returns whether the access point is currently presenting the Game Center UI.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_is_presenting_game_center()
+</code></pre></div>
+</blockquote>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the access point is currently showing the Game Center UI</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>if (gamecenter_access_point_is_presenting_game_center())
+{
+    show_debug_message(&quot;The Game Center UI is open.&quot;);
+}
+</code></pre></div>
+This code checks whether the Game Center UI is currently being presented.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_is_visible">gamecenter_access_point_is_visible</h1>
+<p>This function returns whether the access point is currently visible on screen.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_is_visible()
+</code></pre></div>
+</blockquote>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the access point is currently on screen</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _visible = gamecenter_access_point_is_visible();
+</code></pre></div>
+This code gets whether the access point is currently visible on screen.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_set_show_highlights">gamecenter_access_point_set_show_highlights</h1>
+<p>This function sets whether the access point shows achievement and rank highlights.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code> and does nothing.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_set_show_highlights(show)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>show</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the access point should show highlights or not</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the setting was successfully applied</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_access_point_set_show_highlights(true);
+</code></pre></div>
+This code enables achievement and rank highlights on the access point.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_get_show_highlights">gamecenter_access_point_get_show_highlights</h1>
+<p>This function returns whether the access point shows achievement and rank highlights.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>false</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_get_show_highlights()
+</code></pre></div>
+</blockquote>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the access point shows highlights</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _highlights = gamecenter_access_point_get_show_highlights();
+</code></pre></div>
+This code gets whether the access point shows highlights.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_get_coordinate">gamecenter_access_point_get_coordinate</h1>
+<p>This function returns a single component (X, Y, Width or Height, per <a href="accesspoint.html#gamecenteraccesspointcoordinate">GameCenterAccessPointCoordinate</a>) of the access point's on-screen frame, in screen coordinates.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On older OS versions this function returns <code>-1</code>.</p>
+</div>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_get_coordinate(coordinate)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>coordinate</td>
+<td><a href="accesspoint.html#gamecenteraccesspointcoordinate">GameCenterAccessPointCoordinate</a></td>
+<td>The frame component to retrieve</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></p>
+</blockquote>
+<p>The requested frame component in screen coordinates, or <code>-1</code> if unavailable</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>var _x = gamecenter_access_point_get_coordinate(GameCenterAccessPointCoordinate.X);
+var _y = gamecenter_access_point_get_coordinate(GameCenterAccessPointCoordinate.Y);
+show_debug_message($&quot;Access point at: {_x}, {_y}&quot;);
+</code></pre></div>
+This code gets the X and Y coordinates of the access point's on-screen frame.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_present_with_state">gamecenter_access_point_present_with_state</h1>
+<p>This function triggers the access point to open a specific Game Center view, given by a <a href="accesspoint.html#gamecenterviewstate">GameCenterViewState</a> value. The <code>callback</code> fires once the view is dismissed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns <code>false</code> and still invokes the callback once, so a caller awaiting it does not hang.
+[!NOTE]</p>
+<p>The <a href="accesspoint.html#gamecenterviewstate">GameCenterViewState</a> values <code>Challenges</code> and <code>LocalPlayerFriendsList</code> require newer OS versions (iOS 17.2 / macOS 14.2); selecting them on an older OS may show an empty or unexpected screen.</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_present_with_state(state, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>state</td>
+<td><a href="accesspoint.html#gamecenterviewstate">GameCenterViewState</a></td>
+<td>The Game Center view to open</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call when the presented view is dismissed</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the view was successfully triggered</p>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the presented Game Center view is dismissed. It carries no data, so it is called with no arguments.</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_access_point_present_with_state(GameCenterViewState.Leaderboards, function()
+{
+    show_debug_message(&quot;Game Center view dismissed.&quot;);
+});
+</code></pre></div>
+This code opens the Game Center leaderboards view from the access point and outputs a debug message when it is dismissed.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_access_point_present">gamecenter_access_point_present</h1>
+<p>This function triggers the access point to open the default Game Center dashboard. The <code>callback</code> fires once the dashboard is dismissed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The access point requires iOS 14 / macOS 11. On an unsupported OS this function returns <code>false</code> and still invokes the callback once, so a caller awaiting it does not hang.</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_present(callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call when the presented view is dismissed</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></p>
+</blockquote>
+<p>Whether the dashboard was successfully triggered</p>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the presented Game Center dashboard is dismissed. It carries no data, so it is called with no arguments.</p>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_access_point_present(function()
+{
+    show_debug_message(&quot;Game Center dashboard dismissed.&quot;);
+});
+</code></pre></div>
+This code opens the default Game Center dashboard from the access point and outputs a debug message when it is dismissed.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenteraccesspointlocation">GameCenterAccessPointLocation</h1>
+<p>This enumeration contains the screen corners in which the Game Center access point can be displayed.</p>
+<p>These constants are referenced by the following functions:</p>
+<ul>
+<li><a href="accesspoint.html#gamecenter_access_point_set_location">gamecenter_access_point_set_location</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TopLeading</code></td>
+<td>The access point is displayed in the top leading corner of the screen.</td>
+</tr>
+<tr>
+<td><code>TopTrailing</code></td>
+<td>The access point is displayed in the top trailing corner of the screen.</td>
+</tr>
+<tr>
+<td><code>BottomLeading</code></td>
+<td>The access point is displayed in the bottom leading corner of the screen.</td>
+</tr>
+<tr>
+<td><code>BottomTrailing</code></td>
+<td>The access point is displayed in the bottom trailing corner of the screen.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenteraccesspointcoordinate">GameCenterAccessPointCoordinate</h1>
+<p>This enumeration contains the components of the access point's on-screen frame.</p>
+<p>These constants are referenced by the following functions:</p>
+<ul>
+<li><a href="accesspoint.html#gamecenter_access_point_get_coordinate">gamecenter_access_point_get_coordinate</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>X</code></td>
+<td>The x coordinate of the frame.</td>
+</tr>
+<tr>
+<td><code>Y</code></td>
+<td>The y coordinate of the frame.</td>
+</tr>
+<tr>
+<td><code>Width</code></td>
+<td>The width of the frame.</td>
+</tr>
+<tr>
+<td><code>Height</code></td>
+<td>The height of the frame.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterviewstate">GameCenterViewState</h1>
+<p>This enumeration contains the Game Center views that can be presented from the access point.</p>
+<p>These constants are referenced by the following functions:</p>
+<ul>
+<li><a href="accesspoint.html#gamecenter_access_point_present_with_state">gamecenter_access_point_present_with_state</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Default</code></td>
+<td>The default Game Center view.</td>
+</tr>
+<tr>
+<td><code>Leaderboards</code></td>
+<td>The leaderboards view.</td>
+</tr>
+<tr>
+<td><code>Achievements</code></td>
+<td>The achievements view.</td>
+</tr>
+<tr>
+<td><code>Challenges</code></td>
+<td>The challenges view.</td>
+</tr>
+<tr>
+<td><code>LocalPlayerProfile</code></td>
+<td>The local player's profile view.</td>
+</tr>
+<tr>
+<td><code>Dashboard</code></td>
+<td>The Game Center dashboard.</td>
+</tr>
+<tr>
+<td><code>LocalPlayerFriendsList</code></td>
+<td>The local player's friends list view.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="achievement.html" class="btn btn-neutral float-left" title="Achievement"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p><p align="center">GameMaker 2026</p></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="achievement.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gml.min.js"></script>
+      <script src="assets/js/gmext_script.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

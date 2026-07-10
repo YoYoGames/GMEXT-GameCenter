@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Leaderboard - GMEXT-GameCenter</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="assets/css/gmext_style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Leaderboard";
+        var mkdocs_page_input_path = "leaderboard.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/gml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> GMEXT-GameCenter
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Modules</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="presentview.html">Present View</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="localplayer.html">Local Player</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="savedgames.html">Saved Games</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Leaderboard</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#constants">Constants</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="accesspoint.html">Access Point</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">GMEXT-GameCenter</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Modules</li>
+      <li class="breadcrumb-item active">Leaderboard</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter/edit/master/docs/leaderboard.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <p><a id="top"></a></p>
+<h1 id="leaderboard"><strong>Leaderboard</strong></h1>
+<h2 id="functions">Functions</h2>
+<p>This module offers a collection of functions designed to address specific tasks and provide utilities for various purposes. Explore the available functions to make the most of the functionalities provided by this module.</p>
+<ul>
+<li><a href="leaderboard.html#gamecenter_leaderboard_submit">gamecenter_leaderboard_submit</a></li>
+<li><a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a></li>
+</ul>
+<h2 id="structs">Structs</h2>
+<p>This module offers a collection of structs, which serve as custom data models for organizing and structuring data. Explore the provided structs to better understand the relationships between data elements and simplify your data manipulation tasks.</p>
+<ul>
+<li><a href="leaderboard.html#gamecenterleaderboardentry">GameCenterLeaderboardEntry</a></li>
+<li><a href="leaderboard.html#gamecenterleaderboardsubmitresult">GameCenterLeaderboardSubmitResult</a></li>
+<li><a href="leaderboard.html#gamecenterleaderboardloadresult">GameCenterLeaderboardLoadResult</a></li>
+</ul>
+<h2 id="constants">Constants</h2>
+<p>This module includes a set of predefined constants that can be utilized for various purposes. Browse through the available constants to find values relevant to your needs and enhance the efficiency of your code.</p>
+<ul>
+<li><a href="leaderboard.html#gamecenterleaderboardtimescope">GameCenterLeaderboardTimeScope</a></li>
+<li><a href="leaderboard.html#gamecenterleaderboardplayerscope">GameCenterLeaderboardPlayerScope</a></li>
+</ul>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_leaderboard_submit">gamecenter_leaderboard_submit</h1>
+<p>This function submits a score to a Game Center leaderboard. This is an Apple-only feature (iOS and macOS).</p>
+<p>Both <code>score</code> and <code>context</code> are integers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GameKit leaderboard scores are integer-only; a fractional <code>score</code> or <code>context</code> is truncated. For decimal scores configure a formatter in App Store Connect and submit a scaled integer (e.g. score*100).</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_leaderboard_submit(leaderboard_id, score, context, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>leaderboard_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The leaderboard's ID as configured in App Store Connect</td>
+</tr>
+<tr>
+<td>score</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The score to submit (integer)</td>
+</tr>
+<tr>
+<td>context</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>An integer value of your choice stored alongside the score</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call when the submission completes</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the score submission has completed.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="leaderboard.html#gamecenterleaderboardsubmitresult">GameCenterLeaderboardSubmitResult</a></td>
+<td>The struct containing the result of the submission</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_leaderboard_submit(&quot;my_leaderboard&quot;, 1500, 0, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Submitted {_result.score} to {_result.leaderboard_id}&quot;);
+    } else {
+        show_debug_message($&quot;Submit failed: {_result.error_message}&quot;);
+    }
+});
+</code></pre></div>
+This code submits a score to a leaderboard and outputs the result in a debug message.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenter_leaderboard_load">gamecenter_leaderboard_load</h1>
+<p>This function loads entries from a Game Center leaderboard. This is an Apple-only feature (iOS and macOS).</p>
+<p>Ranks are 1-based. <code>range_start</code> is the first rank to fetch (<code>&gt;= 1</code>) and <code>range_count</code> is how many entries to fetch.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GameKit limits a single load to 100 entries — <code>range_count</code> is capped to 1..100.</p>
+</div>
+<p>This function operates asynchronously, which means that it does not immediately return the requested result. Instead, upon completion of the task, it will trigger the <a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a>.</p>
+<p><br></p>
+<p><strong>Syntax:</strong></p>
+<blockquote>
+<div class="highlight"><pre><span></span><code>gamecenter_leaderboard_load(leaderboard_id, time_scope, range_start, range_count, player_scope, callback)
+</code></pre></div>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>leaderboard_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The leaderboard's ID as configured in App Store Connect</td>
+</tr>
+<tr>
+<td>time_scope</td>
+<td><a href="leaderboard.html#gamecenterleaderboardtimescope">GameCenterLeaderboardTimeScope</a></td>
+<td>The time scope of the scores to fetch</td>
+</tr>
+<tr>
+<td>range_start</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The first rank to fetch (<code>&gt;= 1</code>)</td>
+</tr>
+<tr>
+<td>range_count</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The number of entries to fetch (1..100)</td>
+</tr>
+<tr>
+<td>player_scope</td>
+<td><a href="leaderboard.html#gamecenterleaderboardplayerscope">GameCenterLeaderboardPlayerScope</a></td>
+<td>Whose scores to fetch</td>
+</tr>
+<tr>
+<td>callback</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Script_Functions.htm">Function</a></td>
+<td>The function to call when the load completes</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Returns:</strong></p>
+<blockquote>
+<p>N/A</p>
+</blockquote>
+<p><br></p>
+<p><strong>Triggers:</strong></p>
+<blockquote>
+<p><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Method_Variables.htm">Callback</a></p>
+</blockquote>
+<p>This callback is triggered when the leaderboard entries have finished loading.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>result</td>
+<td><a href="leaderboard.html#gamecenterleaderboardloadresult">GameCenterLeaderboardLoadResult</a></td>
+<td>The struct containing the loaded leaderboard data</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>Example:</strong></p>
+<p><div class="highlight"><pre><span></span><code>gamecenter_leaderboard_load(&quot;my_leaderboard&quot;, GameCenterLeaderboardTimeScope.AllTime, 1, 10, GameCenterLeaderboardPlayerScope.Global, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Total players: {_result.total_players_count}&quot;);
+        array_foreach(_result.entries, function(_entry) {
+            show_debug_message($&quot;#{_entry.rank}: {_entry.formatted_score} ({_entry.player.display_name})&quot;);
+        });
+    } else {
+        show_debug_message($&quot;Load failed: {_result.error_message}&quot;);
+    }
+});
+</code></pre></div>
+This code loads the top 10 all-time global entries from a leaderboard and outputs them in debug messages.</p>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterleaderboardtimescope">GameCenterLeaderboardTimeScope</h1>
+<p>This enumeration contains the time scopes that can be used when loading a leaderboard.</p>
+<p>These constants are referenced by the following functions:</p>
+<ul>
+<li><a href="presentview.html#gamecenter_present_view_leaderboard">gamecenter_present_view_leaderboard</a></li>
+<li><a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Today</code></td>
+<td>The leaderboard shows today's scores.</td>
+</tr>
+<tr>
+<td><code>Week</code></td>
+<td>The leaderboard shows this week's scores.</td>
+</tr>
+<tr>
+<td><code>AllTime</code></td>
+<td>The leaderboard shows all-time scores.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterleaderboardplayerscope">GameCenterLeaderboardPlayerScope</h1>
+<p>This enumeration contains the player scopes that can be used when loading a leaderboard.</p>
+<p>These constants are referenced by the following functions:</p>
+<ul>
+<li><a href="presentview.html#gamecenter_present_view_leaderboard">gamecenter_present_view_leaderboard</a></li>
+<li><a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Global</code></td>
+<td>The leaderboard shows scores from all players.</td>
+</tr>
+<tr>
+<td><code>FriendsOnly</code></td>
+<td>The leaderboard shows scores from the local player's friends only.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterleaderboardsubmitresult">GameCenterLeaderboardSubmitResult</h1>
+<p>This struct is passed to the callback of <a href="leaderboard.html#gamecenter_leaderboard_submit">gamecenter_leaderboard_submit</a> and contains the result of a score submission.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="leaderboard.html#gamecenter_leaderboard_submit">gamecenter_leaderboard_submit</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the submission succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error message (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>leaderboard_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The ID of the leaderboard the score was submitted to</td>
+</tr>
+<tr>
+<td>score</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The score that was submitted</td>
+</tr>
+<tr>
+<td>context</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The context value that was submitted</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterleaderboardentry">GameCenterLeaderboardEntry</h1>
+<p>This struct represents a single entry (a player's score) on a Game Center leaderboard.</p>
+<p>This struct is referenced by the following structs:</p>
+<ul>
+<li><a href="leaderboard.html#gamecenterleaderboardloadresult">GameCenterLeaderboardLoadResult</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>context</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The integer context value that was submitted alongside the score</td>
+</tr>
+<tr>
+<td>date</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The date and time the score was submitted, as a GameMaker datetime (<code>-1</code> if not available)</td>
+</tr>
+<tr>
+<td>rank</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The 1-based rank of this entry on the leaderboard</td>
+</tr>
+<tr>
+<td>score</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The raw score value</td>
+</tr>
+<tr>
+<td>formatted_score</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The score formatted according to the leaderboard's formatter in App Store Connect</td>
+</tr>
+<tr>
+<td>player</td>
+<td><a href="localplayer.html#gamecenterplayer">GameCenterPlayer</a></td>
+<td>The player this entry belongs to (see <a href="localplayer.html#gamecenterplayer">GameCenterPlayer</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+<p align="right"><a href="#top">Back To Top</a></p>
+
+<h1 id="gamecenterleaderboardloadresult">GameCenterLeaderboardLoadResult</h1>
+<p>This struct is passed to the callback of <a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a> and contains the loaded leaderboard data.</p>
+<p>This struct is referenced by the following functions:</p>
+<ul>
+<li><a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a></li>
+</ul>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Boolean</a></td>
+<td>Whether the load succeeded</td>
+</tr>
+<tr>
+<td>error_code</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The error code (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>A human-readable error message (only meaningful when <code>success</code> is <code>false</code>)</td>
+</tr>
+<tr>
+<td>leaderboard_id</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The ID of the leaderboard that was loaded</td>
+</tr>
+<tr>
+<td>time_scope</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The time scope that was requested (see <a href="leaderboard.html#gamecenterleaderboardtimescope">GameCenterLeaderboardTimeScope</a>)</td>
+</tr>
+<tr>
+<td>range_start</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The first rank that was requested</td>
+</tr>
+<tr>
+<td>range_count</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The number of entries that was requested</td>
+</tr>
+<tr>
+<td>player_scope</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The player scope that was requested (see <a href="leaderboard.html#gamecenterleaderboardplayerscope">GameCenterLeaderboardPlayerScope</a>)</td>
+</tr>
+<tr>
+<td>leaderboard_title</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The display title of the leaderboard</td>
+</tr>
+<tr>
+<td>leaderboard_group</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Strings/Strings.htm">String</a></td>
+<td>The group identifier of the leaderboard</td>
+</tr>
+<tr>
+<td>leaderboard_type</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The type of the leaderboard</td>
+</tr>
+<tr>
+<td>leaderboard_start_date</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The leaderboard's start date as a GameMaker datetime (<code>-1</code> if not available)</td>
+</tr>
+<tr>
+<td>leaderboard_next_start_date</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The leaderboard's next start date as a GameMaker datetime (<code>-1</code> if not available)</td>
+</tr>
+<tr>
+<td>leaderboard_duration</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The leaderboard's duration</td>
+</tr>
+<tr>
+<td>total_players_count</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Data_Types.htm">Real</a></td>
+<td>The size of the whole leaderboard pool matching the scopes (NOT the number of entries returned)</td>
+</tr>
+<tr>
+<td>local_entry</td>
+<td><a href="leaderboard.html#gamecenterleaderboardentry">GameCenterLeaderboardEntry</a></td>
+<td>The local player's own entry (a <code>rank</code> of <code>-1</code> means the player has no entry in range)</td>
+</tr>
+<tr>
+<td>entries</td>
+<td><a href="https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Overview/Arrays.htm">Array</a> of <a href="leaderboard.html#gamecenterleaderboardentry">GameCenterLeaderboardEntry</a></td>
+<td>The array of fetched leaderboard entries</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="savedgames.html" class="btn btn-neutral float-left" title="Saved Games"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="achievement.html" class="btn btn-neutral float-right" title="Achievement">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p><p align="center">GameMaker 2026</p></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="savedgames.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="achievement.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gml.min.js"></script>
+      <script src="assets/js/gmext_script.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
