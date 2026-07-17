@@ -7,7 +7,7 @@ This guide is a quick tour of the Apple GameCenter extension. It only works on *
 Two things to keep in mind throughout:
 
 * You must **authenticate the local player** before using any other feature.
-* Every asynchronous function takes a `callback` function as its last argument. The callback is invoked with a **single struct** holding the result — e.g. `function(_result) { ... }`. Each result struct has a `success` member, plus `error_code` / `error_message` when something goes wrong.
+* Every asynchronous function takes a `callback` function as its last argument. The callback is called with a **single struct** as the argument holding the result — e.g. `function(_result) { ... }`. Each result struct has a `success` member, plus `error_code` / `error_message` when something goes wrong.
 
 ## Authentication
 
