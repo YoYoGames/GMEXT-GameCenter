@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Quick Start Guide - GMEXT-GameCenter</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+        <link href="assets/css/gmext_style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Quick Start Guide";
+        var mkdocs_page_input_path = "quick_start_guide.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/gml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> GMEXT-GameCenter
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Guides</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="setup.html">Setup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Modules</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="presentview.html">Present View</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="localplayer.html">Local Player</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="savedgames.html">Saved Games</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="leaderboard.html">Leaderboard</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="achievement.html">Achievement</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="accesspoint.html">Access Point</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">GMEXT-GameCenter</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Quick Start Guide</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter/edit/master/docs/quick_start_guide.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="quick-start-guide">Quick Start Guide</h1>
+<p>This guide is a quick tour of the Apple GameCenter extension. It only works on <strong>iOS and macOS</strong> (it wraps Apple's GameKit framework), so make sure you have completed the <a href="setup.html">Setup</a> steps first.</p>
+<p>Two things to keep in mind throughout:</p>
+<ul>
+<li>You must <strong>authenticate the local player</strong> before using any other feature.</li>
+<li>Every asynchronous function takes a <code>callback</code> function as its last argument. The callback is called with a <strong>single struct</strong> as the argument holding the result — e.g. <code>function(_result) { ... }</code>. Each result struct has a <code>success</code> member, plus <code>error_code</code> / <code>error_message</code> when something goes wrong.</li>
+</ul>
+<h2 id="authentication">Authentication</h2>
+<p>Call <a href="localplayer.html#gamecenter_local_player_authenticate">gamecenter_local_player_authenticate</a> once, early in your game, and check the result in the callback:</p>
+<div class="highlight"><pre><span></span><code>gamecenter_local_player_authenticate(function(_result) {
+    if (_result.authenticated) {
+        show_debug_message($&quot;Signed in as {_result.player.display_name}&quot;);
+    } else {
+        show_debug_message($&quot;Not signed in: {_result.error_message}&quot;);
+    }
+});
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GameKit re-invokes this callback whenever the authentication state changes (for example when the app returns to the foreground, or the player signs out and back in). Treat it as a <strong>recurring</strong> callback — don't free state after the first call.</p>
+</div>
+<p>You can also query the current state synchronously, for example with <a href="localplayer.html#gamecenter_local_player_is_authenticated">gamecenter_local_player_is_authenticated</a> or <a href="localplayer.html#gamecenter_local_player_get_info">gamecenter_local_player_get_info</a>. See the <a href="localplayer.html">Local Player</a> module for the full list.</p>
+<h2 id="presenting-the-game-center-ui">Presenting the Game Center UI</h2>
+<p>The general overlays (dashboard, achievements list, leaderboards list) are shown through the Game Center <strong>access point</strong> (<a href="accesspoint.html">Access Point</a>). Each call takes its own callback, fired with no arguments once the player closes the overlay:</p>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_present_with_state(GameCenterViewState.Default, function() {
+    show_debug_message(&quot;Game Center overlay was closed&quot;);
+});
+
+gamecenter_access_point_present_with_state(GameCenterViewState.Achievements, function() {
+    show_debug_message(&quot;Achievements overlay was closed&quot;);
+});
+
+gamecenter_access_point_present_with_state(GameCenterViewState.Leaderboards, function() {
+    show_debug_message(&quot;Leaderboards overlay was closed&quot;);
+});
+</code></pre></div>
+<p>To deep-link a <strong>specific</strong> achievement or leaderboard by ID, use the <a href="presentview.html">Present View</a> functions instead. These subscribe <strong>once</strong> to a shared dismissal notification (also called with no arguments), then present the detail view you need:</p>
+<div class="highlight"><pre><span></span><code>// Subscribe once (e.g. at startup)
+gamecenter_view_callback_subscribe(function() {
+    show_debug_message(&quot;Game Center overlay was closed&quot;);
+});
+
+// Later, present a specific achievement or leaderboard
+gamecenter_present_view_achievement(&quot;com.company.game.achievement.first_win&quot;);
+gamecenter_present_view_leaderboard(&quot;my_leaderboard&quot;, GameCenterLeaderboardTimeScope.AllTime, GameCenterLeaderboardPlayerScope.Global);
+</code></pre></div>
+<h2 id="leaderboards">Leaderboards</h2>
+<p>Submit a score with <a href="leaderboard.html#gamecenter_leaderboard_submit">gamecenter_leaderboard_submit</a> and read entries back with <a href="leaderboard.html#gamecenter_leaderboard_load">gamecenter_leaderboard_load</a>. Leaderboard IDs come from App Store Connect (see <a href="setup.html">Setup</a>).</p>
+<div class="highlight"><pre><span></span><code>// Submit a score
+gamecenter_leaderboard_submit(&quot;my_leaderboard&quot;, 1500, 0, function(_result) {
+    if (_result.success) {
+        show_debug_message($&quot;Submitted {_result.score}&quot;);
+    }
+});
+
+// Load the top 10 all-time global entries
+gamecenter_leaderboard_load(&quot;my_leaderboard&quot;, GameCenterLeaderboardTimeScope.AllTime, 1, 10, GameCenterLeaderboardPlayerScope.Global, function(_result) {
+    if (!_result.success) return;
+    for (var i = 0; i &lt; array_length(_result.entries); i++) {
+        var _entry = _result.entries[i];
+        show_debug_message($&quot;#{_entry.rank} {_entry.player.display_name}: {_entry.formatted_score}&quot;);
+    }
+});
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Leaderboard scores are integers; a fractional <code>score</code> is truncated (configure a formatter in App Store Connect and submit a scaled integer if you need decimals). Ranks are 1-based and a single load is limited to 100 entries.</p>
+</div>
+<p>See the <a href="leaderboard.html">Leaderboard</a> module for the <a href="leaderboard.html#gamecenterleaderboardtimescope">GameCenterLeaderboardTimeScope</a> / <a href="leaderboard.html#gamecenterleaderboardplayerscope">GameCenterLeaderboardPlayerScope</a> enums and the full result structure.</p>
+<h2 id="achievements">Achievements</h2>
+<p>Report progress with <a href="achievement.html#gamecenter_achievement_report">gamecenter_achievement_report</a>, list the player's progress with <a href="achievement.html#gamecenter_achievement_load">gamecenter_achievement_load</a>, and (for testing) wipe progress with <a href="achievement.html#gamecenter_achievement_reset_all">gamecenter_achievement_reset_all</a>. Achievement IDs come from App Store Connect.</p>
+<div class="highlight"><pre><span></span><code>// Report an achievement as complete and show the system banner
+gamecenter_achievement_report(&quot;my_achievement&quot;, 100, true, function(_result) {
+    if (_result.success) {
+        show_debug_message(&quot;Achievement reported&quot;);
+    }
+});
+
+// Load the player&#39;s achievement progress
+gamecenter_achievement_load(function(_result) {
+    if (!_result.success) return;
+    for (var i = 0; i &lt; array_length(_result.achievements); i++) {
+        var _a = _result.achievements[i];
+        show_debug_message($&quot;{_a.identifier}: {_a.percent_complete}%&quot;);
+    }
+});
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>percent_complete</code> is a whole number in the range 0–100.</p>
+</div>
+<p>See the <a href="achievement.html">Achievement</a> module for the full list.</p>
+<h2 id="saved-games">Saved Games</h2>
+<p>Saved games are stored in the player's iCloud account (so iCloud must be enabled, see <a href="setup.html">Setup</a>). Data is a <strong>plain UTF-8 string</strong> — to store complex data, encode it (for example with <code>json_stringify</code>) before saving.</p>
+<p>Subscribe to the saved-games event stream to be told about external modifications and conflicts:</p>
+<div class="highlight"><pre><span></span><code>gamecenter_saved_games_callback_subscribe(function(_event) {
+    switch (_event.type) {
+        case &quot;modified&quot;:
+            // A save was changed on another device
+            break;
+
+        case &quot;conflict&quot;:
+            // Two devices wrote the same save name while offline.
+            // Resolve it by writing the data you want to keep.
+            gamecenter_saved_games_resolve_conflict(_event.conflict_id, &quot;the correct data&quot;, function(_result) {
+                show_debug_message(&quot;Conflict resolved&quot;);
+            });
+            break;
+    }
+});
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A conflict event is delivered <strong>once per save name</strong>, so each <code>conflict_id</code> corresponds to a single saved game.</p>
+</div>
+<p>Save, fetch and read slots:</p>
+<div class="highlight"><pre><span></span><code>// Save (creates the slot if it doesn&#39;t exist, overwrites if it does)
+var _dataJSON = json_stringify({ level: 5, hp: 80 });
+var _saveBuff = buffer_create(string_byte_length(_dataJSON) + 1, buffer_fixed, 1);
+buffer_write(_saveBuff, buffer_string, _dataJSON);
+
+gamecenter_saved_games_save(&quot;slot1&quot;, _saveBuff, function(_result) {
+    if (_result.success) {
+        // Fetch the list of all slots
+        gamecenter_saved_games_fetch(function(_fetch) {
+            show_debug_message($&quot;You have {array_length(_fetch.slots)} saved game(s)&quot;);
+        });
+    }
+});
+
+buffer_delete(_saveBuff);
+
+// Read a slot&#39;s data back: the callback carries metadata only, so fetch the
+// bytes into a correctly-sized buffer once you know required_size.
+gamecenter_saved_games_data_request(&quot;slot1&quot;, function(_result) {
+    if (!_result.success) return;
+
+    var _readBuff = buffer_create(_result.required_size, buffer_fixed, 1);
+    if (gamecenter_saved_games_data_fetch(_result.handle_id, _readBuff)) {
+        buffer_seek(_readBuff, buffer_seek_start, 0);
+        var _data = json_parse(buffer_read(_readBuff, buffer_string));
+        show_debug_message($&quot;Loaded level {_data.level}&quot;);
+    }
+    buffer_delete(_readBuff);
+});
+</code></pre></div>
+<p>See the <a href="savedgames.html">Saved Games</a> module for every function and result struct.</p>
+<h2 id="access-point">Access Point</h2>
+<p>The access point is the floating Game Center badge. Position it, then make it active (requires iOS 14 / macOS 11):</p>
+<div class="highlight"><pre><span></span><code>gamecenter_access_point_set_location(GameCenterAccessPointLocation.TopLeading);
+gamecenter_access_point_set_active(true);
+</code></pre></div>
+<p>See the <a href="accesspoint.html">Access Point</a> module for the full list of access point controls.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p><p align="center">GameMaker 2026</p></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/YoYoGames/GMEXT-GameCenter" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/gml.min.js"></script>
+      <script src="assets/js/gmext_script.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

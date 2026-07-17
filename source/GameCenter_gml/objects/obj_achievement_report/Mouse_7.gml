@@ -1,10 +1,15 @@
 /// @description Report achievement
 
-// This function allows to create report on an achievement.
-// The developer should pass in an achievementId and a completion percentage.
-// The function task will trigger a Async Social Event.
-GameCenter_Achievement_Report(achievement_id, 100, true);
+// This function allows to create a report on an achievement.
+// The developer should pass in an achievementId, a completion percentage and
+// whether to show the completion banner. The result is delivered to the
+// provided callback.
+gamecenter_achievement_report(achievement_id, 100, true, function(_result)
+{
+	if (_result.success) show_debug_message("GameCenter_Achievement_Report: Success.");
+	else show_debug_message("GameCenter_Achievement_Report failed: " + _result.error_message);
+});
 
-// This function shows a screen overlay with specific achievement information
-// The function task will trigger a Async Social Event when dismissing the view.
-//GameCenter_PresentView_Achievement(achievement_id);
+// This function shows a screen overlay with specific achievement information.
+// Dismissing the view triggers the subscribed view callback.
+//gamecenter_present_view_achievement(achievement_id);

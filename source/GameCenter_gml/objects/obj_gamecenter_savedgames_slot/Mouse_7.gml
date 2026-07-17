@@ -7,5 +7,5 @@ Obj_GameCenter_SavedGames.selected = name
 
 // This function gets data from the Apple GameCenter
 // refering to the specific save slot.
-// The function triggers a Social Async callback.
-GameCenter_SavedGames_GetData(name);
+// The result is delivered to the callback handled by Obj_GameCenter_SavedGames.
+gamecenter_saved_games_data_request(name, Obj_GameCenter_SavedGames.handleGetData);

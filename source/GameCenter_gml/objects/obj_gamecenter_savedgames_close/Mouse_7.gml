@@ -3,4 +3,4 @@
 // Early exit if locked
 if(locked) exit;
 		
-GameCenter_SavedGames_Fetch();
+gamecenter_saved_games_fetch(Obj_GameCenter_SavedGames.handleFetch);

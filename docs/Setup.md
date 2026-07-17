@@ -15,7 +15,7 @@ These are steps specific to the iOS export of the extension:
 
 1. If you intend to use ${module.savedgames} functionality. You will also need to config your project following these steps:
 
-  - Double click the **GameCenter** extension icon on your project: 
+  - Double click the **GMGameCenter** extension icon on your project: 
 
   ![Asset Browser Extension](assets/images/GameCenter_AssetBrowser_extension.png)
 
@@ -29,7 +29,7 @@ These are steps specific to the iOS export of the extension:
   
   In this panel you need to make sure you have the following code in the `SAVED GAMES SECTION`:
 
-```gml
+```xml
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
 		<string>iCloud.${YYBundleIdentifier}</string>

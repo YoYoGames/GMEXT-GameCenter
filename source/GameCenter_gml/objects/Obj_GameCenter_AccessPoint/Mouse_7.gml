@@ -1,2 +1,2 @@
 
-GameCenter_AccessPoint_SetActive(!GameCenter_AccessPoint_GetActive());
+gamecenter_access_point_set_active(!gamecenter_access_point_get_active());

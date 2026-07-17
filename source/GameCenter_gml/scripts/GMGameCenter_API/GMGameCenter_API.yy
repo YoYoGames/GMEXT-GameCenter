@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"GMGameCenter_API",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GMGameCenter_API",
+  "parent":{
+    "name":"Extensions",
+    "path":"folders/GameCenter/Extensions.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
