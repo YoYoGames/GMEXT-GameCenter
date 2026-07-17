@@ -8,6 +8,11 @@ This extension will work on iOS and macOS platforms.
 * iOS: `source/GameCenter_gml/extensions/GMGameCenter/source/src/ios/`
 * macOS: `source/GameCenter_gml/extensions/GMGameCenter/source/src/native/`
 
+> [!IMPORTANT]
+> **Version 2.0.0 is a breaking change and is not compatible with previous versions.** Updating to
+> version 2.0.0 will require updating your project's code. Check [the documentation](../../wiki) for
+> the current API.
+
 ---
 
 ## Requirements
